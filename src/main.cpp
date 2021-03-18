@@ -8,10 +8,16 @@ Muhammad Alfandavi Aryo Utomo  - 13519211
 Tanur Rizaldi Rahardjo         - 13519214
 
 Tanggal Mulai - 18 Maret 2021
+
+// Rule
+- Use camelCase anywhere, except enum
+- Enum values using PascalCase
+- Consistent Indentation
+- Use member initializer list
+- Only include what needed
 */
 
 #include "header/engine.hpp"
-
 
 int main() {
     Engine mainGame;
