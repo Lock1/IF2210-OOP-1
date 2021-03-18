@@ -14,16 +14,16 @@ enum EntityID {
 };
 
 class Entity {
-    private:
+    protected:
         EntityID entityID;
         Position currentPosition;
+
     public:
-        Entity();
-        ~Entity();
+        Entity(int x, int y, EntityID eID);
 
         virtual bool move(const Tile &dir);
-        int getEntityID();
-        Position getPos();
+        EntityID getEntityID();
+        const Position& getPos();
 };
 
 #endif

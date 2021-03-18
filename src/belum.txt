@@ -1,0 +1,178 @@
+enum ElementType {
+    Fire,
+    Water,
+    Electric,
+    Ground,
+    Ice,
+    NoElement
+};
+
+
+
+
+
+
+// #include <string>
+class Skill {
+    private:
+        int skillID;
+        string skillName;
+        int basePower;
+        int masteryLevel;
+        ElementType skillElement1;
+        ElementType skillElement2;
+        bool isMultiElement;
+
+    public:
+        // Skill database constructor
+        Skill(const int sID, const int base, const string& name, const ElementType type1, const ElementType type2);
+        // Optional second element, if type2 == NoElement, isMultiElement = false
+
+        int getMasteryLevel();
+        void levelUpMastery();
+        bool isElementCompatible(ElementType type);
+        // Checking whether "type" compatible with element1 or element2
+};
+
+// Need creating skill database with constraint
+// - Every species have 1 unique skill
+class SkillDatabase {
+    private:
+        Skill skillList[]; // TODO : Resolve List
+    public:
+        SkillDatabase();
+        ~SkillDatabase();
+
+        void loadSkillDatabase();
+        // Load from file
+        void addSkill(const Skill &newSkill);
+        // Add skill to database
+        bool isCompatible(Engimon engimonTarget, int skillID);
+        // Search existing skillID in database and check engimon compatible or not
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Engimon
+// Use #include <string>
+// Need species database
+class Engimon : public Entity {
+    private:
+        int EngimonID;
+        string Name;
+        string parentName; // TODO : Species (?)
+        // ii.    Parent Names & Species
+        // iii.    Skill/kemampuan(maksimal 4)
+        ElementType engimonElement1;
+        ElementType engimonElement2;
+        int Level;
+        int Experience;
+        int CumulativeExperience;
+        bool isWild;
+        bool isMultiElement;
+        string InteractionDescription;
+    public:
+        Engimon(int newID, string newName, string); // TODO : ??
+        ~Engimon();
+
+        bool move() override;
+        bool xpGain(int gainedXP); // If Levelup -> return true, else false
+        bool isMaxCXP(); // If over CumulativeExperience, return true
+        void addSkill(Skill newSkill);
+        bool deleteskill(Skill targetSkill);
+        void randomMove(); // Random move, only wild pokemon
+        string playerInteract(); // Print description, only non-wild pokemon
+        // --- Const ---
+        // 1. Minimal 1 species for every type and combination element
+};
+
+
+
+class Player : public Entity {
+    private:
+        Inventory<EngimonItem> EngimonInventory;
+        Inventory<SkillItem> EngimonInventory; // TODO : ??
+        Engimon currentEngimon;
+        Position lastPosition;
+
+    public:
+        Player();
+        ~Player();
+        void changeEngimon();
+        bool move() override; // Overriding virtual move() Entity
+        Position getLastPosition();
+};
+
+// Inventory <Template>
+template<class T>
+class Inventory {
+    private:
+        T *itemPtr;
+        int currentCapacity;
+        int maxCapacity;
+
+    public:
+        T *getItemList();
+        bool addItem(); // False if overcapacity
+        bool deleteItem(); // False if not found item
+};
+
+
+
+
+
+
+
+
+
+
+class Item {
+private:
+    int ItemID;
+public:
+    virtual void useItem(); // TODO : Interaction with Inventory
+};
+
+
+class EngimonItem : public Item {
+private:
+    Engimon* EngimonPtr;
+
+public:
+    EngimonItem();
+    ~EngimonItem();
+
+    void useItem() override; TODO : (???)
+};
+
+
+// SkillItem : public Item ->
+// --- Attr ---
+// i. Item Count
+// ii. Name
+// --- Met ---
+// // b.	Memiliki atribut jumlah. Dengan demikian, tidak boleh terdapat skill dengan nama yang berbeda dalam inventory.
+// 1. useItem() TODO : (???)

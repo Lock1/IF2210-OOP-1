@@ -18,8 +18,8 @@
 
 // Common configuration
 // Use 2:1, x:y ratio for square-y map
-#define MAP_MAX_X 30
-#define MAP_MAX_Y 15
+#define MAP_MAX_X 50
+#define MAP_MAX_Y 25
 
 
 

@@ -18,14 +18,18 @@ class Tile : public Position {
         Tile(int x, int y, TileID tID);
         ~Tile();
 
-        void setEntity(Entity *entity);
-        // Change pointer with new pointer
-        EntityID getEntityID();
-        // Get EntityID from entity pointed
+        Entity* getEntity();
+        // Get Entity pointer
+        void setTileEntity(Entity *entity);
+        // Change pointer with new entity pointer
         TileID getTileID();
         // Get TileID
         Position getTilePos();
         // Get Tile Position
+
+
+        bool operator==(const Tile& target);
+        // Return true if tileID match, doesn't care with entityPtr
 };
 
 #endif

@@ -10,11 +10,10 @@
 
 class Map {
     private:
-        std::vector<std::vector<Tile>> map;
+        std::vector<std::vector<Tile>> tileMatrix;
 
     public:
         Map();
-        ~Map();
 
         void loadFile();
         // Load from file // TODO : Extra, optional
@@ -22,11 +21,12 @@ class Map {
         // Move all wild pokemon with element type checking
         void spawnEngimon();
         // Spawn random engimon at random valid position
-        void setTileEntity(const Position &pos, Entity *newEntity);
+        void setTileEntity(int x, int y, Entity *newEntity);
         // Change entity at position
-
-
-
+        Tile& getTileAt(int x, int y);
+        // Get Tile Reference at index located at position
+        TileID getTileIDAt(int x, int y);
+        // Get Tile ID at index located at position
 };
 
 #endif
