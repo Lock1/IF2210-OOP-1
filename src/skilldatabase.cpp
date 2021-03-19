@@ -4,7 +4,7 @@
 
 SkillDatabase::SkillDatabase() {
 	skillList = new Skill[MAX_SKILL_LIST];
-	nSkill = 0;
+	skillCount = 0;
 }
 
 SkillDatabase::~SkillDatabase() {
@@ -14,18 +14,23 @@ SkillDatabase::~SkillDatabase() {
 //void SkillDatabase::loadSkillDatabase() {}
 
 void SkillDatabase::addSkill(const Skill& newSkill) {
-	skillList[nSkill] = newSkill;
-	nSkill++;
+	skillList[skillCount] = newSkill;
+	skillCount++;
 }
 
 bool SkillDatabase::isCompatible(Engimon engimonTarget, int skillID) {
 	bool found = false;
+	Skill searchedSkill;
     int i = 0;
-    while(!found && i<nSkill){
-        if(skillList[i].getSkillID() == skillID) found = true;
+    while(!found && i<skillCount){
+        if(skillList[i].getSkillID() == skillID) {
+		searchedSkill = skillList[i];
+		found = true;
+	}
         i++;
     }
-    bool compatible = engimonTarget.getSkill().isElementCompatible(engimonTarget.getElement());
+	// TODO : Add multielement checking
+    bool compatible = searchedSkill.isElementCompatible(engimonTarget.getElement());
     return found && compatible;
 
      
