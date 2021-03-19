@@ -22,3 +22,11 @@ void Message::addMessage(std::string newMsg) {
 std::queue<std::string> Message::showMessage() {
     return messageQueue;
 }
+
+int Message::getMaxMessage() {
+    return (int) maxQueue;
+}
+
+int Message::getMaxStringLength() {
+    return (int) maxStringLength;
+}

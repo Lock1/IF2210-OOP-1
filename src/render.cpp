@@ -6,11 +6,13 @@
 #include "header/render.hpp"
 #include <Windows.h>
 #include <iostream>
+#include <queue>
+#include <string>
 
 using namespace std;
 
-Render::Render(int offx, int offy, int msgoffx, int msgoffy, Map& target) : mapOffsetX(offx), mapOffsetY(offy), msgBoxOffsetX(msgoffx), msgBoxOffsetY(msgoffy) {
-    isEmptyMapBuffer = true;
+Render::Render(int offx, int offy, int msgoffx, int msgoffy, Map& target) : mapOffsetX(offx), mapOffsetY(offy), msgOffsetX(msgoffx), msgOffsetY(msgoffy) {
+    isEmptyMapBuffer = true, isMessageBorderDrawn = false;
     for (int i = 0; i < target.getSizeY(); i++)
         for (int j = 0; j < target.getSizeX(); j++)
             mapFrameBuffer[i][j] = '\0';
@@ -48,6 +50,32 @@ void Render::drawMapBorder(Map &target) {
     setCursorPosition(mapOffsetX+target.getSizeX(), mapOffsetY+target.getSizeY());
     cout << MAP_BORDER_NW;
     isEmptyMapBuffer = false;
+}
+
+void Render::drawMsgBorder(Message &target) {
+    // Left right border
+    for (int i = msgOffsetY; i < msgOffsetY + target.getMaxMessage() + 1; i++) {
+        setCursorPosition(msgOffsetX-1, i);
+        cout << MSG_BORDER_NS;
+        setCursorPosition(msgOffsetX+target.getMaxStringLength(), i);
+        cout << MSG_BORDER_NS;
+    }
+    // Top bottom border
+    for (int j = msgOffsetX; j < msgOffsetX + target.getMaxStringLength() + 1; j++) {
+        setCursorPosition(j, msgOffsetY-1);
+        cout << MSG_BORDER_WE;
+        setCursorPosition(j, msgOffsetY+target.getMaxMessage());
+        cout << MSG_BORDER_WE;
+    }
+    // 4 Corner pieces
+    setCursorPosition(msgOffsetX-1, msgOffsetY-1);
+    cout << MSG_BORDER_SE;
+    setCursorPosition(msgOffsetX-1, msgOffsetY+target.getMaxMessage());
+    cout << MSG_BORDER_NE;
+    setCursorPosition(msgOffsetX+target.getMaxStringLength(), msgOffsetY-1);
+    cout << MSG_BORDER_SW;
+    setCursorPosition(msgOffsetX+target.getMaxStringLength(), msgOffsetY+target.getMaxMessage());
+    cout << MSG_BORDER_NW;
 }
 
 void Render::drawMap(Map& target) {
@@ -91,10 +119,23 @@ void Render::drawMap(Map& target) {
             }
         }
     }
-    setCursorPosition(60, 20);
+    
+    setCursorPosition(CURSOR_REST_X, CURSOR_REST_Y);
 }
 
-//         // Drawing map at offset location
-//
-//         void drawMessageBox(MessageBox target);
-//         // Draw message box at offset location
+void Render::drawMessageBox(Message& target) {
+    if (!isMessageBorderDrawn) {
+        drawMsgBorder(target);
+        isMessageBorderDrawn = true;
+    }
+
+    queue<string> buffer = target.showMessage();
+    int size = buffer.size();
+    for (int i = 0; i < size; i++) {
+        setCursorPosition(msgOffsetX, msgOffsetY+i);
+        cout << buffer.front();
+        buffer.pop();
+    }
+
+    setCursorPosition(CURSOR_REST_X, CURSOR_REST_Y);
+}

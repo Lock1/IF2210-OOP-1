@@ -20,6 +20,12 @@ class Message {
 
         std::queue<std::string> showMessage();
         // Return copy queue of messages
+
+        int getMaxMessage();
+        // Get max message contained
+
+        int getMaxStringLength();
+        // Get max string length in one entry
 };
 
 #endif

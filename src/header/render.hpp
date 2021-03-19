@@ -14,13 +14,15 @@ class Render {
         const int mapOffsetX;
         const int mapOffsetY;
 
-        const int msgBoxOffsetX;
-        const int msgBoxOffsetY;
+        const int msgOffsetX;
+        const int msgOffsetY;
 
         char mapFrameBuffer[MAP_MAX_Y][MAP_MAX_X];
         // Map Frame buffer
         bool isEmptyMapBuffer;
         // Flag whether buffer is already filled or not
+        bool isMessageBorderDrawn;
+        // Flag whether message box border is drawn or not
 
         // TODO : Cleanup stealing, set cursor pos as private method
         // Library importing
@@ -39,6 +41,8 @@ class Render {
         void drawMapBorder(Map& target);
         // Drawing map border
 
+        void drawMsgBorder(Message& target);
+        // Drawing message border
     public:
         Render(int offx, int offy, int msgoffx, int msgoffy, Map& target);
         // User Constructor
@@ -50,7 +54,7 @@ class Render {
         void drawMap(Map& target);
         // Drawing map at offset location
 
-        void drawMessageBox(Message target);
+        void drawMessageBox(Message& target);
         // Draw message box at offset location
 
 };
