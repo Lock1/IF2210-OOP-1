@@ -26,6 +26,10 @@ class Skill {
         // Add 1 level to mastery
         bool isElementCompatible(ElementType type);
         // Checking whether "type" compatible with element1 or element2
+        int getSkillID();
+        // Returning skill id
+        bool isSkillIDCompatible(int skillIdTarget);
+        // Checking whether the given skill id is compatible
 };
 
 #endif
