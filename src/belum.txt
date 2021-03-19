@@ -36,21 +36,6 @@ class Engimon : public Entity {
 
 
 
-class Player : public Entity {
-    private:
-        Inventory<EngimonItem> EngimonInventory;
-        Inventory<SkillItem> EngimonInventory; // TODO : ??
-        Engimon *currentEngimon;
-        Position lastPosition;
-
-    public:
-        Player();
-        ~Player();
-        void changeEngimon();
-        bool move() override; // Overriding virtual move() Entity
-        Position getLastPosition();
-};
-
 // Inventory <Template>
 template<class T>
 class Inventory {

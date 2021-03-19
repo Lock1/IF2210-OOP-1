@@ -26,11 +26,12 @@ class Entity {
         ~Entity();
         // Destructor
 
-        virtual bool move(const Tile &dir);
-        // Move function, check whether tile is valid to move / not
+        virtual bool isMoveLocationValid(Tile &target);
+        // Validity checker function, check whether tile is valid to move / not
         EntityID getEntityID();
         // Return entity ID
-        const Position& getPos();
+        Position& getPosRef();
+        Position getPos();
         // Get position
         char getEntityChar();
         // Get entity character

@@ -22,6 +22,7 @@
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\entities-source\entity.cpp" />
     <ClCompile Include="src\entities-source\map.cpp" />
+    <ClCompile Include="src\entities-source\player.cpp" />
     <ClCompile Include="src\entities-source\position.cpp" />
     <ClCompile Include="src\entities-source\tile.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -36,6 +37,7 @@
     <ClInclude Include="src\header\entities\attributes\skill.hpp" />
     <ClInclude Include="src\header\entities\entity.hpp" />
     <ClInclude Include="src\header\entities\map.hpp" />
+    <ClInclude Include="src\header\entities\player.hpp" />
     <ClInclude Include="src\header\entities\position.hpp" />
     <ClInclude Include="src\header\entities\tile.hpp" />
     <ClInclude Include="src\header\message.hpp" />

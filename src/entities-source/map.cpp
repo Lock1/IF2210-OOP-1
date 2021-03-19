@@ -20,6 +20,10 @@ void Map::setTileEntity(int x, int y, Entity *newEntity) {
     tileMatrix[x][y].setTileEntity(newEntity);
 }
 
+void Map::setTileEntity(Position pos, Entity *newEntity) {
+    tileMatrix[pos.getX()][pos.getY()].setTileEntity(newEntity);
+}
+
 int Map::getSizeX() {
     return sizeX;
 }
@@ -39,4 +43,17 @@ Entity* Map::getEntityAt(int x, int y) {
 
 TileType Map::getTileTypeAt(int x, int y) {
     return tileMatrix[x][y].getTileType();
+}
+
+// Overloaded with Position
+Tile& Map::getTileAt(Position pos) {
+    return tileMatrix[pos.getX()][pos.getY()];
+}
+
+Entity* Map::getEntityAt(Position pos) {
+    return tileMatrix[pos.getX()][pos.getY()].getEntity();
+}
+
+TileType Map::getTileTypeAt(Position pos) {
+    return tileMatrix[pos.getX()][pos.getY()].getTileType();
 }

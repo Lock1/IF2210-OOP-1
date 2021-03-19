@@ -6,6 +6,13 @@
 
 class Tile;
 
+enum Direction {
+    North,
+    South,
+    West,
+    East
+};
+
 class Position {
     private:
         int posX;
@@ -14,6 +21,10 @@ class Position {
     public:
         Position(int x, int y);
         // User Constructor for position
+
+        int getX();
+        int getY();
+        // Position getter
 
         const Position& operator+(const Position &pos2);
         const Position& operator+(const Tile &pos2);

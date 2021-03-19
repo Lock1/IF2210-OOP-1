@@ -51,6 +51,9 @@
     <ClCompile Include="src\playerinput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities-source\player.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="src\header\playerinput.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\header\entities\player.hpp">
+      <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
