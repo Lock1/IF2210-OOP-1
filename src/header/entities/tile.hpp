@@ -1,4 +1,6 @@
 // Tile class
+// Empty Tile constructed with User Constructor (int, int, TileID)
+// Empty Tile is defined with entityPtr == NULL, and arbitrary Position and 
 #ifndef TILE_HPP
 #define TILE_HPP
 
@@ -16,6 +18,7 @@ class Tile : public Position {
         TileID tileID;
     public:
         Tile(int x, int y, TileID tID);
+        // User Constructor for empty tile
         ~Tile();
 
         Entity* getEntity();
