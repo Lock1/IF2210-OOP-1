@@ -25,6 +25,7 @@
     <ClCompile Include="src\entities-source\position.cpp" />
     <ClCompile Include="src\entities-source\tile.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp" />

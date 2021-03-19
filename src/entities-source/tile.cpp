@@ -12,3 +12,7 @@ Tile::~Tile() {
 TileID Tile::getTileID() {
     return tileID;
 }
+
+Entity* Tile::getEntity() {
+    return entityPtr;
+}

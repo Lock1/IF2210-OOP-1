@@ -1,6 +1,6 @@
 // Tile class
 // Empty Tile constructed with User Constructor (int, int, TileID)
-// Empty Tile is defined with entityPtr == NULL, and arbitrary Position and 
+// Empty Tile is defined with entityPtr == NULL, and arbitrary Position and
 #ifndef TILE_HPP
 #define TILE_HPP
 

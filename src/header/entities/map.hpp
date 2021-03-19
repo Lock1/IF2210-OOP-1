@@ -24,7 +24,9 @@ class Map {
         void setTileEntity(int x, int y, Entity *newEntity);
         // Change entity at position
         Tile& getTileAt(int x, int y);
-        // Get Tile Reference at index located at position
+        // Get Tile at index located at position
+        Entity* getEntityAt(int x, int y);
+        // Get Tile at index located at position
         TileID getTileIDAt(int x, int y);
         // Get Tile ID at index located at position
 };

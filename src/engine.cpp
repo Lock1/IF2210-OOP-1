@@ -1,5 +1,7 @@
 // 13519214
+#include "header/render.hpp"
 #include "header/engine.hpp"
+#include "header/entities/map.hpp"
 #include <iostream>
 #include <stdio.h>
 
@@ -12,23 +14,15 @@ enum Direction {
     Right
 };
 
-Engine::Engine() {
+Engine::Engine() : renderer(MAP_OFFSET_X, MAP_OFFSET_Y, MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y) {
     // TODO : Put private variable preparation here
 }
 
 void Engine::startGame() {
     // TODO : Put game here
     system(CLEAR_SCREEN_CMD);
-    for (int j = 0; j < MAP_MAX_Y; j++) {
-        for (int i = 0; i < MAP_MAX_X; i++) {
-            if (map.getTileAt(i, j).getTileID() == Sea)
-                printf("o");
-            else
-                printf("-");
-        }
-        printf("\n");
-    }
     cout << "Hello World!\n";
+    renderer.drawMap(map);
 }
 
 Engine::~Engine() {

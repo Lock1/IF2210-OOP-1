@@ -2,7 +2,7 @@
 
 
 Entity::Entity(int x, int y, EntityID eID) : entityID(eID), currentPosition(x, y) {
-
+    
 }
 
 

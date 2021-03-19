@@ -20,6 +20,10 @@ Tile& Map::getTileAt(int x, int y) {
     return tileMatrix[x][y];
 }
 
+Entity* Map::getEntityAt(int x, int y) {
+    return tileMatrix[x][y].getEntity();
+}
+
 TileID Map::getTileIDAt(int x, int y) {
     return tileMatrix[x][y].getTileID();
 }
