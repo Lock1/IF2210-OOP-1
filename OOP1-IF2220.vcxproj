@@ -18,6 +18,22 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\engine.cpp" />
+    <ClCompile Include="src\entities-source\entity.cpp" />
+    <ClCompile Include="src\entities-source\map.cpp" />
+    <ClCompile Include="src\entities-source\position.cpp" />
+    <ClCompile Include="src\entities-source\tile.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\header\config.hpp" />
+    <ClInclude Include="src\header\engine.hpp" />
+    <ClInclude Include="src\header\entities\entity.hpp" />
+    <ClInclude Include="src\header\entities\map.hpp" />
+    <ClInclude Include="src\header\entities\position.hpp" />
+    <ClInclude Include="src\header\entities\tile.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -138,9 +154,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="OOP1-IF2220.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
