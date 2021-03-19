@@ -1,5 +1,7 @@
 // Entity class implementation
 #include "../header/entities/entity.hpp"
+#include "../header/entities/tile.hpp"
+#include <iostream>
 
 int Entity::entityCount = 0;
 // Starting count for entity
@@ -12,16 +14,22 @@ Entity::~Entity() {
     entityCount--;
 }
 
-bool Entity::move(const Tile &dir) {
-    currentPosition += dir;
-    return true;
+bool Entity::isMoveLocationValid(Tile &target) {
+    if (target.getEntity() != NULL)
+        return false;
+    else
+        return true;
 }
 
 EntityID Entity::getEntityID() {
     return entityID;
 }
 
-const Position& Entity::getPos() {
+Position& Entity::getPosRef() {
+    return currentPosition;
+}
+
+Position Entity::getPos() {
     return currentPosition;
 }
 

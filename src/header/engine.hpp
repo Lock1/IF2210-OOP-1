@@ -6,20 +6,30 @@
 #include "config.hpp"
 #include "render.hpp"
 #include "message.hpp"
+#include "playerinput.hpp"
 #include "entities/map.hpp"
-// TODO : Input Class
+#include "entities/player.hpp"
+
 class Engine {
     private:
-        // TODO : Add variables
         Map map;
         Render renderer;
         Message messageList;
+        PlayerInput userInput;
+        bool isEngineRunning;
+        Player player;
+        void evaluteInput();
+        // Evaluating input from PlayerInput class
     public:
         Engine();
+        // Constructor
         ~Engine();
+        // Destructor
 
         void startGame();
+        // Start game
         void loadDatabase();
+        // TODO : Needed (?)
 };
 
 #endif

@@ -27,12 +27,16 @@ class Map {
         void spawnEngimon();            // TODO : Add
         // Spawn random engimon at random valid position
         void setTileEntity(int x, int y, Entity *newEntity);
+        void setTileEntity(Position pos, Entity *newEntity);
         // Change entity at position
         Tile& getTileAt(int x, int y);
+        Tile& getTileAt(Position pos);
         // Get Tile at index located at position
         Entity* getEntityAt(int x, int y);
+        Entity* getEntityAt(Position pos);
         // Get Tile at index located at position
         TileType getTileTypeAt(int x, int y);
+        TileType getTileTypeAt(Position pos);
         // Get Tile ID at index located at position
 };
 

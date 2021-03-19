@@ -7,6 +7,13 @@
 #define CLEAR_SCREEN_CMD "cls"
 
 // Common configuration
+#define INPUT_BUFFER_COUNT 3
+
+// Map
+#define SEA_STARTING_X 35
+#define SEA_STARTING_Y 15
+
+// Render configuration
 // Use 2:1, x:y ratio for square-y map
 #define MAP_MAX_X 50
 #define MAP_MAX_Y 25
@@ -41,12 +48,12 @@
 #define MSG_BORDER_WE '\xC4'
 
 // Tiles
-#define TILE_GRASS '\xB0'
-#define TILE_SEA '\xB2'
+#define TILE_GRASS '\xB1'
+#define TILE_SEA '\xB0'
 
-// Map
-#define SEA_STARTING_X 20
-#define SEA_STARTING_Y 10
+// Entity character
+#define PLAYER_CHAR '\x99'
+
 
 // skillDatabse
 #define MAX_SKILL_LIST 100
