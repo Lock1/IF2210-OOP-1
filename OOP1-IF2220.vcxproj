@@ -25,6 +25,8 @@
     <ClCompile Include="src\entities-source\position.cpp" />
     <ClCompile Include="src\entities-source\tile.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\message.cpp" />
+    <ClCompile Include="src\render.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp" />
@@ -33,6 +35,8 @@
     <ClInclude Include="src\header\entities\map.hpp" />
     <ClInclude Include="src\header\entities\position.hpp" />
     <ClInclude Include="src\header\entities\tile.hpp" />
+    <ClInclude Include="src\header\message.hpp" />
+    <ClInclude Include="src\header\render.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

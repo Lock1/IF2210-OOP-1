@@ -11,21 +11,28 @@
 class Map {
     private:
         std::vector<std::vector<Tile>> tileMatrix;
-
+        int sizeX;
+        int sizeY;
     public:
         Map();
 
-        void loadFile();
-        // Load from file // TODO : Extra, optional
-        void wildEngimonRandomMove();
+        int getSizeX();
+        int getSizeY();
+        // Getter
+
+        void loadFile();                // TODO : Extra, optional
+        // Load from file
+        void wildEngimonRandomMove();   // TODO : Add
         // Move all wild pokemon with element type checking
-        void spawnEngimon();
+        void spawnEngimon();            // TODO : Add
         // Spawn random engimon at random valid position
         void setTileEntity(int x, int y, Entity *newEntity);
         // Change entity at position
         Tile& getTileAt(int x, int y);
-        // Get Tile Reference at index located at position
-        TileID getTileIDAt(int x, int y);
+        // Get Tile at index located at position
+        Entity* getEntityAt(int x, int y);
+        // Get Tile at index located at position
+        TileType getTileTypeAt(int x, int y);
         // Get Tile ID at index located at position
 };
 

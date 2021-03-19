@@ -16,11 +16,13 @@ class Position {
         // User Constructor for position
 
         const Position& operator+(const Position &pos2);
+        const Position& operator+(const Tile &pos2);
         // Addition operator
         const Position& operator+=(const Position &pos2);
         const Position& operator+=(const Tile &pos2);
         // Addition Assignment operator
         const Position& operator=(const Position &pos2);
+        const Position& operator=(const Tile &pos2);
         // Assignment operator
         bool operator==(const Position &pos2);
         // Return true if and only if both posX and posY are equal
