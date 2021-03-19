@@ -10,7 +10,7 @@
 class SkillDatabase {
     private:
         Skill* skillList; // TODO : Resolve List
-        int nSkill;
+        int skillCount;
     public:
         SkillDatabase();
         ~SkillDatabase();
