@@ -48,5 +48,6 @@
 #define SEA_STARTING_X 20
 #define SEA_STARTING_Y 10
 
-
+// skillDatabse
+#define MAX_SKILL_LIST 100
 #endif
