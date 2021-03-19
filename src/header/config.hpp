@@ -4,16 +4,16 @@
 #define _CONFIG
 
 // Target macro
-#ifdef _WINDOWS
+// #ifdef _WINDOWS
 #define CLEAR_SCREEN_CMD "cls"
 
-#endif
+// #endif
 
 
-#ifdef _LINUX
-#define CLEAR_SCREEN_CMD "clear"
-
-#endif
+// #ifdef _LINUX
+// #define CLEAR_SCREEN_CMD "clear"
+//
+// #endif
 
 
 // Common configuration

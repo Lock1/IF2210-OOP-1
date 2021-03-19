@@ -31,12 +31,15 @@
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp" />
     <ClInclude Include="src\header\engine.hpp" />
+    <ClInclude Include="src\header\entities\attributes\elementtype.hpp" />
+    <ClInclude Include="src\header\entities\attributes\skill.hpp" />
     <ClInclude Include="src\header\entities\entity.hpp" />
     <ClInclude Include="src\header\entities\map.hpp" />
     <ClInclude Include="src\header\entities\position.hpp" />
     <ClInclude Include="src\header\entities\tile.hpp" />
     <ClInclude Include="src\header\message.hpp" />
     <ClInclude Include="src\header\render.hpp" />
+    <ClInclude Include="src\header\skilldatabase.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

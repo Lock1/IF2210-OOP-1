@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Entities">
       <UniqueIdentifier>{a9e5fc60-b8ec-4db6-b0d0-328fc6d3117b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Entities\Attributes">
+      <UniqueIdentifier>{468c4240-ddc7-45cb-afce-08159631d789}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp">
@@ -69,6 +72,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\header\message.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\header\entities\attributes\skill.hpp">
+      <Filter>Header Files\Entities\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\header\entities\attributes\elementtype.hpp">
+      <Filter>Header Files\Entities\Attributes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\header\skilldatabase.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

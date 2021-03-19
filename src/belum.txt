@@ -1,78 +1,3 @@
-enum ElementType {
-    Fire,
-    Water,
-    Electric,
-    Ground,
-    Ice,
-    NoElement
-};
-
-
-
-
-
-
-// #include <string>
-class Skill {
-    private:
-        int skillID;
-        string skillName;
-        int basePower;
-        int masteryLevel;
-        ElementType skillElement1;
-        ElementType skillElement2;
-        bool isMultiElement;
-
-    public:
-        // Skill database constructor
-        Skill(const int sID, const int base, const string& name, const ElementType type1, const ElementType type2);
-        // Optional second element, if type2 == NoElement, isMultiElement = false
-
-        int getMasteryLevel();
-        void levelUpMastery();
-        bool isElementCompatible(ElementType type);
-        // Checking whether "type" compatible with element1 or element2
-};
-
-// Need creating skill database with constraint
-// - Every species have 1 unique skill
-class SkillDatabase {
-    private:
-        Skill skillList[]; // TODO : Resolve List
-    public:
-        SkillDatabase();
-        ~SkillDatabase();
-
-        void loadSkillDatabase();
-        // Load from file
-        void addSkill(const Skill &newSkill);
-        // Add skill to database
-        bool isCompatible(Engimon engimonTarget, int skillID);
-        // Search existing skillID in database and check engimon compatible or not
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -115,7 +40,7 @@ class Player : public Entity {
     private:
         Inventory<EngimonItem> EngimonInventory;
         Inventory<SkillItem> EngimonInventory; // TODO : ??
-        Engimon currentEngimon;
+        Engimon *currentEngimon;
         Position lastPosition;
 
     public:
@@ -141,6 +66,28 @@ class Inventory {
 };
 
 
+
+
+
+
+// EngimonInteraction -> // Virtual Class
+// --- Attr ---
+// i. Engimon 1*
+// ii. Engimon 2*
+//
+//
+// Breed : EngimonInteraction -> // Handled on engine
+// --- Met ---
+// 1. Engimon breedEngimon()
+// // Element decider section
+// // Get skill section, checking validity of element
+//
+//
+// Battle : EngimonInteraction -> // Handled on engine
+// --- Met ---
+// 1. Battle constructor, need 2 engimon
+// 2. void startFight() -> Calculate battle, no return
+// 3. bool isEngimon1Win() -> returning whether first engimon win or not
 
 
 
