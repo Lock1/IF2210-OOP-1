@@ -11,9 +11,14 @@
 class Map {
     private:
         std::vector<std::vector<Tile>> tileMatrix;
-
+        int sizeX;
+        int sizeY;
     public:
         Map();
+
+        int getSizeX();
+        int getSizeY();
+        // Getter
 
         void loadFile();
         // Load from file // TODO : Extra, optional
@@ -27,7 +32,7 @@ class Map {
         // Get Tile at index located at position
         Entity* getEntityAt(int x, int y);
         // Get Tile at index located at position
-        TileID getTileIDAt(int x, int y);
+        TileType getTileTypeAt(int x, int y);
         // Get Tile ID at index located at position
 };
 

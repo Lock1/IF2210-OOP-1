@@ -17,13 +17,16 @@ class Entity {
     protected:
         EntityID entityID;
         Position currentPosition;
+        unsigned char entityChar;
 
     public:
-        Entity(int x, int y, EntityID eID);
+        Entity(int x, int y, EntityID eID, unsigned char eChar);
+        // User Constructor
 
         virtual bool move(const Tile &dir);
         EntityID getEntityID();
         const Position& getPos();
+        unsigned char getEntityChar();
 };
 
 #endif

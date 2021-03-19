@@ -1,7 +1,7 @@
 #include "../header/entities/tile.hpp"
 #include <iostream>
 
-Tile::Tile(int x, int y, TileID tID) : Position(x, y), tileID(tID) {
+Tile::Tile(int x, int y, TileType tID) : Position(x, y), tileType(tID) {
     entityPtr = NULL;
 }
 
@@ -9,8 +9,8 @@ Tile::~Tile() {
 
 }
 
-TileID Tile::getTileID() {
-    return tileID;
+TileType Tile::getTileType() {
+    return tileType;
 }
 
 Entity* Tile::getEntity() {

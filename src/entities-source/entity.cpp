@@ -1,8 +1,8 @@
 #include "../header/entities/entity.hpp"
 
 
-Entity::Entity(int x, int y, EntityID eID) : entityID(eID), currentPosition(x, y) {
-    
+Entity::Entity(int x, int y, EntityID eID, unsigned char eChar) : entityID(eID), currentPosition(x, y), entityChar(eChar) {
+
 }
 
 

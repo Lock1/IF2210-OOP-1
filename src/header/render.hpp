@@ -11,15 +11,15 @@
 
 class Render {
     private:
-        int mapOffsetX;
-        int mapOffsetY;
+        const int mapOffsetX;
+        const int mapOffsetY;
 
-        int msgBoxOffsetX;
-        int msgBoxOffsetY;
+        const int msgBoxOffsetX;
+        const int msgBoxOffsetY;
 
-        unsigned char mapFrameBuffer[MAP_MAX_X][MAP_MAX_Y];
+        unsigned char mapFrameBuffer[MAP_MAX_Y][MAP_MAX_X];
         // Map Frame buffer
-        char msgFrameBuffer[MSG_MAX_X][MSG_MAX_Y];
+        char msgFrameBuffer[MSG_MAX_X][MSG_MAX_Y]; // TODO : Maybe not needed
         // Message Frame buffer
         bool isEmptyMapBuffer;
         bool isEmptyMsgBuffer;
@@ -37,16 +37,11 @@ class Render {
         // #include <chrono>		// Time and tick system
         // #include <thread>		// For sleep()
         // #include <stdlib.h>		// For random spread attack
-        // void setCursorPosition(int x, int y) {
-        //     static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-        //     std::cout.flush();
-        //     COORD coord = { (SHORT)x, (SHORT)y };
-        //     SetConsoleCursorPosition(hOut, coord);
-        // }
+        void setCursorPosition(int x, int y);
 
 
     public:
-        Render(int offx, int offy, int msgoffx, int msgoffy);
+        Render(int offx, int offy, int msgoffx, int msgoffy, Map& target);
         // User Constructor
 
 
