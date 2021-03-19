@@ -7,6 +7,7 @@
 #include "render.hpp"
 #include "message.hpp"
 #include "entities/map.hpp"
+#include "playerinput.hpp"
 // TODO : Input Class
 class Engine {
     private:
@@ -14,6 +15,7 @@ class Engine {
         Map map;
         Render renderer;
         Message messageList;
+        PlayerInput userInput;
     public:
         Engine();
         ~Engine();

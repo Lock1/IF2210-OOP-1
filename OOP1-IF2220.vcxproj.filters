@@ -48,6 +48,9 @@
     <ClCompile Include="src\message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\playerinput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp">
@@ -81,6 +84,9 @@
       <Filter>Header Files\Entities\Attributes</Filter>
     </ClInclude>
     <ClInclude Include="src\header\skilldatabase.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\header\playerinput.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

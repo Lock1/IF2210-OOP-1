@@ -24,18 +24,6 @@ class Render {
         bool isMessageBorderDrawn;
         // Flag whether message box border is drawn or not
 
-        // TODO : Cleanup stealing, set cursor pos as private method
-        // Library importing
-        // #define NOMINMAX
-        // #define WIN32_LEAN_AND_MEAN
-        // #include <Windows.h>	// Need for cls() and input()
-        // #include <iostream>		// Usual i/o
-        // #include <string>		// Need string for tooltip, name, etc
-        // #include <queue>		// Queue system for input, action message
-        // #include <vector>		// Maybe needed for keeping data
-        // #include <chrono>		// Time and tick system
-        // #include <thread>		// For sleep()
-        // #include <stdlib.h>		// For random spread attack
         void setCursorPosition(int x, int y);
 
         void drawMapBorder(Map& target);
