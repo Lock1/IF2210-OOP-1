@@ -4,7 +4,7 @@
 #include "../header/entities/entity.hpp"
 #include <iostream>
 
-Player::Player() : Entity(0, 0, EntityPlayer, 'o'), lastPosition(0, 0) {
+Player::Player() : Entity(0, 0, EntityPlayer, PLAYER_CHAR), lastPosition(0, 0) {
 
 }
 
