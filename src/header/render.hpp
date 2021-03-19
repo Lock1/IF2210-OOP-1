@@ -6,7 +6,7 @@
 #define RENDER_HPP
 
 #include "entities/map.hpp"
-#include "messagebox.hpp"
+#include "message.hpp"
 #include "config.hpp"
 
 class Render {
@@ -19,10 +19,7 @@ class Render {
 
         char mapFrameBuffer[MAP_MAX_Y][MAP_MAX_X];
         // Map Frame buffer
-        char msgFrameBuffer[MSG_MAX_X][MSG_MAX_Y]; // TODO : Maybe not needed
-        // Message Frame buffer
         bool isEmptyMapBuffer;
-        bool isEmptyMsgBuffer;
         // Flag whether buffer is already filled or not
 
         // TODO : Cleanup stealing, set cursor pos as private method
@@ -53,7 +50,7 @@ class Render {
         void drawMap(Map& target);
         // Drawing map at offset location
 
-        void drawMessageBox(MessageBox target);
+        void drawMessageBox(Message target);
         // Draw message box at offset location
 
 };

@@ -20,11 +20,11 @@ class Map {
         int getSizeY();
         // Getter
 
-        void loadFile();
-        // Load from file // TODO : Extra, optional
-        void wildEngimonRandomMove();
+        void loadFile();                // TODO : Extra, optional
+        // Load from file
+        void wildEngimonRandomMove();   // TODO : Add
         // Move all wild pokemon with element type checking
-        void spawnEngimon();
+        void spawnEngimon();            // TODO : Add
         // Spawn random engimon at random valid position
         void setTileEntity(int x, int y, Entity *newEntity);
         // Change entity at position

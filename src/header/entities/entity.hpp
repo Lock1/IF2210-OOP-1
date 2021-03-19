@@ -17,16 +17,25 @@ class Entity {
     protected:
         EntityID entityID;
         Position currentPosition;
-        unsigned char entityChar;
+        char entityChar;            // Entity representation on map
+        static int entityCount;     // Total count of entity created
 
     public:
-        Entity(int x, int y, EntityID eID, unsigned char eChar);
+        Entity(int x, int y, EntityID eID, char eChar);
         // User Constructor
+        ~Entity();
+        // Destructor
 
         virtual bool move(const Tile &dir);
+        // Move function, check whether tile is valid to move / not
         EntityID getEntityID();
+        // Return entity ID
         const Position& getPos();
-        unsigned char getEntityChar();
+        // Get position
+        char getEntityChar();
+        // Get entity character
+        static int getEntityCount();
+        // Get entity object count
 };
 
 #endif

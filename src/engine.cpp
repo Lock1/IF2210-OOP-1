@@ -14,6 +14,9 @@ enum Direction {
     Right
 };
 
+// #include <chrono>		// Time and tick system
+// #include <thread>		// For sleep() // TODO : Use later on input
+
 Engine::Engine() : map(), renderer(MAP_OFFSET_X, MAP_OFFSET_Y, MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y, map) {
     // TODO : Put private variable preparation here
 }
@@ -23,6 +26,15 @@ void Engine::startGame() {
     system(CLEAR_SCREEN_CMD);
     while (true)
         renderer.drawMap(map);
+    // Entity *rand = new Entity(3, 3, EntityPlayer, '#');
+    // map.setTileEntity(3, 3, rand);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    // map.setTileEntity(3, 3, NULL);
+    // renderer.drawMap(map);
+    // std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    // map.setTileEntity(3, 10, rand);
+    // renderer.drawMap(map);
+    // delete rand;
 }
 
 Engine::~Engine() {

@@ -20,7 +20,6 @@ class Tile : public Position {
     public:
         Tile(int x, int y, TileType tID);
         // User Constructor for empty tile
-        ~Tile();
 
         Entity* getEntity();
         // Get Entity pointer
@@ -31,8 +30,7 @@ class Tile : public Position {
         Position getTilePos();
         // Get Tile Position
 
-
-        bool operator==(const Tile& target);
+        bool operator==(TileType target);
         // Return true if TileType match, doesn't care with entityPtr
 };
 

@@ -42,7 +42,7 @@
     <ClCompile Include="src\render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\messagebox.cpp">
+    <ClCompile Include="src\message.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,10 +65,10 @@
     <ClInclude Include="src\header\entities\tile.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\header\messagebox.hpp">
+    <ClInclude Include="src\header\render.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\header\render.hpp">
+    <ClInclude Include="src\header\message.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

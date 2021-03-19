@@ -22,8 +22,6 @@
 #define MAP_MAX_Y 25
 
 #define MSG_MAX_X 30
-#define MSG_MAX_Y 10
-
 #define MAX_MESSAGE 5 // TODO : Maybe not needed
 
 // NOTE : Render coordinate (0, 0) starting from upper left corner
@@ -41,6 +39,13 @@
 #define MAP_BORDER_NS '\xBA'
 #define MAP_BORDER_WE '\xCD'
 
+// Message border
+#define MSG_BORDER_NE '\xC8'
+#define MSG_BORDER_NW '\xBC'
+#define MSG_BORDER_SE '\xC9'
+#define MSG_BORDER_SW '\xBB'
+#define MSG_BORDER_NS '\xBA'
+#define MSG_BORDER_WE '\xCD'
 
 // Tiles
 #define TILE_GRASS '\xB0'

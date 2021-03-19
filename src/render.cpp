@@ -10,14 +10,10 @@
 using namespace std;
 
 Render::Render(int offx, int offy, int msgoffx, int msgoffy, Map& target) : mapOffsetX(offx), mapOffsetY(offy), msgBoxOffsetX(msgoffx), msgBoxOffsetY(msgoffy) {
-    isEmptyMapBuffer = isEmptyMsgBuffer = true;
+    isEmptyMapBuffer = true;
     for (int i = 0; i < target.getSizeY(); i++)
         for (int j = 0; j < target.getSizeX(); j++)
             mapFrameBuffer[i][j] = '\0';
-
-    for (int i = 0; i < MSG_MAX_Y; i++) // TODO : Maybe delete
-        for (int j = 0; j < MSG_MAX_X; j++)
-            msgFrameBuffer[i][j] = '\0';
 }
 
 void Render::setCursorPosition(int x, int y) {
@@ -29,14 +25,14 @@ void Render::setCursorPosition(int x, int y) {
 
 void Render::drawMapBorder(Map &target) {
     // Left right border
-    for (int i = 0; i < target.getSizeY() + 2; i++) {
+    for (int i = mapOffsetY; i < mapOffsetY + target.getSizeY() + 1; i++) {
         setCursorPosition(mapOffsetX-1, i);
         cout << MAP_BORDER_NS;
         setCursorPosition(mapOffsetX+target.getSizeX(), i);
         cout << MAP_BORDER_NS;
     }
     // Top bottom border
-    for (int j = 0; j < target.getSizeX() + 2; j++) {
+    for (int j = mapOffsetX; j < mapOffsetX + target.getSizeX() + 1; j++) {
         setCursorPosition(j, mapOffsetY-1);
         cout << MAP_BORDER_WE;
         setCursorPosition(j, mapOffsetY+target.getSizeY());
@@ -61,9 +57,11 @@ void Render::drawMap(Map& target) {
             for (int j = 0; j < target.getSizeX(); j++) {
                 Entity* tempEntityPointer = target.getEntityAt(j, i);
                 if (tempEntityPointer != NULL) {
-                    // TODO : Get char from entity
-                    // mapFrameBuffer[i][j] != tempEntityPointer.getEntityChar()
-                    // cout <<
+                    if (mapFrameBuffer[i][j] != tempEntityPointer->getEntityChar()) {
+                        mapFrameBuffer[i][j] = tempEntityPointer->getEntityChar();
+                        setCursorPosition(j + mapOffsetX, i + mapOffsetY);
+                        cout << mapFrameBuffer[i][j];
+                    }
                 }
                 else {
                     mapFrameBuffer[i][j] = target.getTileTypeAt(j, i);
@@ -71,7 +69,6 @@ void Render::drawMap(Map& target) {
                     cout << mapFrameBuffer[i][j];
                 }
             }
-            cout << '\n';
         }
         drawMapBorder(target);
     }
@@ -80,8 +77,11 @@ void Render::drawMap(Map& target) {
             for (int j = 0; j < target.getSizeX(); j++) {
                 Entity* tempEntityPointer = target.getEntityAt(j, i);
                 if (tempEntityPointer != NULL) {
-                    // TODO : Get char from entity
-                    // mapFrameBuffer[i][j] != tempEntityPointer.getEntityChar()
+                    if (mapFrameBuffer[i][j] != tempEntityPointer->getEntityChar()) {
+                        mapFrameBuffer[i][j] = tempEntityPointer->getEntityChar();
+                        setCursorPosition(j + mapOffsetX, i + mapOffsetY);
+                        cout << mapFrameBuffer[i][j];
+                    }
                 }
                 else if (target.getTileTypeAt(j, i) != mapFrameBuffer[i][j]) {
                     mapFrameBuffer[i][j] = target.getTileTypeAt(j, i);
