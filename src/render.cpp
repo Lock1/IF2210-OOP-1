@@ -7,7 +7,13 @@
 #include "header/render.hpp"
 
 Render::Render(int offx, int offy, int msgoffx, int msgoffy) : mapOffsetX(offx), mapOffsetY(offy), msgBoxOffsetX(msgoffx), msgBoxOffsetY(msgoffy) {
-
+    isEmptyMapBuffer = isEmptyMsgBuffer = true;
+    for (int i = 0; i < MAP_MAX_X; i++)
+        for (int j = 0; j < MAP_MAX_Y; j++)
+            mapFrameBuffer[i][j] = '\0';
+    for (int i = 0; i < MSG_MAX_X; i++)
+        for (int j = 0; j < MSG_MAX_Y; j++)
+            msgFrameBuffer[i][j] = '\0';
 }
 
 void Render::drawMap(Map& target) {

@@ -5,6 +5,7 @@
 
 #include "config.hpp"
 #include "render.hpp"
+#include "messagebox.hpp"
 #include "entities/map.hpp"
 // TODO : Input Class
 class Engine {
@@ -12,6 +13,7 @@ class Engine {
         // TODO : Add variables
         Map map;
         Render renderer;
+        MessageBox messageBox;
     public:
         Engine();
         ~Engine();

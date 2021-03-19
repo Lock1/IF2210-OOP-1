@@ -24,6 +24,8 @@
 #define MSG_MAX_X 30
 #define MSG_MAX_Y 10
 
+#define MAX_MESSAGE 5
+
 // NOTE : Render coordinate (0, 0) starting from upper left corner
 #define MAP_OFFSET_X 1
 #define MAP_OFFSET_Y 1
