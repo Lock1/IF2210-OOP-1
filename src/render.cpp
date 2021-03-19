@@ -1,6 +1,6 @@
 // 13519214
 
-#include <iostream>
+#include "header/config.hpp"
 #include "header/entities/tile.hpp"
 #include "header/entities/map.hpp"
 #include "header/render.hpp"
@@ -27,60 +27,64 @@ void Render::setCursorPosition(int x, int y) {
     SetConsoleCursorPosition(hOut, coord);
 }
 
+void Render::drawMapBorder(Map &target) {
+    // Left right border
+    for (int i = 0; i < target.getSizeY() + 2; i++) {
+        setCursorPosition(mapOffsetX-1, i);
+        cout << MAP_BORDER_NS;
+        setCursorPosition(mapOffsetX+target.getSizeX(), i);
+        cout << MAP_BORDER_NS;
+    }
+    // Top bottom border
+    for (int j = 0; j < target.getSizeX() + 2; j++) {
+        setCursorPosition(j, mapOffsetY-1);
+        cout << MAP_BORDER_WE;
+        setCursorPosition(j, mapOffsetY+target.getSizeY());
+        cout << MAP_BORDER_WE;
+    }
+    // 4 Corner pieces
+    setCursorPosition(mapOffsetX-1, mapOffsetY-1);
+    cout << MAP_BORDER_SE;
+    setCursorPosition(mapOffsetX-1, mapOffsetY+target.getSizeY());
+    cout << MAP_BORDER_NE;
+    setCursorPosition(mapOffsetX+target.getSizeX(), mapOffsetY-1);
+    cout << MAP_BORDER_SW;
+    setCursorPosition(mapOffsetX+target.getSizeX(), mapOffsetY+target.getSizeY());
+    cout << MAP_BORDER_NW;
+    isEmptyMapBuffer = false;
+}
+
 void Render::drawMap(Map& target) {
     // TODO : Extra, maybe using static variable on Entity
     if (isEmptyMapBuffer) {
         for (int i = 0; i < target.getSizeY(); i++) {
             for (int j = 0; j < target.getSizeX(); j++) {
-                Entity* tempEntityPointer = target.getEntityAt(i, j);
+                Entity* tempEntityPointer = target.getEntityAt(j, i);
                 if (tempEntityPointer != NULL) {
                     // TODO : Get char from entity
                     // mapFrameBuffer[i][j] != tempEntityPointer.getEntityChar()
                     // cout <<
                 }
                 else {
-                    mapFrameBuffer[i][j] = target.getTileTypeAt(i, j);
+                    mapFrameBuffer[i][j] = target.getTileTypeAt(j, i);
                     setCursorPosition(j + mapOffsetX, i + mapOffsetY);
                     cout << mapFrameBuffer[i][j];
                 }
             }
             cout << '\n';
         }
-
-        // Left right border
-        for (int i = 0; i < target.getSizeY() + 2; i++) {
-            setCursorPosition(mapOffsetX-1, i);
-            cout << MAP_BORDER_NS;
-            setCursorPosition(mapOffsetX+target.getSizeX(), i);
-            cout << MAP_BORDER_NS;
-        }
-        // Top bottom border
-        for (int j = 0; j < target.getSizeX() + 2; j++) {
-            setCursorPosition(j, mapOffsetY-1);
-            cout << MAP_BORDER_WE;
-            setCursorPosition(j, mapOffsetY+target.getSizeY());
-            cout << MAP_BORDER_WE;
-        }
-        // 4 Corner pieces
-        setCursorPosition(mapOffsetX-1, mapOffsetY-1);
-        cout << MAP_BORDER_SE;
-        setCursorPosition(mapOffsetX-1, mapOffsetY+target.getSizeY());
-        cout << MAP_BORDER_NE;
-        setCursorPosition(mapOffsetX+target.getSizeX(), mapOffsetY-1);
-        cout << MAP_BORDER_SW;
-        setCursorPosition(mapOffsetX+target.getSizeX(), mapOffsetY+target.getSizeY());
-        cout << MAP_BORDER_NW;
+        drawMapBorder(target);
     }
     else {
         for (int i = 0; i < target.getSizeY(); i++) {
             for (int j = 0; j < target.getSizeX(); j++) {
-                Entity* tempEntityPointer = target.getEntityAt(i, j);
+                Entity* tempEntityPointer = target.getEntityAt(j, i);
                 if (tempEntityPointer != NULL) {
                     // TODO : Get char from entity
                     // mapFrameBuffer[i][j] != tempEntityPointer.getEntityChar()
                 }
-                else if (target.getTileTypeAt(i, j) != mapFrameBuffer[i][j]) {
-                    mapFrameBuffer[i][j] = target.getTileTypeAt(i, j);
+                else if (target.getTileTypeAt(j, i) != mapFrameBuffer[i][j]) {
+                    mapFrameBuffer[i][j] = target.getTileTypeAt(j, i);
                     setCursorPosition(j + mapOffsetX, i + mapOffsetY);
                     cout << mapFrameBuffer[i][j];
                 }

@@ -9,6 +9,10 @@ Tile::~Tile() {
 
 }
 
+void Tile::setTileEntity(Entity *entity) {
+    entityPtr = entity;
+}
+
 TileType Tile::getTileType() {
     return tileType;
 }

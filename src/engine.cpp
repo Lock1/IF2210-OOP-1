@@ -21,7 +21,8 @@ Engine::Engine() : map(), renderer(MAP_OFFSET_X, MAP_OFFSET_Y, MESSAGE_OFFSET_X,
 void Engine::startGame() {
     // TODO : Put game here
     system(CLEAR_SCREEN_CMD);
-    renderer.drawMap(map);
+    while (true)
+        renderer.drawMap(map);
 }
 
 Engine::~Engine() {

@@ -4,16 +4,20 @@
 #include <vector>
 
 Map::Map() : sizeX(MAP_MAX_X), sizeY(MAP_MAX_Y) {
-    for (int i = 0; i < MAP_MAX_Y; i++) {
+    for (int i = 0; i < sizeX; i++) {
         std::vector<Tile> column;
-        for (int j = 0; j < MAP_MAX_X; j++) {
-            if (i > SEA_STARTING_Y && j > SEA_STARTING_X)
+        for (int j = 0; j < sizeY; j++) {
+            if (i > SEA_STARTING_X && j > SEA_STARTING_Y)
                 column.push_back(Tile(i, j, Sea));
             else
                 column.push_back(Tile(i, j, Grass));
         }
         tileMatrix.push_back(column);
     }
+}
+
+void Map::setTileEntity(int x, int y, Entity *newEntity) {
+    tileMatrix[x][y].setTileEntity(newEntity);
 }
 
 int Map::getSizeX() {

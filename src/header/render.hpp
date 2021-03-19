@@ -17,7 +17,7 @@ class Render {
         const int msgBoxOffsetX;
         const int msgBoxOffsetY;
 
-        unsigned char mapFrameBuffer[MAP_MAX_Y][MAP_MAX_X];
+        char mapFrameBuffer[MAP_MAX_Y][MAP_MAX_X];
         // Map Frame buffer
         char msgFrameBuffer[MSG_MAX_X][MSG_MAX_Y]; // TODO : Maybe not needed
         // Message Frame buffer
@@ -39,6 +39,8 @@ class Render {
         // #include <stdlib.h>		// For random spread attack
         void setCursorPosition(int x, int y);
 
+        void drawMapBorder(Map& target);
+        // Drawing map border
 
     public:
         Render(int offx, int offy, int msgoffx, int msgoffy, Map& target);

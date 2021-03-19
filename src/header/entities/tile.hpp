@@ -8,7 +8,7 @@
 #include "entity.hpp"
 #include "position.hpp"
 
-enum TileType {
+enum TileType : char {
     Grass = TILE_GRASS,
     Sea = TILE_SEA
 };
