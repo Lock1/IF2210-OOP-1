@@ -53,7 +53,7 @@ void Engine::startGame() {
     // delete rand;
 }
 
-void Engine::evaluteInput() {
+bool Engine::evaluteInput() {
     InputType inputKey = userInput.getUserInput();
     switch (inputKey) {
         case EscKey:
@@ -65,6 +65,7 @@ void Engine::evaluteInput() {
                     map.setTileEntity(player.getPos(), NULL);
                     player.getPosRef() += Position(0, -1);
                     map.setTileEntity(player.getPos(), &player);
+                    return true;
                 }
             }
             break;
@@ -74,6 +75,7 @@ void Engine::evaluteInput() {
                     map.setTileEntity(player.getPos(), NULL);
                     player.getPosRef() += Position(0, 1);
                     map.setTileEntity(player.getPos(), &player);
+                    return true;
                 }
             }
             break;
@@ -83,6 +85,7 @@ void Engine::evaluteInput() {
                     map.setTileEntity(player.getPos(), NULL);
                     player.getPosRef() += Position(-1, 0);
                     map.setTileEntity(player.getPos(), &player);
+                    return true;
                 }
             }
             break;
@@ -92,8 +95,15 @@ void Engine::evaluteInput() {
                     map.setTileEntity(player.getPos(), NULL);
                     player.getPosRef() += Position(1, 0);
                     map.setTileEntity(player.getPos(), &player);
+                    return true;
                 }
             }
             break;
     }
+    return false;
 }
+
+void Engine::evaluteTick() {
+
+}
+// Evaluating next tick

@@ -1,5 +1,6 @@
 // Map class
 // Can be treated as "database of tile"
+// NOTE : Map does not care with heap object
 #ifndef MAP_HPP
 #define MAP_HPP
 

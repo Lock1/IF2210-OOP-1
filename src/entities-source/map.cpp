@@ -16,6 +16,16 @@ Map::Map() : sizeX(MAP_MAX_X), sizeY(MAP_MAX_Y) {
     }
 }
 
+void Map::wildEngimonRandomMove() {
+    // for (int i = 0; i < sizeX; i++) {
+    //     for (int j = 0; j < sizeY; j++) {
+    //
+    //     }
+    // }
+}
+
+
+
 void Map::setTileEntity(int x, int y, Entity *newEntity) {
     tileMatrix[x][y].setTileEntity(newEntity);
 }

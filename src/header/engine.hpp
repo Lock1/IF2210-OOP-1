@@ -21,8 +21,11 @@ class Engine {
         bool isEngineRunning;
         Player player;
         std::vector<Engimon*> engimonList;
-        void evaluteInput();
-        // Evaluating input from PlayerInput class
+
+        bool evaluteInput();
+        // Evaluating input from PlayerInput class, if evaluated, return true
+        void evaluteTick();
+        // Evaluating next tick
     public:
         Engine();
         // Constructor
