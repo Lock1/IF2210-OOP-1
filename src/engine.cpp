@@ -25,14 +25,16 @@ void Engine::startGame() {
     int i = 0;
 
     map.setTileEntity(player.getPos(), &player);
+    userInput.startReadInput();
     while (isEngineRunning) {
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
-        std::this_thread::sleep_for(std::chrono::milliseconds(60));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         evaluteInput();
         messageList.addMessage(to_string(i));
         i++;
     }
+    userInput.stopReadInput();
     // Entity *rand = new Entity(3, 3, EntityPlayer, '#');
     // map.setTileEntity(3, 3, rand);
     // map.setTileEntity(3, 3, NULL);

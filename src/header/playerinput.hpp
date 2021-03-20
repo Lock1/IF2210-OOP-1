@@ -1,4 +1,5 @@
 // 13519214
+// Multi-threading player input
 #ifndef PLAYERINPUT_HPP
 #define PLAYERINPUT_HPP
 
@@ -20,12 +21,22 @@ enum InputType {
 
 class PlayerInput {
     private:
+        std::thread *inputThread;
         std::queue<InputType> inputBuffer;
         const unsigned int maxInputBuffer;
+        bool isRunning;
 
+        void inputLoop();
+        // Internal loop for reading input
     public:
         PlayerInput(unsigned int maxBuf);
         // User Constructor
+        ~PlayerInput();
+
+        void startReadInput();
+        // Start input reading
+        void stopReadInput();
+        // Stop input reading
 
         InputType getUserInput();
         // Get InputType from stdin
