@@ -9,6 +9,8 @@
 #include "playerinput.hpp"
 #include "entities/map.hpp"
 #include "entities/player.hpp"
+#include "entities/engimon.hpp"
+#include <vector>
 
 class Engine {
     private:
@@ -18,6 +20,7 @@ class Engine {
         PlayerInput userInput;
         bool isEngineRunning;
         Player player;
+        std::vector<Engimon*> engimonList;
         void evaluteInput();
         // Evaluating input from PlayerInput class
     public:

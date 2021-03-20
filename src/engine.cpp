@@ -5,6 +5,7 @@
 #include "header/entities/map.hpp"
 #include "header/entities/player.hpp"
 #include "header/entities/engimon.hpp"
+#include "header/entities/attributes/elementtype.hpp"
 #include <iostream>
 #include <string>
 #include <chrono>		// Time and tick system
@@ -26,7 +27,13 @@ void Engine::startGame() {
     int i = 0;
 
     map.setTileEntity(player.getPos(), &player);
+    // DEBUG
+    engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x'));
+    map.setTileEntity(engimonList[0]->getPos(), engimonList[0]);
+
     userInput.startReadInput();
+    // TODO : Tick
+    // TODO : Vector for saving engimon
     while (isEngineRunning) {
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
