@@ -19,6 +19,7 @@ void PlayerInput::inputLoop() {
     while (isRunning) {
         std::this_thread::sleep_for(std::chrono::milliseconds(INPUT_DELAY_MS));
         if (inputBuffer.size() < maxInputBuffer) {
+            // Critical section, blocking input buffer processing
             inputLock.lock();
             if ((GetKeyState(VK_UP) & 0x8000) || (GetKeyState('W') & 0x8000))
                 inputBuffer.push(Up);
@@ -54,6 +55,8 @@ void PlayerInput::stopReadInput() {
 }
 
 InputType PlayerInput::getUserInput() {
+    // Critical section, blocking input buffer from changing
+    // Until empty() and pop() method completed or return EmptyInput
     inputLock.lock();
     if (!inputBuffer.empty()) {
         InputType frontQueueInput = inputBuffer.front();

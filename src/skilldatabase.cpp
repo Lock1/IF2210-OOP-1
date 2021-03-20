@@ -2,22 +2,15 @@
 #include "header/skilldatabase.hpp"
 #include "header/config.hpp"
 
-SkillDatabase::SkillDatabase() {
-	skillList = new Skill[MAX_SKILL_LIST];
-	skillCount = 0;
+SkillDatabase::SkillDatabase() : skillDatabase() {
+
 }
 
-SkillDatabase::~SkillDatabase() {
-	delete[] skillList;
+void SkillDatabase::addSkill(Skill& newSkill) {
+	skillList.push_back(newSkill);
 }
 
-//void SkillDatabase::loadSkillDatabase() {}
-
-void SkillDatabase::addSkill(const Skill& newSkill) {
-	skillList[skillCount] = newSkill;
-	skillCount++;
-}
-
+// TODO : Engimon
 bool SkillDatabase::isCompatible(Engimon engimonTarget, int skillID) {
 	bool found = false;
 	Skill searchedSkill;
@@ -33,5 +26,5 @@ bool SkillDatabase::isCompatible(Engimon engimonTarget, int skillID) {
     bool compatible = searchedSkill.isElementCompatible(engimonTarget.getElement());
     return found && compatible;
 
-     
+
 }
