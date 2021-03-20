@@ -7,7 +7,8 @@
 #define CLEAR_SCREEN_CMD "cls"
 
 // Common configuration
-#define INPUT_BUFFER_COUNT 3
+#define INPUT_BUFFER_COUNT 4
+#define INPUT_DELAY_MS 100
 
 // Map
 #define SEA_STARTING_X 35
