@@ -7,7 +7,7 @@
 
 #include "entities/map.hpp"
 #include "message.hpp"
-#include "config.hpp"
+#include <vector>
 
 class Render {
     private:
@@ -17,7 +17,10 @@ class Render {
         const int msgOffsetX;
         const int msgOffsetY;
 
-        char mapFrameBuffer[MAP_MAX_Y][MAP_MAX_X];
+        const unsigned int mapSizeX;
+        const unsigned int mapSizeY;
+
+        std::vector<std::vector<char>> mapFrameBuffer;
         // Map Frame buffer
         bool isEmptyMapBuffer;
         // Flag whether buffer is already filled or not

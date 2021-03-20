@@ -15,7 +15,8 @@ using namespace std;
 
 Engine::Engine() : map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), messageList(MAX_MESSAGE, MSG_MAX_X),
-        isEngineRunning(true), renderer(MAP_OFFSET_X, MAP_OFFSET_Y, MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y, map) {
+        renderer(MAP_OFFSET_X, MAP_OFFSET_Y, MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y, map) {
+    isEngineRunning = true;
     // TODO : Put private variable preparation here
 }
 

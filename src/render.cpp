@@ -4,18 +4,25 @@
 #include "header/entities/tile.hpp"
 #include "header/entities/map.hpp"
 #include "header/render.hpp"
+#include "header/config.hpp" // TODO : Remove
 #include <Windows.h>
 #include <iostream>
 #include <queue>
+#include <vector>
 #include <string>
 
 using namespace std;
 
-Render::Render(int offx, int offy, int msgoffx, int msgoffy, Map& target) : mapOffsetX(offx), mapOffsetY(offy), msgOffsetX(msgoffx), msgOffsetY(msgoffy) {
+Render::Render(int offx, int offy, int msgoffx, int msgoffy, Map& target) : mapOffsetX(offx), mapOffsetY(offy),
+        msgOffsetX(msgoffx), msgOffsetY(msgoffy), mapSizeX(target.getSizeX()), mapSizeY(target.getSizeY()) {
     isEmptyMapBuffer = true, isMessageBorderDrawn = false;
-    for (int i = 0; i < target.getSizeY(); i++)
-        for (int j = 0; j < target.getSizeX(); j++)
-            mapFrameBuffer[i][j] = '\0';
+
+    for (unsigned int i = 0; i < mapSizeY; i++) {
+        std::vector<char> mapRow;
+        for (unsigned int j = 0; j < mapSizeX; j++)
+            mapRow.push_back('\0');
+        mapFrameBuffer.push_back(mapRow);
+    }
 }
 
 void Render::setCursorPosition(int x, int y) {
@@ -119,7 +126,7 @@ void Render::drawMap(Map& target) {
             }
         }
     }
-    
+
     setCursorPosition(CURSOR_REST_X, CURSOR_REST_Y);
 }
 
