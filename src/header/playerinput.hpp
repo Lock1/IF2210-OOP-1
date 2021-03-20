@@ -5,6 +5,7 @@
 
 #include <queue>
 #include <thread>
+#include <mutex>
 
 enum InputType {
     Up,
@@ -22,6 +23,7 @@ enum InputType {
 class PlayerInput {
     private:
         std::thread *inputThread;
+        std::mutex inputLock;
         std::queue<InputType> inputBuffer;
         const unsigned int maxInputBuffer;
         bool isRunning;

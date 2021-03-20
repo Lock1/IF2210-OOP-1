@@ -5,8 +5,9 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <mutex>
 
-PlayerInput::PlayerInput(unsigned int maxBuf) : maxInputBuffer(maxBuf), inputThread(NULL), isRunning(false) {
+PlayerInput::PlayerInput(unsigned int maxBuf) : maxInputBuffer(maxBuf), inputLock(), inputThread(NULL), isRunning(false) {
 
 }
 
@@ -18,6 +19,7 @@ void PlayerInput::inputLoop() {
     while (isRunning) {
         std::this_thread::sleep_for(std::chrono::milliseconds(INPUT_DELAY_MS));
         if (inputBuffer.size() < maxInputBuffer) {
+            inputLock.lock();
             if ((GetKeyState(VK_UP) & 0x8000) || (GetKeyState('W') & 0x8000))
                 inputBuffer.push(Up);
             if ((GetKeyState(VK_DOWN) & 0x8000) || (GetKeyState('S') & 0x8000))
@@ -36,6 +38,7 @@ void PlayerInput::inputLoop() {
                 inputBuffer.push(Number4);
             if ((GetKeyState(VK_ESCAPE) & 0x8000))
                 inputBuffer.push(EscKey);
+            inputLock.unlock();
         }
     }
 }
@@ -51,11 +54,15 @@ void PlayerInput::stopReadInput() {
 }
 
 InputType PlayerInput::getUserInput() {
+    inputLock.lock();
     if (!inputBuffer.empty()) {
         InputType frontQueueInput = inputBuffer.front();
         inputBuffer.pop();
+        inputLock.unlock();
         return frontQueueInput;
     }
-    else
+    else {
+        inputLock.unlock();
         return EmptyInput;
+    }
 }
