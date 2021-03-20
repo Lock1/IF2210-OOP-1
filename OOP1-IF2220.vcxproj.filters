@@ -96,4 +96,9 @@
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\header\database">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "header/playerinput.hpp"
 #include "header/entities/map.hpp"
 #include "header/entities/player.hpp"
+#include "header/entities/engimon.hpp"
 #include <iostream>
 #include <string>
 #include <chrono>		// Time and tick system

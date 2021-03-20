@@ -8,7 +8,7 @@
 class Skill {
     private:
         int skillID;
-        string skillName;
+        std::string skillName;
         int basePower;
         int masteryLevel;
         ElementType skillElement1;
@@ -17,7 +17,7 @@ class Skill {
 
     public:
         // Skill database constructor
-        Skill(int sID, int base, const string& name, ElementType type1, ElementType type2);
+        Skill(int sID, int base, const std::string& name, ElementType type1, ElementType type2);
         // Optional second element, if type2 == NoElement, isMultiElement = false
 
         int getMasteryLevel();

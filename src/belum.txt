@@ -1,39 +1,6 @@
 
 
 
-// Engimon
-// Use #include <string>
-// Need species database
-class Engimon : public Entity {
-    private:
-        int EngimonID;
-        string Name;
-        string parentName; // TODO : Species (?)
-        // ii.    Parent Names & Species
-        // iii.    Skill/kemampuan(maksimal 4)
-        ElementType engimonElement1;
-        ElementType engimonElement2;
-        int Level;
-        int Experience;
-        int CumulativeExperience;
-        bool isWild;
-        bool isMultiElement;
-        string InteractionDescription;
-    public:
-        Engimon(int newID, string newName, string); // TODO : ??
-        ~Engimon();
-
-        bool move() override;
-        bool xpGain(int gainedXP); // If Levelup -> return true, else false
-        bool isMaxCXP(); // If over CumulativeExperience, return true
-        void addSkill(Skill newSkill);
-        bool deleteskill(Skill targetSkill);
-        void randomMove(); // Random move, only wild pokemon
-        string playerInteract(); // Print description, only non-wild pokemon
-        // --- Const ---
-        // 1. Minimal 1 species for every type and combination element
-};
-
 
 
 // Inventory <Template>

@@ -45,6 +45,9 @@
     <ClInclude Include="src\header\render.hpp" />
     <ClInclude Include="src\header\skilldatabase.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\header\database" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
