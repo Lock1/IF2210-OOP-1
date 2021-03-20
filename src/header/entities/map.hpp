@@ -12,10 +12,12 @@
 class Map {
     private:
         std::vector<std::vector<Tile>> tileMatrix;
-        int sizeX;
-        int sizeY;
+        const unsigned int sizeX;
+        const unsigned int sizeY;
+        const unsigned int seaStartX;
+        const unsigned int seaStartY;
     public:
-        Map();
+        Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY);
 
         int getSizeX();
         int getSizeY();

@@ -1,13 +1,12 @@
 // 13519214
 #include "../header/entities/map.hpp"
-#include "../header/config.hpp"
 #include <vector>
 
-Map::Map() : sizeX(MAP_MAX_X), sizeY(MAP_MAX_Y) {
-    for (int i = 0; i < sizeX; i++) {
+Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY) : sizeX(sX), sizeY(sY), seaStartX(seaX), seaStartY(seaY) {
+    for (unsigned int i = 0; i < sizeX; i++) {
         std::vector<Tile> column;
-        for (int j = 0; j < sizeY; j++) {
-            if (i > SEA_STARTING_X && j > SEA_STARTING_Y)
+        for (unsigned int j = 0; j < sizeY; j++) {
+            if (i > seaStartX && j > seaStartY)
                 column.push_back(Tile(i, j, Sea));
             else
                 column.push_back(Tile(i, j, Grass));

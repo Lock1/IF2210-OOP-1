@@ -1,10 +1,9 @@
 // 13519214
 #include "header/message.hpp"
-#include "header/config.hpp"
 #include <string>
 #include <queue>
 
-Message::Message() : maxQueue(MAX_MESSAGE), maxStringLength(MSG_MAX_X) {
+Message::Message(unsigned int maxBuf, unsigned int maxLength) : maxQueue(maxBuf), maxStringLength(maxLength) {
 
 }
 

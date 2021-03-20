@@ -26,12 +26,13 @@ class PlayerInput {
         std::mutex inputLock;
         std::queue<InputType> inputBuffer;
         const unsigned int maxInputBuffer;
+        const unsigned int inputDelayMillisecond;
         bool isRunning;
 
         void inputLoop();
         // Internal loop for reading input
     public:
-        PlayerInput(unsigned int maxBuf);
+        PlayerInput(unsigned int maxBuf, unsigned int inpDelay);
         // User Constructor
         ~PlayerInput();
 

@@ -1,13 +1,12 @@
 // PlayerInput class
 #include "header/playerinput.hpp"
-#include "header/config.hpp"
 #include <Windows.h>
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <mutex>
 
-PlayerInput::PlayerInput(unsigned int maxBuf) : maxInputBuffer(maxBuf), inputLock(), inputThread(NULL), isRunning(false) {
+PlayerInput::PlayerInput(unsigned int maxBuf, unsigned int inpDelay) : inputDelayMillisecond(inpDelay), maxInputBuffer(maxBuf), inputLock(), inputThread(NULL), isRunning(false) {
 
 }
 
@@ -17,7 +16,7 @@ PlayerInput::~PlayerInput() {
 
 void PlayerInput::inputLoop() {
     while (isRunning) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(INPUT_DELAY_MS));
+        std::this_thread::sleep_for(std::chrono::milliseconds(inputDelayMillisecond));
         if (inputBuffer.size() < maxInputBuffer) {
             // Critical section, blocking input buffer processing
             inputLock.lock();
