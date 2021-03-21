@@ -54,6 +54,9 @@
     <ClCompile Include="src\entities-source\player.cpp">
       <Filter>Source Files\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\entities-source\engimon.cpp">
+      <Filter>Source Files\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp">
@@ -95,5 +98,10 @@
     <ClInclude Include="src\header\entities\player.hpp">
       <Filter>Header Files\Entities</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\header\database">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

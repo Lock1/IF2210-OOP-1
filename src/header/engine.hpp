@@ -9,17 +9,26 @@
 #include "playerinput.hpp"
 #include "entities/map.hpp"
 #include "entities/player.hpp"
+#include "entities/engimon.hpp"
+#include "entities/position.hpp"
+#include "entities/direction.hpp"
+#include <vector>
 
 class Engine {
     private:
         Map map;
-        Render renderer;
         Message messageList;
         PlayerInput userInput;
-        bool isEngineRunning;
         Player player;
-        void evaluteInput();
-        // Evaluating input from PlayerInput class
+        Render renderer;
+        bool isEngineRunning;
+        std::vector<Engimon*> engimonList;
+
+        bool evaluteInput();
+        // Evaluating input from PlayerInput class, if evaluated, return true
+        void evaluteTick();
+        // Evaluating next tick
+
     public:
         Engine();
         // Constructor

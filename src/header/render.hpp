@@ -7,17 +7,58 @@
 
 #include "entities/map.hpp"
 #include "message.hpp"
-#include "config.hpp"
+#include <vector>
+
+class Box {
+    // Data class for drawing box
+    public:
+        char cornerBottomLeft;
+        char cornerBottomRight;
+        char cornerTopLeft;
+        char cornerTopRight;
+        char lineVertical;
+        char lineHorizontal;
+        unsigned int sizeX;
+        unsigned int sizeY;
+
+        unsigned int offsetX;
+        unsigned int offsetY;
+};
 
 class Render {
     private:
-        const int mapOffsetX;
-        const int mapOffsetY;
+        // Offset and size values for drawing
+        unsigned int mapOffsetX;
+        unsigned int mapOffsetY;
 
-        const int msgOffsetX;
-        const int msgOffsetY;
+        unsigned int msgOffsetX;
+        unsigned int msgOffsetY;
 
-        char mapFrameBuffer[MAP_MAX_Y][MAP_MAX_X];
+        unsigned int cursorRestX;
+        unsigned int cursorRestY;
+
+        const unsigned int mapSizeX;
+        const unsigned int mapSizeY;
+
+        const unsigned int msgSizeX;
+        const unsigned int msgSizeY;
+
+        // Character list for drawing border
+        char mapBorderCornerBottomLeft;
+        char mapBorderCornerBottomRight;
+        char mapBorderCornerTopLeft;
+        char mapBorderCornerTopRight;
+        char mapBorderLineVertical;
+        char mapBorderLineHorizontal;
+
+        char msgBorderCornerBottomLeft;
+        char msgBorderCornerBottomRight;
+        char msgBorderCornerTopLeft;
+        char msgBorderCornerTopRight;
+        char msgBorderLineVertical;
+        char msgBorderLineHorizontal;
+
+        std::vector<std::vector<char>> mapFrameBuffer;
         // Map Frame buffer
         bool isEmptyMapBuffer;
         // Flag whether buffer is already filled or not
@@ -26,15 +67,25 @@ class Render {
 
         void setCursorPosition(int x, int y);
 
-        void drawMapBorder(Map& target);
+        // Border method, size need to be initialize first
+        void drawBox(Box& target);
+
+
+        void drawMapBorder();
         // Drawing map border
 
-        void drawMsgBorder(Message& target);
+        void drawMsgBorder();
         // Drawing message border
     public:
-        Render(int offx, int offy, int msgoffx, int msgoffy, Map& target);
+        Render(Map& target, Message& msgTarget);
         // User Constructor
 
+        // Setup
+        void setCursorRestLocation(unsigned int x, unsigned int y);
+        // Set cursor location after drawing
+        void setMapOffset(unsigned int offx, unsigned int offy);
+        void setMessageBoxOffset(unsigned int msgoffx, unsigned int msgoffy);
+        // Offset setting
 
         // -- Draw Method --
         // Use double buffering

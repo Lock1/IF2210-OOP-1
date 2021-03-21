@@ -10,6 +10,10 @@ Entity::Entity(int x, int y, EntityID eID, char eChar) : entityID(eID), currentP
     entityCount++;
 }
 
+Entity::Entity(Position pos, EntityID eID, char eChar) : entityID(eID), currentPosition(pos.getX(), pos.getY()), entityChar(eChar) {
+    entityCount++;
+}
+
 Entity::~Entity() {
     entityCount--;
 }

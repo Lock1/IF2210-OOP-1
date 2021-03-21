@@ -1,20 +1,28 @@
 // Map class
 // Can be treated as "database of tile"
+// NOTE : Map does not care with heap object
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <vector>
+#include "direction.hpp"
 #include "position.hpp"
 #include "entity.hpp"
 #include "tile.hpp"
+#include <vector>
+
 
 class Map {
     private:
         std::vector<std::vector<Tile>> tileMatrix;
-        int sizeX;
-        int sizeY;
+        const unsigned int sizeX;
+        const unsigned int sizeY;
+        const unsigned int seaStartX;
+        const unsigned int seaStartY;
+        const unsigned short int randomEngimonMoveProbability;
+        // Probability in percent, default value is 15%
+
     public:
-        Map();
+        Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY);
 
         int getSizeX();
         int getSizeY();
@@ -38,6 +46,9 @@ class Map {
         TileType getTileTypeAt(int x, int y);
         TileType getTileTypeAt(Position pos);
         // Get Tile ID at index located at position
+
+        void moveEntity(Position pos, Direction dir);
+        // Move entity at map to target direction without checking
 };
 
 #endif

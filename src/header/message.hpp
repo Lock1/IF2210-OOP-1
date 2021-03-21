@@ -11,8 +11,9 @@ class Message {
         std::queue<std::string> messageQueue;
         const unsigned int maxQueue;
         const unsigned int maxStringLength;
+
     public:
-        Message();
+        Message(unsigned int maxBuf, unsigned int maxLength);
         // Message Constructor
 
         void addMessage(std::string newMsg);

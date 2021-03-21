@@ -22,6 +22,7 @@ class Entity {
 
     public:
         Entity(int x, int y, EntityID eID, char eChar);
+        Entity(Position pos, EntityID eID, char eChar);
         // User Constructor
         ~Entity();
         // Destructor

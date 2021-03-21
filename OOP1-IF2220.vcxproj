@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp" />
+    <ClCompile Include="src\entities-source\engimon.cpp" />
     <ClCompile Include="src\entities-source\entity.cpp" />
     <ClCompile Include="src\entities-source\map.cpp" />
     <ClCompile Include="src\entities-source\player.cpp" />
@@ -44,6 +45,9 @@
     <ClInclude Include="src\header\playerinput.hpp" />
     <ClInclude Include="src\header\render.hpp" />
     <ClInclude Include="src\header\skilldatabase.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\header\database" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

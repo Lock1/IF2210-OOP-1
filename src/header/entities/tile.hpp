@@ -4,13 +4,12 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include "../config.hpp"
 #include "entity.hpp"
 #include "position.hpp"
 
 enum TileType : char {
-    Grass = TILE_GRASS,
-    Sea = TILE_SEA
+    Grass = '\xB1',
+    Sea = '\xB0'
 };
 
 class Tile : public Position {
