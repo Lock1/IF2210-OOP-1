@@ -5,16 +5,21 @@
 #include "../header/entities/tile.hpp"
 
 
-Engimon::Engimon(Position pos, ElementType type1, char icon, bool wild) : Entity(pos, EntityEngimon, icon),
-        engimonElement1(type1) {
-    isWild = wild;
-}
+//Engimon::Engimon(Position pos, ElementType type1, char icon, bool wild) : Entity(pos, EntityEngimon, icon),
+//        engimonElement1(type1) {
+//    isWild = wild;
+//}
 // WARNING : Basic, only for debugging
 
 // Engimon::Engimon(const Engimon& species) {
 //
 // }
 // TODO : Get from database
+
+Engimon::Engimon(const Species& species, bool wild, Position pos) : Species(species) {
+    this->isWild = wild;
+    this->currentPosition = pos;
+}
 
 
 bool Engimon::isTileCompatible(TileType type) {
