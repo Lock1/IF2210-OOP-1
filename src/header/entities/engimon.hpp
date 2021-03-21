@@ -8,20 +8,25 @@
 #include "attributes/skill.hpp"
 #include "tile.hpp"
 #include "entity.hpp"
+#include "species.hpp"
 #include <string>
 #include <vector>
 #include <set>
 
-// TODO : Species
-
-class Engimon : public Entity {
+class Engimon : public Entity, Species {
     private:
         // int EngimonID;
         // std::string Name;
         // std::string parentName; // TODO : Species (?)
         // ii.    Parent Names & Species
+        
         // std::vector<Skill> learnedSkill;
+
+        vector<Species> parentSpecies;
+        vector<std::string> parentNames;
+
         std::set<ElementType> engimonElement;
+
         // int Level;
         // int Experience;
         // int CumulativeExperience;
@@ -32,8 +37,8 @@ class Engimon : public Entity {
         bool isTileCompatible(TileType type); // TODO : Multiple element
         // Tile compatibility checking
     public:
-        Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
-        Engimon(const Engimon& species, bool wild);                     // TODO : Get from database
+        // Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
+        Engimon(const Species& species, bool wild, Position pos);   // TODO : Get from database
 
         bool isMoveLocationValid(Tile &target) override;
         bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false

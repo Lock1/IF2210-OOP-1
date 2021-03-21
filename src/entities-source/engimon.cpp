@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 Engimon::Engimon(Position pos, ElementType type1, char icon, bool wild) : Entity(pos, EntityEngimon, icon) {
     isWild = wild;
     engimonElement.insert(type1);
@@ -18,9 +19,17 @@ Engimon::Engimon(Position pos, ElementType type1, char icon, bool wild) : Entity
 // }
 // TODO : Get from database
 
+
+Engimon::Engimon(const Species& species, bool wild, Position pos) : Species(species) {
+    this->isWild = wild;
+    this->currentPosition = pos;
+}
+
+
 set<ElementType> Engimon::getElement() {
     return engimonElement;
 }
+
 
 bool Engimon::isTileCompatible(TileType type) {
     bool isAbleToTraverseSea = (engimonElement.find(Water) != engimonElement.end()) || (engimonElement.find(Ice) != engimonElement.end());
