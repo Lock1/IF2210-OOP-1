@@ -25,15 +25,15 @@ class Engimon : public Entity {
         // int Level;
         // int Experience;
         // int CumulativeExperience;
-        // bool isWild;
+        bool isWild;
         // bool isMultiElement;
         // std::string InteractionDescription;
 
         bool isTileCompatible(TileType type); // TODO : Multiple element
         // Tile compatibility checking
     public:
-        Engimon(Position pos, ElementType type, char icon);         // WARNING : Basic, only for debugging
-        Engimon(const Engimon& species);                            // TODO : Get from database
+        Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
+        Engimon(const Engimon& species, bool wild);                     // TODO : Get from database
 
         bool isMoveLocationValid(Tile &target) override;            // TODO : Add
         bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false
@@ -41,6 +41,7 @@ class Engimon : public Entity {
         bool addSkill(Skill& newSkill);                             // Only add if skill slot enough
         bool deleteskill(Skill& targetSkill);
 
+        bool isWildEngimon();
         std::string playerInteract();                               // Print description, only non-wild pokemon
 };
 

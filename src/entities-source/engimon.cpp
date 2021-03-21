@@ -5,8 +5,9 @@
 #include "../header/entities/tile.hpp"
 
 
-Engimon::Engimon(Position pos, ElementType type1, char icon) : Entity(pos, EntityEngimon, icon), engimonElement1(type1) {
-
+Engimon::Engimon(Position pos, ElementType type1, char icon, bool wild) : Entity(pos, EntityEngimon, icon),
+        engimonElement1(type1) {
+    isWild = wild;
 }
 // WARNING : Basic, only for debugging
 
@@ -25,9 +26,13 @@ bool Engimon::isTileCompatible(TileType type) {
         return false;
 }
 
-bool Engimon::isMoveLocationValid(Tile &target) {
+bool Engimon::isMoveLocationValid(Tile& target) {
     if (target.getEntity() == NULL && isTileCompatible(target.getTileType()))
-        return false;
-    else
         return true;
+    else
+        return false;
+}
+
+bool Engimon::isWildEngimon() {
+    return isWild;
 }

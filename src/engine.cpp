@@ -37,8 +37,12 @@ void Engine::startGame() {
 
     map.setTileEntity(player.getPos(), &player);
     // DEBUG
-    engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x'));
+    engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x', true));
+    engimonList.push_back(new Engimon(Position(40, 20), Water, 'a', true));
+    engimonList.push_back(new Engimon(Position(25, 15), Ground, 'b', false));
     map.setTileEntity(engimonList[0]->getPos(), engimonList[0]);
+    map.setTileEntity(engimonList[1]->getPos(), engimonList[1]);
+    map.setTileEntity(engimonList[2]->getPos(), engimonList[2]);
 
 
     userInput.startReadInput();
@@ -48,7 +52,8 @@ void Engine::startGame() {
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        evaluteInput();
+        if (evaluteInput())
+            evaluteTick();
         messageList.addMessage(to_string(i));
         i++;
     }
@@ -62,6 +67,7 @@ bool Engine::evaluteInput() {
             isEngineRunning = false;
             break;
         case Up:
+            // TODO : Interaction
             if (player.getPos().getY() > 0) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()-1))) {
                     map.moveEntity(player.getPos(), North);
@@ -99,4 +105,5 @@ bool Engine::evaluteInput() {
 
 void Engine::evaluteTick() {
     // TODO : Add here
+    map.wildEngimonRandomMove();
 }

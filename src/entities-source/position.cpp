@@ -24,10 +24,11 @@ const Position& Position::operator=(const Position &pos2) {
     return (*this);
 }
 
-const Position& Position::operator+(const Position &pos2) {
-    posX += pos2.posX;
-    posY += pos2.posY;
-    return (*this);
+Position Position::operator+(const Position &pos2) {
+    Position newPos = Position(this->posX, this->posY);
+    newPos.posX += pos2.posX;
+    newPos.posY += pos2.posY;
+    return newPos;
 }
 
 const Position& Position::operator+=(const Position &pos2) {
@@ -43,10 +44,11 @@ const Position& Position::operator=(const Tile &pos2) {
     return (*this);
 }
 
-const Position& Position::operator+(const Tile &pos2) {
-    posX += pos2.posX;
-    posY += pos2.posY;
-    return (*this);
+Position Position::operator+(const Tile &pos2) {
+    Position newPos = Position(this->posX, this->posY);
+    newPos.posX += pos2.posX;
+    newPos.posY += pos2.posY;
+    return newPos;
 }
 
 const Position& Position::operator+=(const Tile &pos2) {

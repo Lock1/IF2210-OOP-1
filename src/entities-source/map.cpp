@@ -1,9 +1,17 @@
 // 13519214
 #include "../header/entities/map.hpp"
 #include "../header/entities/direction.hpp"
+#include "../header/entities/tile.hpp"
+#include "../header/entities/entity.hpp"
+#include "../header/entities/engimon.hpp"
 #include <vector>
+#include <stdlib.h>
+#include <time.h>
 
-Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY) : sizeX(sX), sizeY(sY), seaStartX(seaX), seaStartY(seaY) {
+Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY) : sizeX(sX), sizeY(sY),
+        seaStartX(seaX), seaStartY(seaY), randomEngimonMoveProbability(15) {
+    // Random seed initialize
+    srand((unsigned int) time(NULL));
     for (unsigned int i = 0; i < sizeX; i++) {
         std::vector<Tile> column;
         for (unsigned int j = 0; j < sizeY; j++) {
@@ -17,11 +25,51 @@ Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY)
 }
 
 void Map::wildEngimonRandomMove() {
-    // for (int i = 0; i < sizeX; i++) {
-    //     for (int j = 0; j < sizeY; j++) {
-    //
-    //     }
-    // }
+    for (unsigned int i = 0; i < sizeX; i++) {
+        for (unsigned int j = 0; j < sizeY; j++) {
+            // NULL pointer checking
+            Entity *targetEntity = getEntityAt(i, j);
+            if (targetEntity != NULL) {
+                // Entity type checking
+                if (targetEntity->getEntityID() == EntityEngimon) {
+                    // Only cast if ID match
+                    Engimon *targetEngimon = (Engimon *) targetEntity;
+                    int randomNumber = rand() % 100;
+                    if (randomNumber < randomEngimonMoveProbability && targetEngimon->isWildEngimon()) {
+                        // TODO : Extra, More equal probability distribution
+                        int randomDirection = rand() % 4;
+                        Position targetPos = targetEntity->getPos();
+                        switch (randomDirection) {
+                            case 0:
+                                if (targetPos.getY() > 0)
+                                    if (getEntityAt(targetPos + Position(0, -1)) == NULL)
+                                        if (targetEntity->isMoveLocationValid(getTileAt(targetPos + Position(0, -1))))
+                                            moveEntity(targetPos, North);
+                                break;
+                            case 1:
+                                if ((unsigned) targetPos.getY() < sizeY - 1)
+                                    if (getEntityAt(targetPos + Position(0, 1)) == NULL)
+                                        if (targetEntity->isMoveLocationValid(getTileAt(targetPos + Position(0, 1))))
+                                            moveEntity(targetPos, South);
+                                break;
+                            case 2:
+                                if (targetPos.getX() > 0)
+                                    if (getEntityAt(targetPos + Position(-1, 0)) == NULL)
+                                        if (targetEntity->isMoveLocationValid(getTileAt(targetPos + Position(-1, 0))))
+                                            moveEntity(targetPos, West);
+                                break;
+                            case 3:
+                                if ((unsigned) targetPos.getX() < sizeX - 1)
+                                    if (getEntityAt(targetPos + Position(1, 0)) == NULL)
+                                        if (targetEntity->isMoveLocationValid(getTileAt(targetPos + Position(1, 0))))
+                                            moveEntity(targetPos, East);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 

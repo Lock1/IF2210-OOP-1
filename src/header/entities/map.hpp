@@ -4,11 +4,12 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <vector>
 #include "direction.hpp"
 #include "position.hpp"
 #include "entity.hpp"
 #include "tile.hpp"
+#include <vector>
+
 
 class Map {
     private:
@@ -17,6 +18,9 @@ class Map {
         const unsigned int sizeY;
         const unsigned int seaStartX;
         const unsigned int seaStartY;
+        const unsigned short int randomEngimonMoveProbability;
+        // Probability in percent, default value is 15%
+
     public:
         Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY);
 
