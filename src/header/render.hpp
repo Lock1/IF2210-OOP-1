@@ -52,6 +52,14 @@ class Render {
         void setCursorPosition(int x, int y);
 
         // Border method, size need to be initialize first
+        void drawBox(char borderCharset[6], unsigned int offset[2], unsigned int size[2]);
+        // General box drawing method
+        // borderCharset defined as
+        // [0] : NE, [1] : NW, [2] : SE
+        // [3] : SW, [4] : NS, [5] : WE
+        // offset and size is defined with
+        // [0] : X value, [1] : Y value
+
         void drawMapBorder();
         // Drawing map border
 
@@ -66,8 +74,6 @@ class Render {
         // Set cursor location after drawing
         void setMapOffset(unsigned int offx, unsigned int offy);
         void setMessageBoxOffset(unsigned int msgoffx, unsigned int msgoffy);
-        void setMapBorder();
-        void setMessageBorder();
         // Offset setting
 
         // -- Draw Method --

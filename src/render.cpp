@@ -20,7 +20,6 @@ Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), m
     msgOffsetX = 55;
     msgOffsetY = 1;
 
-
     // Map Border, using compass direction,
     // (ex. NW = connecting border from north and west direction)
     mapBorderNE = '\xC8';
@@ -70,57 +69,72 @@ void Render::setCursorPosition(int x, int y) {
     SetConsoleCursorPosition(hOut, coord);
 }
 
-void Render::drawMapBorder() {
+void Render::drawBox(char borderCharset[6], unsigned int offset[2], unsigned int size[2]) {
+    // [0] : NE, [1] : NW, [2] : SE
+    // [3] : SW, [4] : NS, [5] : WE
     // Left right border
-    for (unsigned int i = mapOffsetY; i < mapOffsetY + mapSizeY + 1; i++) {
-        setCursorPosition(mapOffsetX-1, i);
-        cout << mapBorderNS;
-        setCursorPosition(mapOffsetX+mapSizeX, i);
-        cout << mapBorderNS;
+    for (unsigned int i = offset[1]; i < offset[1] + size[1] + 1; i++) {
+        setCursorPosition(offset[0]-1, i);
+        cout << borderCharset[4];
+        setCursorPosition(offset[0]+size[0], i);
+        cout << borderCharset[4];
     }
     // Top bottom border
-    for (unsigned int j = mapOffsetX; j < mapOffsetX + mapSizeX + 1; j++) {
-        setCursorPosition(j, mapOffsetY-1);
-        cout << mapBorderWE;
-        setCursorPosition(j, mapOffsetY+mapSizeY);
-        cout << mapBorderWE;
+    for (unsigned int j = offset[0]; j < offset[0] + size[0] + 1; j++) {
+        setCursorPosition(j, offset[1]-1);
+        cout << borderCharset[5];
+        setCursorPosition(j, offset[1]+size[1]);
+        cout << borderCharset[5];
     }
     // 4 Corner pieces
-    setCursorPosition(mapOffsetX-1, mapOffsetY-1);
-    cout << mapBorderSE;
-    setCursorPosition(mapOffsetX-1, mapOffsetY+mapSizeY);
-    cout << mapBorderNE;
-    setCursorPosition(mapOffsetX+mapSizeX, mapOffsetY-1);
-    cout << mapBorderSW;
-    setCursorPosition(mapOffsetX+mapSizeX, mapOffsetY+mapSizeY);
-    cout << mapBorderNW;
+    setCursorPosition(offset[0]-1, offset[1]-1);
+    cout << borderCharset[2];   // Upper left corner
+    setCursorPosition(offset[0]-1, offset[1]+size[1]);
+    cout << borderCharset[0];   // Bottom left corner
+    setCursorPosition(offset[0]+size[0], offset[1]-1);
+    cout << borderCharset[3];   // Upper right corner
+    setCursorPosition(offset[0]+size[0], offset[1]+size[1]);
+    cout << borderCharset[1];   // Bottom right corner
+}
+
+void Render::drawMapBorder() {
+    // TODO : class Box
+    char mapBorderCharset[6];
+    mapBorderCharset[0] = mapBorderNE;
+    mapBorderCharset[1] = mapBorderNW;
+    mapBorderCharset[2] = mapBorderSE;
+    mapBorderCharset[3] = mapBorderSW;
+    mapBorderCharset[4] = mapBorderNS;
+    mapBorderCharset[5] = mapBorderWE;
+
+    unsigned int mapSize[2], mapOffset[2];
+
+    mapSize[0] = mapSizeX;
+    mapSize[1] = mapSizeY;
+
+    mapOffset[0] = mapOffsetX;
+    mapOffset[1] = mapOffsetY;
+    drawBox(mapBorderCharset, mapOffset, mapSize);
     isEmptyMapBuffer = false;
 }
 
 void Render::drawMsgBorder() {
-    // Left right border
-    for (unsigned int i = msgOffsetY; i < msgOffsetY + msgSizeY + 1; i++) {
-        setCursorPosition(msgOffsetX-1, i);
-        cout << msgBorderNS;
-        setCursorPosition(msgOffsetX+msgSizeX, i);
-        cout << msgBorderNS;
-    }
-    // Top bottom border
-    for (unsigned int j = msgOffsetX; j < msgOffsetX + msgSizeX + 1; j++) {
-        setCursorPosition(j, msgOffsetY-1);
-        cout << msgBorderWE;
-        setCursorPosition(j, msgOffsetY+msgSizeY);
-        cout << msgBorderWE;
-    }
-    // 4 Corner pieces
-    setCursorPosition(msgOffsetX-1, msgOffsetY-1);
-    cout << msgBorderSE;
-    setCursorPosition(msgOffsetX-1, msgOffsetY+msgSizeY);
-    cout << msgBorderNE;
-    setCursorPosition(msgOffsetX+msgSizeX, msgOffsetY-1);
-    cout << msgBorderSW;
-    setCursorPosition(msgOffsetX+msgSizeX, msgOffsetY+msgSizeY);
-    cout << msgBorderNW;
+    char msgBorderCharset[6];
+    msgBorderCharset[0] = msgBorderNE;
+    msgBorderCharset[1] = msgBorderNW;
+    msgBorderCharset[2] = msgBorderSE;
+    msgBorderCharset[3] = msgBorderSW;
+    msgBorderCharset[4] = msgBorderNS;
+    msgBorderCharset[5] = msgBorderWE;
+
+    unsigned int msgSize[2], msgOffset[2];
+
+    msgSize[0] = msgSizeX;
+    msgSize[1] = msgSizeY;
+
+    msgOffset[0] = msgOffsetX;
+    msgOffset[1] = msgOffsetY;
+    drawBox(msgBorderCharset, msgOffset, msgSize);
 }
 
 void Render::drawMap(Map& target) {
