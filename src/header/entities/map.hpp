@@ -10,28 +10,26 @@
 #include "engimon.hpp"
 #include "tile.hpp"
 #include <vector>
-
+#include <string>
 
 class Map {
     private:
         std::vector<std::vector<Tile>> tileMatrix;
-        const unsigned int sizeX;
-        const unsigned int sizeY;
-        const unsigned int seaStartX;
-        const unsigned int seaStartY;
+        unsigned int sizeX;
+        unsigned int sizeY;
+        unsigned int seaStartX;
+        unsigned int seaStartY;
         const unsigned short int randomEngimonMoveProbability;
         // Probability in percent, default value is 15%
 
     public:
         Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY);
-        // TODO : Use different constructor for loading
+        Map(std::string filename);
 
         int getSizeX();
         int getSizeY();
         // Getter
 
-
-        // TODO : Load File (!)
         void wildEngimonRandomMove();
         // Move all wild pokemon with element type checking
         Engimon* spawnWildEngimon();

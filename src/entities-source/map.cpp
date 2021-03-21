@@ -6,15 +6,18 @@
 #include "../header/entities/engimon.hpp"
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <time.h>
+
+using namespace std;
 
 Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY) : sizeX(sX), sizeY(sY),
         seaStartX(seaX), seaStartY(seaY), randomEngimonMoveProbability(15) {
     // Random seed initialize
     srand((unsigned int) time(NULL));
     for (unsigned int i = 0; i < sizeX; i++) {
-        std::vector<Tile> column;
+        vector<Tile> column;
         for (unsigned int j = 0; j < sizeY; j++) {
             if (i > seaStartX && j > seaStartY)
                 column.push_back(Tile(i, j, Sea));
@@ -24,6 +27,44 @@ Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY)
         tileMatrix.push_back(column);
     }
 }
+
+Map::Map(string filename) : randomEngimonMoveProbability(15) {
+    // Unused
+    seaStartX = 0;
+    seaStartY = 0;
+    // TODO : Engimon loading (???), maybe not needed
+    ifstream mapFile = ifstream(filename);
+    if (mapFile.is_open()) {
+        vector<vector<Tile>> flippedMap;
+        string mapRow;
+        unsigned int i = 0;
+        while (getline(mapFile, mapRow)) {
+            vector<Tile> column;
+            sizeX = mapRow.length();
+            for (unsigned int j = 0; j < mapRow.length(); j++) {
+                if (mapRow[j] == 'o')
+                    column.push_back(Tile(i, j, Sea));
+                else
+                    column.push_back(Tile(i, j, Grass));
+            }
+            i++;
+            flippedMap.push_back(column);
+        }
+        sizeY = i;
+        mapFile.close();
+
+        // Flipping map
+        for (i = 0; i < sizeX; i++) {
+            vector<Tile> row;
+            for (unsigned int j = 0; j < sizeY; j++)
+                row.push_back(flippedMap[j][i]);
+            tileMatrix.push_back(row);
+        }
+    }
+    else
+        throw filename;
+}
+
 
 void Map::wildEngimonRandomMove() {
     // TODO : Extra, flatten the conditional ladder, this is dumb
