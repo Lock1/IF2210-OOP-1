@@ -36,7 +36,7 @@ class Entity {
         // Get position
         char getEntityChar();
         // Get entity character
-        static int getEntityCount();
+        static unsigned int getEntityCount();
         // Get entity object count
 };
 

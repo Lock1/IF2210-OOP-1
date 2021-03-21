@@ -5,6 +5,7 @@
 #include "../header/entities/entity.hpp"
 #include "../header/entities/engimon.hpp"
 #include <vector>
+#include <iostream>
 #include <stdlib.h>
 #include <time.h>
 
@@ -25,6 +26,7 @@ Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY)
 }
 
 void Map::wildEngimonRandomMove() {
+    // TODO : Extra, flatten the conditional ladder, this is dumb
     for (unsigned int i = 0; i < sizeX; i++) {
         for (unsigned int j = 0; j < sizeY; j++) {
             // NULL pointer checking
@@ -72,6 +74,22 @@ void Map::wildEngimonRandomMove() {
     }
 }
 
+Engimon* Map::spawnWildEngimon() {
+    bool isValidLocation = false;
+    int randomX, randomY;
+    do {
+        randomX = rand() % sizeX;
+        randomY = rand() % sizeY;
+        if (getEntityAt(randomX, randomY) == NULL)
+            isValidLocation = true;
+    } while (!isValidLocation);
+
+    // TODO : Get generator from database with tile type checking
+    Position targetPos = Position(randomX, randomY);
+    Entity *wildEngimon = new Engimon(targetPos, Ground, '#', true);
+    setTileEntity(targetPos, wildEngimon);
+    return (Engimon *) wildEngimon;
+}
 
 
 void Map::setTileEntity(int x, int y, Entity *newEntity) {

@@ -22,7 +22,7 @@
 #define MAP_MAX_Y 25
 
 #define MSG_MAX_X 40
-#define MAX_MESSAGE 5
+#define MAX_MESSAGE 10
 
 // NOTE : Render coordinate (0, 0) starting from upper left corner
 #define MAP_OFFSET_X 1
@@ -30,7 +30,7 @@
 #define MESSAGE_OFFSET_X MAP_OFFSET_X+MAP_MAX_X+5
 #define MESSAGE_OFFSET_Y MAP_OFFSET_Y+1
 
-#define CURSOR_REST_X 60
+#define CURSOR_REST_X MESSAGE_OFFSET_X
 #define CURSOR_REST_Y 20
 
 // skillDatabse

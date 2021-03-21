@@ -24,6 +24,11 @@ class Engine {
         bool isEngineRunning;
         std::vector<Engimon*> engimonList;
 
+        const unsigned int wildEngimonSpawnProbability;
+        // Spawn probability in percent
+        const unsigned int entitySpawnLimit;
+        // Entity count limit, player included
+
         bool evaluteInput();
         // Evaluating input from PlayerInput class, if evaluated, return true
         void evaluteTick();

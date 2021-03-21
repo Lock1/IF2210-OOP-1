@@ -7,6 +7,7 @@
 #include "direction.hpp"
 #include "position.hpp"
 #include "entity.hpp"
+#include "engimon.hpp"
 #include "tile.hpp"
 #include <vector>
 
@@ -28,12 +29,13 @@ class Map {
         int getSizeY();
         // Getter
 
-        void loadFile();                // TODO : Extra, optional
-        // Load from file
-        void wildEngimonRandomMove();   // TODO : Add
+        void wildEngimonRandomMove();
         // Move all wild pokemon with element type checking
-        void spawnEngimon();            // TODO : Add
-        // Spawn random engimon at random valid position
+        Engimon* spawnWildEngimon();
+        // Spawn random wild engimon at random valid position,
+        // returning allocated heap pointer
+        // WARNING : Will allocating at heap memory
+
         void setTileEntity(int x, int y, Entity *newEntity);
         void setTileEntity(Position pos, Entity *newEntity);
         // Change entity at position

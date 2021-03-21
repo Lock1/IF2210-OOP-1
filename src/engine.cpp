@@ -10,14 +10,17 @@
 #include <string>
 #include <chrono>       // Time and tick system
 #include <thread>       // For sleep()
+#include <stdlib.h>
+#include <time.h>
 
 using namespace std;
 
 
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
-        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
+        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(2), entitySpawnLimit(20),
         renderer(map, messageList) {
     // Internal variable setup
+    srand((unsigned) time(NULL));
     isEngineRunning = true;
     renderer.setMapOffset(MAP_OFFSET_X, MAP_OFFSET_Y);
     renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y);
@@ -106,4 +109,7 @@ bool Engine::evaluteInput() {
 void Engine::evaluteTick() {
     // TODO : Add here
     map.wildEngimonRandomMove();
+    unsigned int randomNumber = rand() % 100;
+    if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability)
+        map.spawnWildEngimon();
 }

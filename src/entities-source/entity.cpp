@@ -41,6 +41,6 @@ char Entity::getEntityChar() {
     return entityChar;
 }
 
-int Entity::getEntityCount() {
+unsigned int Entity::getEntityCount() {
     return entityCount;
 }
