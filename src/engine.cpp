@@ -8,13 +8,11 @@
 #include "header/entities/attributes/elementtype.hpp"
 #include <iostream>
 #include <string>
-#include <chrono>		// Time and tick system
-#include <thread>		// For sleep() // TODO : Use later on input
+#include <chrono>       // Time and tick system
+#include <thread>       // For sleep()
 
 using namespace std;
 
-
-// TODO : Use enum direction
 
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
@@ -24,6 +22,7 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), map(MAP_MAX_X, MAP_MAX_Y
     renderer.setMapOffset(MAP_OFFSET_X, MAP_OFFSET_Y);
     renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y);
     renderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
+    // TODO : Database loading
 }
 
 Engine::~Engine() {
@@ -54,14 +53,6 @@ void Engine::startGame() {
         i++;
     }
     userInput.stopReadInput();
-    // Entity *rand = new Entity(3, 3, EntityPlayer, '#');
-    // map.setTileEntity(3, 3, rand);
-    // map.setTileEntity(3, 3, NULL);
-    // renderer.drawMap(map);
-    // std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-    // map.setTileEntity(3, 10, rand);
-    // renderer.drawMap(map);
-    // delete rand;
 }
 
 bool Engine::evaluteInput() {
@@ -73,9 +64,7 @@ bool Engine::evaluteInput() {
         case Up:
             if (player.getPos().getY() > 0) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()-1))) {
-                    map.setTileEntity(player.getPos(), NULL);
-                    player.getPosRef() += Position(0, -1);
-                    map.setTileEntity(player.getPos(), &player);
+                    moveEntity(player.getPos(), North);
                     return true;
                 }
             }
@@ -83,10 +72,7 @@ bool Engine::evaluteInput() {
         case Down:
             if (player.getPos().getY() < map.getSizeY() - 1) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()+1))) {
-                    // TODO : Internal private method, move()
-                    map.setTileEntity(player.getPos(), NULL);
-                    player.getPosRef() += Position(0, 1);
-                    map.setTileEntity(player.getPos(), &player);
+                    moveEntity(player.getPos(), South);
                     return true;
                 }
             }
@@ -94,9 +80,7 @@ bool Engine::evaluteInput() {
         case Left:
             if (player.getPos().getX() > 0) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()-1, player.getPos().getY()))) {
-                    map.setTileEntity(player.getPos(), NULL);
-                    player.getPosRef() += Position(-1, 0);
-                    map.setTileEntity(player.getPos(), &player);
+                    moveEntity(player.getPos(), West);
                     return true;
                 }
             }
@@ -104,9 +88,7 @@ bool Engine::evaluteInput() {
         case Right:
             if (player.getPos().getX() < map.getSizeX() - 1) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()+1, player.getPos().getY()))) {
-                    map.setTileEntity(player.getPos(), NULL);
-                    player.getPosRef() += Position(1, 0);
-                    map.setTileEntity(player.getPos(), &player);
+                    moveEntity(player.getPos(), East);
                     return true;
                 }
             }
@@ -116,6 +98,28 @@ bool Engine::evaluteInput() {
 }
 
 void Engine::evaluteTick() {
-
+    // TODO : Add here
 }
-// Evaluating next tick
+
+void Engine::moveEntity(Position pos, Direction dir) {
+    Entity* targetEntity = map.getEntityAt(pos);
+    // Removing entity from current position at map
+    map.setTileEntity(targetEntity->getPos(), NULL);
+    // Changing entity position
+    switch (dir) {
+        case North:
+            targetEntity->getPosRef() += Position(0, -1);
+            break;
+        case South:
+            targetEntity->getPosRef() += Position(0, 1);
+            break;
+        case West:
+            targetEntity->getPosRef() += Position(-1, 0);
+            break;
+        case East:
+            targetEntity->getPosRef() += Position(1, 0);
+            break;
+    }
+    // Set entity at new location in map
+    map.setTileEntity(targetEntity->getPos(), targetEntity);
+}

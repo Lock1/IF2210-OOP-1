@@ -22,7 +22,7 @@
 #define MAP_MAX_Y 25
 
 #define MSG_MAX_X 40
-#define MAX_MESSAGE 5 // TODO : Maybe not needed
+#define MAX_MESSAGE 5
 
 // NOTE : Render coordinate (0, 0) starting from upper left corner
 #define MAP_OFFSET_X 1

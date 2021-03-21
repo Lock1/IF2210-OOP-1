@@ -10,6 +10,8 @@
 #include "entities/map.hpp"
 #include "entities/player.hpp"
 #include "entities/engimon.hpp"
+#include "entities/position.hpp"
+#include "entities/direction.hpp"
 #include <vector>
 
 class Engine {
@@ -26,6 +28,9 @@ class Engine {
         // Evaluating input from PlayerInput class, if evaluated, return true
         void evaluteTick();
         // Evaluating next tick
+        void moveEntity(Position pos, Direction dir);
+        // Move entity at map to target direction without checking
+
     public:
         Engine();
         // Constructor

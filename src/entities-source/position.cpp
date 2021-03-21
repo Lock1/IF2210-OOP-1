@@ -13,6 +13,7 @@ int Position::getY() {
     return posY;
 }
 
+// Operator overloading on Position
 bool Position::operator==(const Position &pos2) {
     return (this->posX == pos2.posX) && (this->posY == pos2.posY);
 }
@@ -35,7 +36,7 @@ const Position& Position::operator+=(const Position &pos2) {
 }
 
 
-// TODO : Cleanup (?)
+// Operator overloading on Tile
 const Position& Position::operator=(const Tile &pos2) {
     posX = pos2.posX;
     posY = pos2.posY;

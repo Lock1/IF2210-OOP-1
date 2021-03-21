@@ -6,13 +6,6 @@
 
 class Tile;
 
-enum Direction {
-    North,
-    South,
-    West,
-    East
-};
-
 class Position {
     private:
         int posX;
