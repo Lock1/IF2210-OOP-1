@@ -1,5 +1,4 @@
 // 13519214
-// TODO : Maybe not needed
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP
 

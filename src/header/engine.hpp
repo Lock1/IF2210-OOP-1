@@ -7,6 +7,7 @@
 #include "render.hpp"
 #include "message.hpp"
 #include "playerinput.hpp"
+#include "skilldatabase.hpp"
 #include "entities/map.hpp"
 #include "entities/player.hpp"
 #include "entities/engimon.hpp"
@@ -23,6 +24,7 @@ class Engine {
         Player player;
         Render renderer;
         Render statRenderer;
+        SkillDatabase skillDB;
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;

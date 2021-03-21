@@ -91,7 +91,7 @@ class Render {
 
         // -- Draw Method --
         // Use double buffering
-        // TODO : Const
+        // TODO : Extra, Const
         void drawMap(Map& target);
         // Drawing map at offset location
 
