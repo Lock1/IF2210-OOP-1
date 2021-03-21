@@ -13,15 +13,22 @@
 
 using namespace std;
 
-Engine::Engine() : map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
-        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), messageList(MAX_MESSAGE, MSG_MAX_X),
-        renderer(MAP_OFFSET_X, MAP_OFFSET_Y, MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y, map) {
+
+// TODO : Use enum direction
+
+Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
+        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
+        renderer(map, messageList) {
+    // Internal variable setup
     isEngineRunning = true;
-    // TODO : Put private variable preparation here
+    renderer.setMapOffset(MAP_OFFSET_X, MAP_OFFSET_Y);
+    renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y);
+    renderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 }
 
 Engine::~Engine() {
     // TODO : Cleanup variable
+    // TODO : Destroy allocated engimonList
 }
 
 void Engine::startGame() {
@@ -33,6 +40,7 @@ void Engine::startGame() {
     // DEBUG
     engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x'));
     map.setTileEntity(engimonList[0]->getPos(), engimonList[0]);
+
 
     userInput.startReadInput();
     // TODO : Tick
@@ -75,6 +83,7 @@ bool Engine::evaluteInput() {
         case Down:
             if (player.getPos().getY() < map.getSizeY() - 1) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()+1))) {
+                    // TODO : Internal private method, move()
                     map.setTileEntity(player.getPos(), NULL);
                     player.getPosRef() += Position(0, 1);
                     map.setTileEntity(player.getPos(), &player);

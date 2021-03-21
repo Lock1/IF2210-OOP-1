@@ -4,7 +4,7 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include "../config.hpp"
+#include "../config.hpp" // TODO : Extra, remove config macro from tile
 #include "entity.hpp"
 #include "position.hpp"
 
