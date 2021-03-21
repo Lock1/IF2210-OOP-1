@@ -19,11 +19,11 @@ class Engimon : public Entity, Species {
         // std::string Name;
         // std::string parentName; // TODO : Species (?)
         // ii.    Parent Names & Species
-        
+
         // std::vector<Skill> learnedSkill;
 
-        vector<Species> parentSpecies;
-        vector<std::string> parentNames;
+        // vector<Species> parentSpecies;
+        std::vector<std::string> parentNames;
 
         std::set<ElementType> engimonElement;
 
@@ -37,7 +37,7 @@ class Engimon : public Entity, Species {
         bool isTileCompatible(TileType type); // TODO : Multiple element
         // Tile compatibility checking
     public:
-        // Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
+        Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
         Engimon(const Species& species, bool wild, Position pos);   // TODO : Get from database
 
         bool isMoveLocationValid(Tile &target) override;

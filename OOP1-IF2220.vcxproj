@@ -26,6 +26,7 @@
     <ClCompile Include="src\entities-source\map.cpp" />
     <ClCompile Include="src\entities-source\player.cpp" />
     <ClCompile Include="src\entities-source\position.cpp" />
+    <ClCompile Include="src\entities-source\species.cpp" />
     <ClCompile Include="src\entities-source\tile.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\message.cpp" />

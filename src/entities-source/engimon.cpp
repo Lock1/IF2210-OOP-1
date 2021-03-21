@@ -20,10 +20,10 @@ Engimon::Engimon(Position pos, ElementType type1, char icon, bool wild) : Entity
 // TODO : Get from database
 
 
-Engimon::Engimon(const Species& species, bool wild, Position pos) : Species(species) {
-    this->isWild = wild;
-    this->currentPosition = pos;
-}
+// Engimon::Engimon(const Species& species, bool wild, Position pos) : Species(species) {
+//     this->isWild = wild;
+//     this->currentPosition = pos;
+// }
 
 
 set<ElementType> Engimon::getElement() {
