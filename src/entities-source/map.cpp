@@ -35,11 +35,12 @@ Map::Map(string filename) : randomEngimonMoveProbability(15) {
     // TODO : Engimon loading (???), maybe not needed
     ifstream mapFile = ifstream(filename);
     if (mapFile.is_open()) {
+        vector<vector<Tile>> flippedMap;
         string mapRow;
-        int i = 0;
+        unsigned int i = 0;
         while (getline(mapFile, mapRow)) {
             vector<Tile> column;
-            sizeY = mapRow.length();
+            sizeX = mapRow.length();
             for (unsigned int j = 0; j < mapRow.length(); j++) {
                 if (mapRow[j] == 'o')
                     column.push_back(Tile(i, j, Sea));
@@ -47,10 +48,18 @@ Map::Map(string filename) : randomEngimonMoveProbability(15) {
                     column.push_back(Tile(i, j, Grass));
             }
             i++;
-            tileMatrix.push_back(column);
+            flippedMap.push_back(column);
         }
-        sizeX = i;
+        sizeY = i;
         mapFile.close();
+
+        // Flipping map
+        for (i = 0; i < sizeX; i++) {
+            vector<Tile> row;
+            for (unsigned int j = 0; j < sizeY; j++)
+                row.push_back(flippedMap[j][i]);
+            tileMatrix.push_back(row);
+        }
     }
     else
         throw filename;
