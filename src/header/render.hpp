@@ -9,6 +9,22 @@
 #include "message.hpp"
 #include <vector>
 
+class Box {
+    // Data class for drawing box
+    public:
+        char cornerBottomLeft;
+        char cornerBottomRight;
+        char cornerTopLeft;
+        char cornerTopRight;
+        char lineVertical;
+        char lineHorizontal;
+        unsigned int sizeX;
+        unsigned int sizeY;
+
+        unsigned int offsetX;
+        unsigned int offsetY;
+};
+
 class Render {
     private:
         // Offset and size values for drawing
@@ -28,19 +44,19 @@ class Render {
         const unsigned int msgSizeY;
 
         // Character list for drawing border
-        char mapBorderNE;
-        char mapBorderNW;
-        char mapBorderSE;
-        char mapBorderSW;
-        char mapBorderNS;
-        char mapBorderWE;
+        char mapBorderCornerBottomLeft;
+        char mapBorderCornerBottomRight;
+        char mapBorderCornerTopLeft;
+        char mapBorderCornerTopRight;
+        char mapBorderLineVertical;
+        char mapBorderLineHorizontal;
 
-        char msgBorderNE;
-        char msgBorderNW;
-        char msgBorderSE;
-        char msgBorderSW;
-        char msgBorderNS;
-        char msgBorderWE;
+        char msgBorderCornerBottomLeft;
+        char msgBorderCornerBottomRight;
+        char msgBorderCornerTopLeft;
+        char msgBorderCornerTopRight;
+        char msgBorderLineVertical;
+        char msgBorderLineHorizontal;
 
         std::vector<std::vector<char>> mapFrameBuffer;
         // Map Frame buffer
@@ -52,13 +68,8 @@ class Render {
         void setCursorPosition(int x, int y);
 
         // Border method, size need to be initialize first
-        void drawBox(char borderCharset[6], unsigned int offset[2], unsigned int size[2]);
-        // General box drawing method
-        // borderCharset defined as
-        // [0] : NE, [1] : NW, [2] : SE
-        // [3] : SW, [4] : NS, [5] : WE
-        // offset and size is defined with
-        // [0] : X value, [1] : Y value
+        void drawBox(Box& target);
+
 
         void drawMapBorder();
         // Drawing map border
