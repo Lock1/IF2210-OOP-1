@@ -18,8 +18,9 @@
 using namespace std;
 
 
-Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X),
-        map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
+Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X), player(),
+        // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y),
+        map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(2), entitySpawnLimit(20),
         renderer(map, messageList), statRenderer(statMessage) {
     // Internal variable setup
@@ -66,13 +67,13 @@ void Engine::startGame() {
     engimonList.push_back(new Engimon(Position(0, 0), Electric, 'z', false));
     player.changeEngimon(engimonList[0]);
     // ^ Starter
-    engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x', true));
-    engimonList.push_back(new Engimon(Position(40, 20), Water, 'a', true));
-    engimonList.push_back(new Engimon(Position(25, 15), Ground, 'b', false));
+    // engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x', true));
+    // engimonList.push_back(new Engimon(Position(40, 20), Water, 'a', true));
+    // engimonList.push_back(new Engimon(Position(25, 15), Ground, 'b', false));
     map.setTileEntity(engimonList[0]->getPos(), engimonList[0]);
-    map.setTileEntity(engimonList[1]->getPos(), engimonList[1]);
-    map.setTileEntity(engimonList[2]->getPos(), engimonList[2]);
-    map.setTileEntity(engimonList[3]->getPos(), engimonList[3]);
+    // map.setTileEntity(engimonList[1]->getPos(), engimonList[1]);
+    // map.setTileEntity(engimonList[2]->getPos(), engimonList[2]);
+    // map.setTileEntity(engimonList[3]->getPos(), engimonList[3]);
 
 
     userInput.startReadInput();
@@ -89,6 +90,8 @@ void Engine::startGame() {
             // TODO : Add and fix, disable temporary
             // evaluateCommand();
             // Skill temp = skillDB.getSkill(3); // DEBUG
+
+            // Map test = Map("../other/mapfile.txt");
 
             string trash;
             clearConsoleInputBuffer();
