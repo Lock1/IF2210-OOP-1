@@ -79,6 +79,8 @@ class Render {
     public:
         Render(Map& target, Message& msgTarget);
         // User Constructor
+        Render(Message& msgTarget);
+        // User Constructor for message box only renderer
 
         // Setup
         void setCursorRestLocation(unsigned int x, unsigned int y);

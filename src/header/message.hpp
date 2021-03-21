@@ -8,7 +8,7 @@
 
 class Message {
     private:
-        std::queue<std::string> messageQueue;
+        std::queue<std::string> messageQueue; // TODO : Extra, scrollable
         const unsigned int maxQueue;
         const unsigned int maxStringLength;
 

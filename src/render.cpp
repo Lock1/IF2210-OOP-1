@@ -45,6 +45,25 @@ Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), m
     }
 }
 
+Render::Render(Message& msgTarget) : mapSizeX(0), mapSizeY(0),
+    msgSizeX(msgTarget.getMaxStringLength()), msgSizeY(msgTarget.getMaxMessage()) {
+    // Default values
+    isEmptyMapBuffer = true, isMessageBorderDrawn = false;
+    cursorRestX = cursorRestY = 0;
+    mapOffsetX = mapOffsetY = 1;
+    msgOffsetX = 55;
+    msgOffsetY = 1;
+
+    // Message border
+    msgBorderCornerBottomLeft = '\xC0';
+    msgBorderCornerBottomRight = '\xD9';
+    msgBorderCornerTopLeft = '\xDA';
+    msgBorderCornerTopRight = '\xBF';
+    msgBorderLineVertical = '\xB3';
+    msgBorderLineHorizontal = '\xC4';
+}
+
+
 void Render::setMapOffset(unsigned int offx, unsigned int offy) {
     mapOffsetX = offx;
     mapOffsetY = offy;

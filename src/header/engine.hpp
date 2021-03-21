@@ -18,9 +18,11 @@ class Engine {
     private:
         Map map;
         Message messageList;
+        Message statMessage;
         PlayerInput userInput;
         Player player;
         Render renderer;
+        Render statRenderer;
         bool isEngineRunning;
         std::vector<Engimon*> engimonList;
 

@@ -16,15 +16,19 @@
 using namespace std;
 
 
-Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
+Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-5, MSG_MAX_X), 
+        map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), player(),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(2), entitySpawnLimit(20),
-        renderer(map, messageList) {
+        renderer(map, messageList), statRenderer(statMessage) {
     // Internal variable setup
     srand((unsigned) time(NULL));
     isEngineRunning = true;
     renderer.setMapOffset(MAP_OFFSET_X, MAP_OFFSET_Y);
     renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y);
     renderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
+
+    statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
+    statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
     // TODO : Database loading
 }
 
@@ -54,10 +58,12 @@ void Engine::startGame() {
     while (isEngineRunning) {
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
+        statRenderer.drawMessageBox(statMessage);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (evaluteInput())
             evaluteTick();
         messageList.addMessage(to_string(i));
+        statMessage.addMessage(to_string(5*i));
         i++;
     }
     userInput.stopReadInput();
@@ -103,6 +109,7 @@ bool Engine::evaluteInput() {
             }
             break;
         case KeyboardE:
+            // TODO : Open menu / help
             messageList.addMessage("MASUKKKKKKKK");
             break;
     }
