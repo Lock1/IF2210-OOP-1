@@ -1,0 +1,10 @@
+1 Sandslash Ground NoElement desc1
+2 Vaniluxe Ice NoElement desc2
+3 Luxio Electric NoElement desc3
+4 Charmander Fire NoElement desc4
+5 Spheal Water Ice desc5
+6 Beartic Ice NoElement desc6
+7 Heat-Rotom Fire Electric desc7
+8 Zapdos Electric NoElement desc8
+9 Blastoise Water NoElement desc9
+10 Wooper Water Ground desc10

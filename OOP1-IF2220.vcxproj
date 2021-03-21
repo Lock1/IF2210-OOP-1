@@ -33,6 +33,7 @@
     <ClCompile Include="src\playerinput.cpp" />
     <ClCompile Include="src\render.cpp" />
     <ClCompile Include="src\skilldatabase.cpp" />
+    <ClCompile Include="src\speciesdatabase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp" />
@@ -43,11 +44,13 @@
     <ClInclude Include="src\header\entities\map.hpp" />
     <ClInclude Include="src\header\entities\player.hpp" />
     <ClInclude Include="src\header\entities\position.hpp" />
+    <ClInclude Include="src\header\entities\species.hpp" />
     <ClInclude Include="src\header\entities\tile.hpp" />
     <ClInclude Include="src\header\message.hpp" />
     <ClInclude Include="src\header\playerinput.hpp" />
     <ClInclude Include="src\header\render.hpp" />
     <ClInclude Include="src\header\skilldatabase.hpp" />
+    <ClInclude Include="src\header\speciesdatabase.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\header\database" />

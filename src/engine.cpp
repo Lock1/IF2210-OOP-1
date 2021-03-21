@@ -5,7 +5,9 @@
 #include "header/entities/map.hpp"
 #include "header/entities/player.hpp"
 #include "header/entities/engimon.hpp"
+#include "header/entities/species.hpp"
 #include "header/skilldatabase.hpp"
+#include "header/speciesdatabase.hpp"
 #include "header/entities/attributes/elementtype.hpp"
 #include <iostream>
 #include <string>
@@ -21,7 +23,7 @@ using namespace std;
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X), player(),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y),
         map("../other/mapfile.txt"),
-        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(2), entitySpawnLimit(20),
+        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20), // DEBUG
         renderer(map, messageList), statRenderer(statMessage) {
     // Internal variable setup
     srand((unsigned) time(NULL));
@@ -39,7 +41,14 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
         skillDB.loadSkillDatabase("../other/skilldb.txt");
     }
     catch (string e) {
-        cout << "Filename not found";
+        cout << "Skill database not found\n";
+    }
+
+    try {
+        speciesDB.loadSpeciesDatabase("../other/speciesdb.txt", skillDB);
+    }
+    catch (string e) {
+        cout << "Species database not found\n";
     }
 }
 
@@ -89,9 +98,6 @@ void Engine::startGame() {
         else if (isCommandMode) {
             // TODO : Add and fix, disable temporary
             // evaluateCommand();
-            // Skill temp = skillDB.getSkill(3); // DEBUG
-
-            // Map test = Map("../other/mapfile.txt");
 
             string trash;
             clearConsoleInputBuffer();
@@ -168,6 +174,9 @@ void Engine::evaluteTick() {
     // TODO : Add here
     map.wildEngimonRandomMove();
     unsigned int randomNumber = rand() % 100;
-    if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability)
-        map.spawnWildEngimon();
+    if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability) {
+        unsigned int randomSpeciesID = (rand() % (speciesDB.getSpeciesCount() - 1)) + 1;
+        // TODO : Extra, fix mod operator
+        engimonList.push_back(map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID)));
+    }
 }
