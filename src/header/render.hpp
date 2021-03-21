@@ -11,7 +11,7 @@
 
 class Render {
     private:
-        // Constant for drawing
+        // Offset and size values for drawing
         unsigned int mapOffsetX;
         unsigned int mapOffsetY;
 
@@ -27,6 +27,21 @@ class Render {
         const unsigned int msgSizeX;
         const unsigned int msgSizeY;
 
+        // Character list for drawing border
+        char mapBorderNE;
+        char mapBorderNW;
+        char mapBorderSE;
+        char mapBorderSW;
+        char mapBorderNS;
+        char mapBorderWE;
+
+        char msgBorderNE;
+        char msgBorderNW;
+        char msgBorderSE;
+        char msgBorderSW;
+        char msgBorderNS;
+        char msgBorderWE;
+
         std::vector<std::vector<char>> mapFrameBuffer;
         // Map Frame buffer
         bool isEmptyMapBuffer;
@@ -36,10 +51,11 @@ class Render {
 
         void setCursorPosition(int x, int y);
 
-        void drawMapBorder(Map& target);
+        // Border method, size need to be initialize first
+        void drawMapBorder();
         // Drawing map border
 
-        void drawMsgBorder(Message& target);
+        void drawMsgBorder();
         // Drawing message border
     public:
         Render(Map& target, Message& msgTarget);
@@ -50,6 +66,8 @@ class Render {
         // Set cursor location after drawing
         void setMapOffset(unsigned int offx, unsigned int offy);
         void setMessageBoxOffset(unsigned int msgoffx, unsigned int msgoffy);
+        void setMapBorder();
+        void setMessageBorder();
         // Offset setting
 
         // -- Draw Method --

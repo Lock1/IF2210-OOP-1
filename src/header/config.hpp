@@ -1,4 +1,6 @@
 // 13519214
+// Engine configuration
+// WARNING : Only allowed for engine.cpp to reduce coupling
 // Common preprocessor
 #ifndef _CONFIG
 #define _CONFIG
@@ -30,31 +32,6 @@
 
 #define CURSOR_REST_X 60
 #define CURSOR_REST_Y 20
-
-// Map Border, using compass direction,
-// (ex. NW = connecting border from north and west direction)
-#define MAP_BORDER_NE '\xC8'
-#define MAP_BORDER_NW '\xBC'
-#define MAP_BORDER_SE '\xC9'
-#define MAP_BORDER_SW '\xBB'
-#define MAP_BORDER_NS '\xBA'
-#define MAP_BORDER_WE '\xCD'
-
-// Message border
-#define MSG_BORDER_NE '\xC0'
-#define MSG_BORDER_NW '\xD9'
-#define MSG_BORDER_SE '\xDA'
-#define MSG_BORDER_SW '\xBF'
-#define MSG_BORDER_NS '\xB3'
-#define MSG_BORDER_WE '\xC4'
-
-// Tiles
-#define TILE_GRASS '\xB1'
-#define TILE_SEA '\xB0'
-
-// Entity character
-#define PLAYER_CHAR '\x99'
-
 
 // skillDatabse
 #define MAX_SKILL_LIST 100

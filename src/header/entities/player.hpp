@@ -5,6 +5,8 @@
 #include "entity.hpp"
 #include "tile.hpp"
 
+#define PLAYER_CHAR '\x99' // O with umlaut
+
 class Player : public Entity {
     private:
         // Inventory<EngimonItem> EngimonInventory;

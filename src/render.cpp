@@ -1,10 +1,8 @@
 // 13519214
 
-#include "header/config.hpp"
 #include "header/entities/tile.hpp"
 #include "header/entities/map.hpp"
 #include "header/render.hpp"
-#include "header/config.hpp" // TODO : Remove
 #include <Windows.h>
 #include <iostream>
 #include <queue>
@@ -21,7 +19,26 @@ Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), m
     mapOffsetX = mapOffsetY = 1;
     msgOffsetX = 55;
     msgOffsetY = 1;
-// TODO : Reinit, box class
+
+
+    // Map Border, using compass direction,
+    // (ex. NW = connecting border from north and west direction)
+    mapBorderNE = '\xC8';
+    mapBorderNW = '\xBC';
+    mapBorderSE = '\xC9';
+    mapBorderSW = '\xBB';
+    mapBorderNS = '\xBA';
+    mapBorderWE = '\xCD';
+
+    // Message border
+    msgBorderNE = '\xC0';
+    msgBorderNW = '\xD9';
+    msgBorderSE = '\xDA';
+    msgBorderSW = '\xBF';
+    msgBorderNS = '\xB3';
+    msgBorderWE = '\xC4';
+
+    // TODO : Reinit, box class
     // Map frame buffer initialization
     for (unsigned int i = 0; i < mapSizeY; i++) {
         std::vector<char> mapRow;
@@ -53,64 +70,64 @@ void Render::setCursorPosition(int x, int y) {
     SetConsoleCursorPosition(hOut, coord);
 }
 
-void Render::drawMapBorder(Map &target) {
+void Render::drawMapBorder() {
     // Left right border
-    for (unsigned int i = mapOffsetY; i < mapOffsetY + target.getSizeY() + 1; i++) {
+    for (unsigned int i = mapOffsetY; i < mapOffsetY + mapSizeY + 1; i++) {
         setCursorPosition(mapOffsetX-1, i);
-        cout << MAP_BORDER_NS;
-        setCursorPosition(mapOffsetX+target.getSizeX(), i);
-        cout << MAP_BORDER_NS;
+        cout << mapBorderNS;
+        setCursorPosition(mapOffsetX+mapSizeX, i);
+        cout << mapBorderNS;
     }
     // Top bottom border
-    for (unsigned int j = mapOffsetX; j < mapOffsetX + target.getSizeX() + 1; j++) {
+    for (unsigned int j = mapOffsetX; j < mapOffsetX + mapSizeX + 1; j++) {
         setCursorPosition(j, mapOffsetY-1);
-        cout << MAP_BORDER_WE;
-        setCursorPosition(j, mapOffsetY+target.getSizeY());
-        cout << MAP_BORDER_WE;
+        cout << mapBorderWE;
+        setCursorPosition(j, mapOffsetY+mapSizeY);
+        cout << mapBorderWE;
     }
     // 4 Corner pieces
     setCursorPosition(mapOffsetX-1, mapOffsetY-1);
-    cout << MAP_BORDER_SE;
-    setCursorPosition(mapOffsetX-1, mapOffsetY+target.getSizeY());
-    cout << MAP_BORDER_NE;
-    setCursorPosition(mapOffsetX+target.getSizeX(), mapOffsetY-1);
-    cout << MAP_BORDER_SW;
-    setCursorPosition(mapOffsetX+target.getSizeX(), mapOffsetY+target.getSizeY());
-    cout << MAP_BORDER_NW;
+    cout << mapBorderSE;
+    setCursorPosition(mapOffsetX-1, mapOffsetY+mapSizeY);
+    cout << mapBorderNE;
+    setCursorPosition(mapOffsetX+mapSizeX, mapOffsetY-1);
+    cout << mapBorderSW;
+    setCursorPosition(mapOffsetX+mapSizeX, mapOffsetY+mapSizeY);
+    cout << mapBorderNW;
     isEmptyMapBuffer = false;
 }
 
-void Render::drawMsgBorder(Message &target) {
+void Render::drawMsgBorder() {
     // Left right border
     for (unsigned int i = msgOffsetY; i < msgOffsetY + msgSizeY + 1; i++) {
         setCursorPosition(msgOffsetX-1, i);
-        cout << MSG_BORDER_NS;
+        cout << msgBorderNS;
         setCursorPosition(msgOffsetX+msgSizeX, i);
-        cout << MSG_BORDER_NS;
+        cout << msgBorderNS;
     }
     // Top bottom border
     for (unsigned int j = msgOffsetX; j < msgOffsetX + msgSizeX + 1; j++) {
         setCursorPosition(j, msgOffsetY-1);
-        cout << MSG_BORDER_WE;
+        cout << msgBorderWE;
         setCursorPosition(j, msgOffsetY+msgSizeY);
-        cout << MSG_BORDER_WE;
+        cout << msgBorderWE;
     }
     // 4 Corner pieces
     setCursorPosition(msgOffsetX-1, msgOffsetY-1);
-    cout << MSG_BORDER_SE;
+    cout << msgBorderSE;
     setCursorPosition(msgOffsetX-1, msgOffsetY+msgSizeY);
-    cout << MSG_BORDER_NE;
+    cout << msgBorderNE;
     setCursorPosition(msgOffsetX+msgSizeX, msgOffsetY-1);
-    cout << MSG_BORDER_SW;
+    cout << msgBorderSW;
     setCursorPosition(msgOffsetX+msgSizeX, msgOffsetY+msgSizeY);
-    cout << MSG_BORDER_NW;
+    cout << msgBorderNW;
 }
 
 void Render::drawMap(Map& target) {
     // TODO : Extra, maybe using static variable on Entity
     if (isEmptyMapBuffer) {
-        for (int i = 0; i < target.getSizeY(); i++) {
-            for (int j = 0; j < target.getSizeX(); j++) {
+        for (unsigned int i = 0; i < mapSizeY; i++) {
+            for (unsigned int j = 0; j < mapSizeX; j++) {
                 Entity* tempEntityPointer = target.getEntityAt(j, i);
                 if (tempEntityPointer != NULL) {
                     if (mapFrameBuffer[i][j] != tempEntityPointer->getEntityChar()) {
@@ -126,11 +143,11 @@ void Render::drawMap(Map& target) {
                 }
             }
         }
-        drawMapBorder(target);
+        drawMapBorder();
     }
     else {
-        for (int i = 0; i < target.getSizeY(); i++) {
-            for (int j = 0; j < target.getSizeX(); j++) {
+        for (unsigned int i = 0; i < mapSizeY; i++) {
+            for (unsigned int j = 0; j < mapSizeX; j++) {
                 Entity* tempEntityPointer = target.getEntityAt(j, i);
                 if (tempEntityPointer != NULL) {
                     if (mapFrameBuffer[i][j] != tempEntityPointer->getEntityChar()) {
@@ -153,7 +170,7 @@ void Render::drawMap(Map& target) {
 
 void Render::drawMessageBox(Message& target) {
     if (!isMessageBorderDrawn) {
-        drawMsgBorder(target);
+        drawMsgBorder();
         isMessageBorderDrawn = true;
     }
 
