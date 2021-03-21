@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp" />
+    <ClCompile Include="src\entities-source\attributes\skill.cpp" />
     <ClCompile Include="src\entities-source\engimon.cpp" />
     <ClCompile Include="src\entities-source\entity.cpp" />
     <ClCompile Include="src\entities-source\map.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="src\message.cpp" />
     <ClCompile Include="src\playerinput.cpp" />
     <ClCompile Include="src\render.cpp" />
+    <ClCompile Include="src\skilldatabase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp" />

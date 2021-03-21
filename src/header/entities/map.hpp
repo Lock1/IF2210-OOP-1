@@ -24,11 +24,14 @@ class Map {
 
     public:
         Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY);
+        // TODO : Use different constructor for loading
 
         int getSizeX();
         int getSizeY();
         // Getter
 
+
+        // TODO : Load File (!)
         void wildEngimonRandomMove();
         // Move all wild pokemon with element type checking
         Engimon* spawnWildEngimon();

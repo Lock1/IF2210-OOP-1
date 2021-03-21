@@ -23,7 +23,6 @@ Engimon* Player::getCurrentEngimon() {
 }
 
 bool Player::isMoveLocationValid(Tile& target) {
-    // TODO : If engimon -> false
     if (target.getEntity() == NULL)
         return true;
     else
