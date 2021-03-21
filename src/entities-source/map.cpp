@@ -1,5 +1,6 @@
 // 13519214
 #include "../header/entities/map.hpp"
+#include "../header/entities/direction.hpp"
 #include <vector>
 
 Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY) : sizeX(sX), sizeY(sY), seaStartX(seaX), seaStartY(seaY) {
@@ -65,4 +66,27 @@ Entity* Map::getEntityAt(Position pos) {
 
 TileType Map::getTileTypeAt(Position pos) {
     return tileMatrix[pos.getX()][pos.getY()].getTileType();
+}
+
+void Map::moveEntity(Position pos, Direction dir) {
+    Entity* targetEntity = getEntityAt(pos);
+    // Removing entity from current position at map
+    setTileEntity(targetEntity->getPos(), NULL);
+    // Changing entity position
+    switch (dir) {
+        case North:
+            targetEntity->getPosRef() += Position(0, -1);
+            break;
+        case South:
+            targetEntity->getPosRef() += Position(0, 1);
+            break;
+        case West:
+            targetEntity->getPosRef() += Position(-1, 0);
+            break;
+        case East:
+            targetEntity->getPosRef() += Position(1, 0);
+            break;
+    }
+    // Set entity at new location in map
+    setTileEntity(targetEntity->getPos(), targetEntity);
 }

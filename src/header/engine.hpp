@@ -28,8 +28,6 @@ class Engine {
         // Evaluating input from PlayerInput class, if evaluated, return true
         void evaluteTick();
         // Evaluating next tick
-        void moveEntity(Position pos, Direction dir);
-        // Move entity at map to target direction without checking
 
     public:
         Engine();

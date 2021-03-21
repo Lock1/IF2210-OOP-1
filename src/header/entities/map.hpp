@@ -5,6 +5,7 @@
 #define MAP_HPP
 
 #include <vector>
+#include "direction.hpp"
 #include "position.hpp"
 #include "entity.hpp"
 #include "tile.hpp"
@@ -41,6 +42,9 @@ class Map {
         TileType getTileTypeAt(int x, int y);
         TileType getTileTypeAt(Position pos);
         // Get Tile ID at index located at position
+
+        void moveEntity(Position pos, Direction dir);
+        // Move entity at map to target direction without checking
 };
 
 #endif

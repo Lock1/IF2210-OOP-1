@@ -64,7 +64,7 @@ bool Engine::evaluteInput() {
         case Up:
             if (player.getPos().getY() > 0) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()-1))) {
-                    moveEntity(player.getPos(), North);
+                    map.moveEntity(player.getPos(), North);
                     return true;
                 }
             }
@@ -72,7 +72,7 @@ bool Engine::evaluteInput() {
         case Down:
             if (player.getPos().getY() < map.getSizeY() - 1) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()+1))) {
-                    moveEntity(player.getPos(), South);
+                    map.moveEntity(player.getPos(), South);
                     return true;
                 }
             }
@@ -80,7 +80,7 @@ bool Engine::evaluteInput() {
         case Left:
             if (player.getPos().getX() > 0) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()-1, player.getPos().getY()))) {
-                    moveEntity(player.getPos(), West);
+                    map.moveEntity(player.getPos(), West);
                     return true;
                 }
             }
@@ -88,7 +88,7 @@ bool Engine::evaluteInput() {
         case Right:
             if (player.getPos().getX() < map.getSizeX() - 1) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()+1, player.getPos().getY()))) {
-                    moveEntity(player.getPos(), East);
+                    map.moveEntity(player.getPos(), East);
                     return true;
                 }
             }
@@ -99,27 +99,4 @@ bool Engine::evaluteInput() {
 
 void Engine::evaluteTick() {
     // TODO : Add here
-}
-
-void Engine::moveEntity(Position pos, Direction dir) {
-    Entity* targetEntity = map.getEntityAt(pos);
-    // Removing entity from current position at map
-    map.setTileEntity(targetEntity->getPos(), NULL);
-    // Changing entity position
-    switch (dir) {
-        case North:
-            targetEntity->getPosRef() += Position(0, -1);
-            break;
-        case South:
-            targetEntity->getPosRef() += Position(0, 1);
-            break;
-        case West:
-            targetEntity->getPosRef() += Position(-1, 0);
-            break;
-        case East:
-            targetEntity->getPosRef() += Position(1, 0);
-            break;
-    }
-    // Set entity at new location in map
-    map.setTileEntity(targetEntity->getPos(), targetEntity);
 }
