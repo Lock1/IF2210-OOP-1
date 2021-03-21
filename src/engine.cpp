@@ -102,6 +102,9 @@ bool Engine::evaluteInput() {
                 }
             }
             break;
+        case KeyboardE:
+            messageList.addMessage("MASUKKKKKKKK");
+            break;
     }
     return false;
 }

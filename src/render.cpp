@@ -183,7 +183,11 @@ void Render::drawMessageBox(Message& target) {
     int size = buffer.size();
     for (int i = 0; i < size; i++) {
         setCursorPosition(msgOffsetX, msgOffsetY+i);
-        cout << buffer.front();
+        // String padding
+        string message = buffer.front();
+        for (int j = message.length(); j < target.getMaxStringLength(); j++)
+            message += " ";
+        cout << message;
         buffer.pop();
     }
 

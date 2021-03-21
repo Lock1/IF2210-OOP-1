@@ -36,6 +36,8 @@ void PlayerInput::inputLoop() {
                 inputBuffer.push(Number3);
             if ((GetKeyState('4') & 0x8000))
                 inputBuffer.push(Number4);
+            if ((GetKeyState('E') & 0x8000))
+                inputBuffer.push(KeyboardE);
             if ((GetKeyState(VK_ESCAPE) & 0x8000))
                 inputBuffer.push(EscKey);
             inputLock.unlock();

@@ -17,7 +17,8 @@ enum InputType {
     Number3,
     Number4,
     EscKey,
-    EmptyInput
+    EmptyInput,
+    KeyboardE
 };
 
 class PlayerInput {
