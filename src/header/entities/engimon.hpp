@@ -10,6 +10,7 @@
 #include "entity.hpp"
 #include <string>
 #include <vector>
+#include <set>
 
 // TODO : Species
 
@@ -20,8 +21,7 @@ class Engimon : public Entity {
         // std::string parentName; // TODO : Species (?)
         // ii.    Parent Names & Species
         // std::vector<Skill> learnedSkill;
-        ElementType engimonElement1;
-        // ElementType engimonElement2;
+        std::set<ElementType> engimonElement;
         // int Level;
         // int Experience;
         // int CumulativeExperience;
@@ -40,6 +40,8 @@ class Engimon : public Entity {
         bool isMaxCXP();                                            // If over CumulativeExperience, return true
         bool addSkill(Skill& newSkill);                             // Only add if skill slot enough
         bool deleteskill(Skill& targetSkill);
+
+        std::set<ElementType> getElement();
 
         bool isWildEngimon();
         std::string playerInteract();                               // Print description, only non-wild pokemon

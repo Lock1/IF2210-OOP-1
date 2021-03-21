@@ -5,6 +5,7 @@
 #include "header/entities/map.hpp"
 #include "header/entities/player.hpp"
 #include "header/entities/engimon.hpp"
+#include "header/skilldatabase.hpp"
 #include "header/entities/attributes/elementtype.hpp"
 #include <iostream>
 #include <string>
@@ -32,6 +33,13 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
     // TODO : Database loading
+    // TODO : Put somewhere
+    try {
+        skillDB.loadSkillDatabase("../other/skilldb.txt");
+    }
+    catch (string e) {
+        cout << "Filename not found";
+    }
 }
 
 Engine::~Engine() {
@@ -78,8 +86,10 @@ void Engine::startGame() {
             messageList.addMessage("Move at second : " + to_string((i*100)/1000));
         }
         else if (isCommandMode) {
-            // TODO : Add and fix
+            // TODO : Add and fix, disable temporary
             // evaluateCommand();
+            // Skill temp = skillDB.getSkill(3); // DEBUG
+
             string trash;
             clearConsoleInputBuffer();
             cout << "> ";

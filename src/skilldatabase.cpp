@@ -1,30 +1,72 @@
 //13519206
+#include "header/entities/engimon.hpp"
 #include "header/skilldatabase.hpp"
-#include "header/config.hpp"
+#include <iostream>
+#include <stdio.h>
+#include <fstream>
+#include <string>
+#include <set>
 
-SkillDatabase::SkillDatabase() : skillDatabase() {
+using namespace std;
+
+SkillDatabase::SkillDatabase() {
 
 }
 
-void SkillDatabase::addSkill(Skill& newSkill) {
-	skillList.push_back(newSkill);
+void SkillDatabase::addSkill(Skill newSkill) {
+    skillDatabase.push_back(newSkill);
 }
 
-// TODO : Engimon
-bool SkillDatabase::isCompatible(Engimon engimonTarget, int skillID) {
-	bool found = false;
-	Skill searchedSkill;
-    int i = 0;
-    while(!found && i<skillCount){
-        if(skillList[i].getSkillID() == skillID) {
-		searchedSkill = skillList[i];
-		found = true;
-	}
-        i++;
+
+void SkillDatabase::loadSkillDatabase(string filename) {
+    ifstream skillFile = ifstream(filename);
+    if (skillFile.is_open()) {
+        string skillName;
+        int skillPower;
+        int skillID;
+        string typeString;
+        ElementType skillElement;
+        while (!skillFile.eof()) {
+            skillFile >> skillID;
+            skillFile >> skillName;
+            skillFile >> skillPower;
+            skillFile >> typeString;
+
+            if (typeString == "Ground")
+                skillElement = Ground;
+            else if (typeString == "Electric")
+                skillElement = Electric;
+            else if (typeString == "Fire")
+                skillElement = Fire;
+            else if (typeString == "Water")
+                skillElement = Water;
+            else if (typeString == "Ice")
+                skillElement = Ice;
+            else
+                skillElement = NoElement;
+
+            addSkill(Skill(skillID, skillPower, skillName, skillElement));
+        }
+
+        skillFile.close();
     }
-	// TODO : Add multielement checking
-    bool compatible = searchedSkill.isElementCompatible(engimonTarget.getElement());
-    return found && compatible;
+    else
+        throw filename;
+}
 
+bool SkillDatabase::isCompatible(Engimon engimonTarget, int skillID) {
+    // TODO : Testing after species database done
+    ElementType targetType = getSkill(skillID).getSkillElement();
+    set<ElementType> engimonElements = engimonTarget.getElement();
+    if (engimonElements.find(targetType) != engimonElements.end())
+        return true;
+    else
+        return false;
+}
 
+Skill SkillDatabase::getSkill(int skillID) {
+    for (unsigned int i = 0; i < skillDatabase.size(); i++)
+        if (skillDatabase[i].getSkillID() == skillID)
+            return skillDatabase[i];
+    throw skillID;
 }

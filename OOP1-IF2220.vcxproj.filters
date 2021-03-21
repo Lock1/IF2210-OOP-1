@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Entities\Attributes">
       <UniqueIdentifier>{468c4240-ddc7-45cb-afce-08159631d789}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Entities\Attributes">
+      <UniqueIdentifier>{b06bda40-5517-4ed1-a936-4583a604a415}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\engine.cpp">
@@ -56,6 +59,12 @@
     </ClCompile>
     <ClCompile Include="src\entities-source\engimon.cpp">
       <Filter>Source Files\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\entities-source\attributes\skill.cpp">
+      <Filter>Source Files\Entities\Attributes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\skilldatabase.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
