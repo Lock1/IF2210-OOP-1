@@ -35,7 +35,7 @@ class Engimon : public Entity {
         Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
         Engimon(const Engimon& species, bool wild);                     // TODO : Get from database
 
-        bool isMoveLocationValid(Tile &target) override;            // TODO : Add
+        bool isMoveLocationValid(Tile &target) override;
         bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false
         bool isMaxCXP();                                            // If over CumulativeExperience, return true
         bool addSkill(Skill& newSkill);                             // Only add if skill slot enough

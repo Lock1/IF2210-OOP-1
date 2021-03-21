@@ -107,7 +107,6 @@ bool Engine::evaluteInput() {
     InputType inputKey = userInput.getUserInput();
     bool isMovementValid = false;
     Direction targetDirection;
-    // TODO : Flatten the conditional ladder
     switch (inputKey) {
         case EscKey:
             isEngineRunning = false;
