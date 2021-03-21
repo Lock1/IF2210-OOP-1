@@ -5,8 +5,9 @@
 #include "../header/entities/engimon.hpp"
 #include <iostream>
 
-Player::Player() : Entity(1, 1, EntityPlayer, PLAYER_CHAR), lastPosition(1, 0) {
+Player::Player() : Entity(1, 0, EntityPlayer, PLAYER_CHAR), lastDirection(East) {
     currentEngimon = NULL;
+
 }
 
 Player::~Player() {
@@ -17,6 +18,10 @@ void Player::changeEngimon(Engimon *targetEngimon) {
     currentEngimon = targetEngimon;
 }
 
+Engimon* Player::getCurrentEngimon() {
+    return currentEngimon;
+}
+
 bool Player::isMoveLocationValid(Tile& target) {
     // TODO : If engimon -> false
     if (target.getEntity() == NULL)
@@ -25,10 +30,10 @@ bool Player::isMoveLocationValid(Tile& target) {
         return false;
 }
 
-Position Player::getLastPosition() {
-    return lastPosition;
+Direction Player::getLastDirection() {
+    return lastDirection;
 }
 
-Position& Player::getLastPositionRef() {
-    return lastPosition;
+Direction& Player::getLastDirectionRef() {
+    return lastDirection;
 }

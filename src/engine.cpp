@@ -73,8 +73,10 @@ void Engine::startGame() {
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        if (evaluteInput() && not isCommandMode)
+        if (evaluteInput() && not isCommandMode) {
             evaluteTick();
+            messageList.addMessage("Move at second : " + to_string((i*100)/1000));
+        }
         else if (isCommandMode) {
             // TODO : Add and fix
             // evaluateCommand();
@@ -85,8 +87,7 @@ void Engine::startGame() {
             cout << endl << trash << endl;
             isCommandMode = false;
         }
-        messageList.addMessage(to_string(i));
-        statMessage.addMessage(to_string(5*i));
+        statMessage.addMessage(to_string(i));
         i++;
     }
     userInput.stopReadInput();
@@ -94,6 +95,9 @@ void Engine::startGame() {
 
 bool Engine::evaluteInput() {
     InputType inputKey = userInput.getUserInput();
+    bool isMovementValid = false;
+    Direction targetDirection;
+    // TODO : Flatten the conditional ladder
     switch (inputKey) {
         case EscKey:
             isEngineRunning = false;
@@ -102,33 +106,32 @@ bool Engine::evaluteInput() {
             // TODO : Interaction
             if (player.getPos().getY() > 0) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()-1))) {
-                    // TODO : Follow pokemon
-                    map.moveEntity(player.getPos(), North);
-                    return true;
+                    targetDirection = North;
+                    isMovementValid = true;
                 }
             }
             break;
         case Down:
             if (player.getPos().getY() < map.getSizeY() - 1) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()+1))) {
-                    map.moveEntity(player.getPos(), South);
-                    return true;
+                    targetDirection = South;
+                    isMovementValid = true;
                 }
             }
             break;
         case Left:
             if (player.getPos().getX() > 0) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()-1, player.getPos().getY()))) {
-                    map.moveEntity(player.getPos(), West);
-                    return true;
+                    targetDirection = West;
+                    isMovementValid = true;
                 }
             }
             break;
         case Right:
             if (player.getPos().getX() < map.getSizeX() - 1) {
                 if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()+1, player.getPos().getY()))) {
-                    map.moveEntity(player.getPos(), East);
-                    return true;
+                    targetDirection = East;
+                    isMovementValid = true;
                 }
             }
             break;
@@ -138,6 +141,14 @@ bool Engine::evaluteInput() {
             messageList.addMessage("MASUKKKKKKKK");
             break;
     }
+
+    if (isMovementValid) {
+        map.moveEntity(player.getPos(), targetDirection);
+        map.moveEntity(player.getCurrentEngimon()->getPos(), player.getLastDirection());
+        player.getLastDirectionRef() = targetDirection;
+        return true;
+    }
+
     return false;
 }
 

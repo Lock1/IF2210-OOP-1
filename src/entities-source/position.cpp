@@ -1,5 +1,6 @@
 // 13519214
 #include "../header/entities/position.hpp"
+#include "../header/entities/direction.hpp"
 #include "../header/entities/tile.hpp"
 
 Position::Position(int x, int y) : posX(x), posY(y) {

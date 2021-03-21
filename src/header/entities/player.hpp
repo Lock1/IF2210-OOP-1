@@ -3,6 +3,7 @@
 #define PLAYER_HPP
 
 #include "entity.hpp"
+#include "direction.hpp"
 #include "engimon.hpp"
 #include "tile.hpp"
 
@@ -13,15 +14,16 @@ class Player : public Entity {
         // Inventory<EngimonItem> EngimonInventory;
         // Inventory<SkillItem> EngimonInventory; // TODO : ??
         Engimon *currentEngimon;
-        Position lastPosition;
+        Direction lastDirection;
 
     public:
         Player();
         ~Player();
         void changeEngimon(Engimon *targetEngimon);
+        Engimon* getCurrentEngimon();
         bool isMoveLocationValid(Tile& target) override; // Overriding virtual move() Entity
-        Position getLastPosition();
-        Position& getLastPositionRef();
+        Direction getLastDirection();
+        Direction& getLastDirectionRef();
 };
 
 #endif

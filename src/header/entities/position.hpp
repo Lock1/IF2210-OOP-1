@@ -4,6 +4,8 @@
 #ifndef POSITION_HPP
 #define POSITION_HPP
 
+#include "direction.hpp"
+
 class Tile;
 
 class Position {
