@@ -1,0 +1,34 @@
+// Inventory template
+
+#ifndef INVENTORY
+#define INVENTORY
+
+#include <list>
+#include <map>
+
+// template<class T>
+// class Inventory {
+//     private:
+//         std::list<T> itemList;
+//         const unsigned int maxCapacity;
+//
+//     public:
+//         Inventory(unsigned int maxCap) : maxCapacity(maxCap), itemList() {
+//         }
+//
+//         std::list<T> getItemList() {
+//             return itemList;
+//         }
+//         // Getting entire copy list of inventory
+//
+//         bool addItem(T item) {
+//
+//         }
+//         // Return false if overcapacity
+//         bool deleteItem(T item) {
+//
+//         }
+//         // Return false if not found item
+// };
+
+#endif

@@ -75,7 +75,7 @@ void Engine::startGame() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
-            messageList.addMessage("Move at second : " + to_string((i*100)/1000));
+            messageList.addMessage("Move to : " + to_string(player.getPos().getX()) + "," + to_string(player.getPos().getY()));
         }
         else if (isCommandMode) {
             // TODO : Add and fix
