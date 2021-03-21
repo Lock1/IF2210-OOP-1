@@ -2,18 +2,19 @@
 
 #include "../header/entities/player.hpp"
 #include "../header/entities/entity.hpp"
+#include "../header/entities/engimon.hpp"
 #include <iostream>
 
-Player::Player() : Entity(0, 0, EntityPlayer, PLAYER_CHAR), lastPosition(0, 0) {
-
+Player::Player() : Entity(1, 1, EntityPlayer, PLAYER_CHAR), lastPosition(1, 0) {
+    currentEngimon = NULL;
 }
 
 Player::~Player() {
     // TODO : Maybe not needed
 }
 
-void Player::changeEngimon() {
-    // TODO : Add
+void Player::changeEngimon(Engimon *targetEngimon) {
+    currentEngimon = targetEngimon;
 }
 
 bool Player::isMoveLocationValid(Tile& target) {
@@ -25,5 +26,9 @@ bool Player::isMoveLocationValid(Tile& target) {
 }
 
 Position Player::getLastPosition() {
+    return lastPosition;
+}
+
+Position& Player::getLastPositionRef() {
     return lastPosition;
 }

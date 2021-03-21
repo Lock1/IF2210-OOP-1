@@ -24,6 +24,7 @@ class Engine {
         Render renderer;
         Render statRenderer;
         bool isEngineRunning;
+        bool isCommandMode;
         std::vector<Engimon*> engimonList;
 
         const unsigned int wildEngimonSpawnProbability;
@@ -31,6 +32,8 @@ class Engine {
         const unsigned int entitySpawnLimit;
         // Entity count limit, player included
 
+        void clearConsoleInputBuffer();
+        // Clearing getKeyState() from cin
         bool evaluteInput();
         // Evaluating input from PlayerInput class, if evaluated, return true
         void evaluteTick();
