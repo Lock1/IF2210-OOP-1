@@ -121,14 +121,13 @@ Engimon* Map::spawnWildEngimon(Species target) {
     do {
         randomX = rand() % sizeX;
         randomY = rand() % sizeY;
-        if (getEntityAt(randomX, randomY) == NULL)
-            isValidLocation = true;
+        if (getEntityAt(randomX, randomY) == NULL) {
+            if (target.isTileCompatible(getTileTypeAt(randomX, randomY)))
+                isValidLocation = true;
+        }
     } while (!isValidLocation);
 
-    // TODO : Get generator from database with tile type checking
-    // TODO : ^ maybe
     Position targetPos = Position(randomX, randomY);
-    // Entity *wildEngimon = new Engimon(targetPos, Ground, '#', true);
     Entity *wildEngimon = new Engimon(target, true, targetPos);
     setTileEntity(targetPos, wildEngimon);
     return (Engimon *) wildEngimon;

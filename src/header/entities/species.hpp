@@ -5,6 +5,7 @@
 
 #include "attributes/elementtype.hpp"
 #include "attributes/skill.hpp"
+#include "tile.hpp"
 #include <string>
 #include <set>
 
@@ -27,6 +28,8 @@ class Species {
         int getSpeciesID();
         char getSpeciesChar();
         std::set<ElementType> getElements();
+
+        bool isTileCompatible(TileType type);
 };
 
 #endif

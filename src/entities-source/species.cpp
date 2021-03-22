@@ -38,6 +38,20 @@ Species::Species(int id, string name, Skill skill, string desc, ElementType elem
 		speciesChar = 'g';
 }
 
+
+bool Species::isTileCompatible(TileType type) {
+    bool isAbleToTraverseSea = (elements.find(Water) != elements.end()) || (elements.find(Ice) != elements.end());
+    bool isAbleToTraverseGrass = (elements.find(Fire) != elements.end())
+                                    || (elements.find(Ground) != elements.end())
+                                    || (elements.find(Electric) != elements.end());
+    if (isAbleToTraverseSea && (type == Sea))
+        return true;
+    else if (isAbleToTraverseGrass && (type == Grass))
+        return true;
+    else
+        return false;
+}
+
 string Species::getName() {
 	return speciesName;
 }

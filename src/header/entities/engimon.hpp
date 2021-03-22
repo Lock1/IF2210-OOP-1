@@ -23,8 +23,6 @@ class Engimon : public Entity, Species {
         // vector<Species> parentSpecies;
         std::vector<std::string> parentNames;
 
-        std::set<ElementType> engimonElement;
-
         int Level;
         int Experience;
         int CumulativeExperience;
