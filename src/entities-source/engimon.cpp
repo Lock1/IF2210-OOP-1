@@ -10,42 +10,31 @@ using namespace std;
 
 Engimon::Engimon(Position pos, ElementType type1, char icon, bool wild) : Entity(pos, EntityEngimon, icon) {
     isWild = wild;
-    engimonElement.insert(type1);
+    // engimonElement.insert(type1);
+    // WARNING : Basic, only for debugging
 }
-// WARNING : Basic, only for debugging
 
-// Engimon::Engimon(const Engimon& species) {
-//
-// }
-// TODO : Get from database
+Engimon::Engimon(Species species, bool wild, Position pos) : Species(species), Entity(pos, EntityEngimon, species.getSpeciesChar()) {
+    Level = 9; // TODO : Level random
+    Experience = 0;
+    CumulativeExperience = 0;
+    isWild = wild;
 
+    // bool addSkill(Skill newSkill);           TODO : Add skill from species
+    // bool deleteskill(Skill targetSkill);
+}
 
-// Engimon::Engimon(const Species& species, bool wild, Position pos) : Species(species) {
-//     this->isWild = wild;
-//     this->currentPosition = pos;
-// }
+// bool addSkill(Skill newSkill);          TODO : Add
+// bool deleteskill(Skill targetSkill);
 
 
 set<ElementType> Engimon::getElement() {
-    return engimonElement;
+    return elements;
 }
 
-
-bool Engimon::isTileCompatible(TileType type) {
-    bool isAbleToTraverseSea = (engimonElement.find(Water) != engimonElement.end()) || (engimonElement.find(Ice) != engimonElement.end());
-    bool isAbleToTraverseGrass = (engimonElement.find(Fire) != engimonElement.end())
-                                    || (engimonElement.find(Ground) != engimonElement.end())
-                                    || (engimonElement.find(Electric) != engimonElement.end());
-    if (isAbleToTraverseSea && (type == Sea))
-        return true;
-    else if (isAbleToTraverseGrass && (type == Grass))
-        return true;
-    else
-        return false;
-}
 
 bool Engimon::isMoveLocationValid(Tile& target) {
-    if (target.getEntity() == NULL && isTileCompatible(target.getTileType()))
+    if (target.getEntity() == NULL && Species::isTileCompatible(target.getTileType()))
         return true;
     else
         return false;

@@ -5,7 +5,9 @@
 #include "header/entities/map.hpp"
 #include "header/entities/player.hpp"
 #include "header/entities/engimon.hpp"
+#include "header/entities/species.hpp"
 #include "header/skilldatabase.hpp"
+#include "header/speciesdatabase.hpp"
 #include "header/entities/attributes/elementtype.hpp"
 #include <iostream>
 #include <string>
@@ -21,7 +23,7 @@ using namespace std;
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X), player(),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y),
         map("../other/mapfile.txt"),
-        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(2), entitySpawnLimit(20),
+        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20), // DEBUG
         renderer(map, messageList), statRenderer(statMessage) {
     // Internal variable setup
     srand((unsigned) time(NULL));
@@ -33,13 +35,21 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
 
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
-    // TODO : Database loading
-    // TODO : Put somewhere
+
+    // TODO : Add prompt (?)
+    // TODO : Add splash screen (?)
     try {
         skillDB.loadSkillDatabase("../other/skilldb.txt");
     }
     catch (string e) {
-        cout << "Filename not found";
+        cout << "Skill database not found\n";
+    }
+
+    try {
+        speciesDB.loadSpeciesDatabase("../other/speciesdb.txt", skillDB);
+    }
+    catch (string e) {
+        cout << "Species database not found\n";
     }
 }
 
@@ -64,7 +74,8 @@ void Engine::startGame() {
 
     map.setTileEntity(player.getPos(), &player);
     // DEBUG
-    engimonList.push_back(new Engimon(Position(0, 0), Electric, 'z', false));
+    // engimonList.push_back(new Engimon(Position(0, 0), Electric, 'z', false));
+    engimonList.push_back(new Engimon(speciesDB.getSpecies(3), false, Position(0, 0)));
     player.changeEngimon(engimonList[0]);
     // ^ Starter
     // engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x', true));
@@ -78,10 +89,12 @@ void Engine::startGame() {
 
     userInput.startReadInput();
     while (isEngineRunning) {
+        // Drawing map and message box
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
             messageList.addMessage("Move at second : " + to_string((i*100)/1000));
@@ -89,9 +102,6 @@ void Engine::startGame() {
         else if (isCommandMode) {
             // TODO : Add and fix, disable temporary
             // evaluateCommand();
-            // Skill temp = skillDB.getSkill(3); // DEBUG
-
-            // Map test = Map("../other/mapfile.txt");
 
             string trash;
             clearConsoleInputBuffer();
@@ -100,6 +110,7 @@ void Engine::startGame() {
             cout << endl << trash << endl;
             isCommandMode = false;
         }
+        // DEBUG
         statMessage.addMessage(to_string(i));
         i++;
     }
@@ -168,6 +179,9 @@ void Engine::evaluteTick() {
     // TODO : Add here
     map.wildEngimonRandomMove();
     unsigned int randomNumber = rand() % 100;
-    if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability)
-        map.spawnWildEngimon();
+    if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability) {
+        unsigned int randomSpeciesID = (rand() % (speciesDB.getSpeciesCount() - 1)) + 1;
+        // TODO : Extra, fix mod operator
+        engimonList.push_back(map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID)));
+    }
 }

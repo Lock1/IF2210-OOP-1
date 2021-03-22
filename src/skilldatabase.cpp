@@ -54,7 +54,7 @@ void SkillDatabase::loadSkillDatabase(string filename) {
         throw filename;
 }
 
-bool SkillDatabase::isCompatible(Engimon engimonTarget, int skillID) {
+bool SkillDatabase::isCompatible(Engimon& engimonTarget, int skillID) {
     // TODO : Testing after species database done
     ElementType targetType = getSkill(skillID).getSkillElement();
     set<ElementType> engimonElements = engimonTarget.getElement();

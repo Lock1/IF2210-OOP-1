@@ -28,7 +28,7 @@ Map::Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY)
     }
 }
 
-Map::Map(string filename) : randomEngimonMoveProbability(15) {
+Map::Map(string filename) : randomEngimonMoveProbability(20) {
     // Unused
     seaStartX = 0;
     seaStartY = 0;
@@ -115,19 +115,20 @@ void Map::wildEngimonRandomMove() {
     }
 }
 
-Engimon* Map::spawnWildEngimon() {
+Engimon* Map::spawnWildEngimon(Species target) {
     bool isValidLocation = false;
     int randomX, randomY;
     do {
         randomX = rand() % sizeX;
         randomY = rand() % sizeY;
-        if (getEntityAt(randomX, randomY) == NULL)
-            isValidLocation = true;
+        if (getEntityAt(randomX, randomY) == NULL) {
+            if (target.isTileCompatible(getTileTypeAt(randomX, randomY)))
+                isValidLocation = true;
+        }
     } while (!isValidLocation);
 
-    // TODO : Get generator from database with tile type checking
     Position targetPos = Position(randomX, randomY);
-    Entity *wildEngimon = new Engimon(targetPos, Ground, '#', true);
+    Entity *wildEngimon = new Engimon(target, true, targetPos);
     setTileEntity(targetPos, wildEngimon);
     return (Engimon *) wildEngimon;
 }

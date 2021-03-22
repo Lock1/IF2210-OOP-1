@@ -9,6 +9,7 @@
 #include "entity.hpp"
 #include "engimon.hpp"
 #include "tile.hpp"
+#include "species.hpp"
 #include <vector>
 #include <string>
 
@@ -32,7 +33,7 @@ class Map {
 
         void wildEngimonRandomMove();
         // Move all wild pokemon with element type checking
-        Engimon* spawnWildEngimon();
+        Engimon* spawnWildEngimon(Species target);
         // Spawn random wild engimon at random valid position,
         // returning allocated heap pointer
         // WARNING : Will allocating at heap memory
