@@ -20,7 +20,7 @@ class SkillDatabase {
         // Load skill from database file, will throw filename if can't find file
         void addSkill(Skill newSkill);
         // Add skill to database
-        bool isCompatible(Engimon engimonTarget, int skillID);
+        bool isCompatible(Engimon& engimonTarget, int skillID);
         // Search existing skillID in database and check engimon compatible or not
         // NOTE : Will throw skillID if not found
         Skill getSkill(int skillID);

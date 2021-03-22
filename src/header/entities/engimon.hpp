@@ -28,11 +28,9 @@ class Engimon : public Entity, Species {
         int CumulativeExperience;
         bool isWild;
 
-        bool isTileCompatible(TileType type);
-        // Tile compatibility checking
     public:
         Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
-        Engimon(Species& species, bool wild, Position pos);
+        Engimon(Species species, bool wild, Position pos);
 
         bool isMoveLocationValid(Tile &target) override;
         bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false

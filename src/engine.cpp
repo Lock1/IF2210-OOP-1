@@ -35,8 +35,9 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
 
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
-    // TODO : Database loading
-    // TODO : Put somewhere
+
+    // TODO : Add prompt (?)
+    // TODO : Add splash screen (?)
     try {
         skillDB.loadSkillDatabase("../other/skilldb.txt");
     }
@@ -73,7 +74,8 @@ void Engine::startGame() {
 
     map.setTileEntity(player.getPos(), &player);
     // DEBUG
-    engimonList.push_back(new Engimon(Position(0, 0), Electric, 'z', false));
+    // engimonList.push_back(new Engimon(Position(0, 0), Electric, 'z', false));
+    engimonList.push_back(new Engimon(speciesDB.getSpecies(3), false, Position(0, 0)));
     player.changeEngimon(engimonList[0]);
     // ^ Starter
     // engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x', true));
@@ -87,10 +89,12 @@ void Engine::startGame() {
 
     userInput.startReadInput();
     while (isEngineRunning) {
+        // Drawing map and message box
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
             messageList.addMessage("Move at second : " + to_string((i*100)/1000));
@@ -106,6 +110,7 @@ void Engine::startGame() {
             cout << endl << trash << endl;
             isCommandMode = false;
         }
+        // DEBUG
         statMessage.addMessage(to_string(i));
         i++;
     }

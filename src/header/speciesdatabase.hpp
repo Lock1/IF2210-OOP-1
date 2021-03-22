@@ -27,7 +27,7 @@ class SpeciesDatabase {
         void addSpecies(Species newSpecies);
         // Add species to database
         Species getSpecies(int speciesID);
-        // Return skill with same species ID, will throw speciesID if not found
+        // Return species with same species ID, will throw speciesID if not found
         unsigned int getSpeciesCount();
         // Get current species count
 };
