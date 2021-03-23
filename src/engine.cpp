@@ -21,7 +21,7 @@
 using namespace std;
 
 
-Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
+Engine::Engine() : messageList(MAX_MESSAGE-10, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
         thisisfine(MAX_MESSAGE-15, MSG_MAX_X-5), // DEBUG
         player(),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
@@ -33,7 +33,7 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     isEngineRunning = true;
     isCommandMode = false;
     renderer.setMapOffset(MAP_OFFSET_X, MAP_OFFSET_Y);
-    renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y);
+    renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y + 10);
     renderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
@@ -107,7 +107,6 @@ void Engine::startGame() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
-            messageList.addMessage("Move to : " + to_string(player.getPos().getX()) + "," + to_string(player.getPos().getY()));
         }
         else if (isCommandMode) {
             commandMode();
@@ -122,6 +121,7 @@ void Engine::startGame() {
 
 bool Engine::evaluteInput() {
     InputType inputKey = userInput.getUserInput();
+    Tile targetTile = Tile(0, 0, Grass);
     bool isMovementValid = false;
     Direction targetDirection;
     switch (inputKey) {
@@ -129,9 +129,10 @@ bool Engine::evaluteInput() {
             isEngineRunning = false;
             break;
         case Up:
-            // TODO : Interaction
+            // TODO : Interaction completion
             if (player.getPos().getY() > 0) {
-                if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()-1))) {
+                targetTile = map.getTileAt(player.getPos().getX(), player.getPos().getY()-1);
+                if (player.isMoveLocationValid(targetTile)) {
                     targetDirection = North;
                     isMovementValid = true;
                 }
@@ -139,7 +140,8 @@ bool Engine::evaluteInput() {
             break;
         case Down:
             if (player.getPos().getY() < map.getSizeY() - 1) {
-                if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX(), player.getPos().getY()+1))) {
+                targetTile = map.getTileAt(player.getPos().getX(), player.getPos().getY()+1);
+                if (player.isMoveLocationValid(targetTile)) {
                     targetDirection = South;
                     isMovementValid = true;
                 }
@@ -147,7 +149,8 @@ bool Engine::evaluteInput() {
             break;
         case Left:
             if (player.getPos().getX() > 0) {
-                if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()-1, player.getPos().getY()))) {
+                targetTile = map.getTileAt(player.getPos().getX()-1, player.getPos().getY());
+                if (player.isMoveLocationValid(targetTile)) {
                     targetDirection = West;
                     isMovementValid = true;
                 }
@@ -155,7 +158,8 @@ bool Engine::evaluteInput() {
             break;
         case Right:
             if (player.getPos().getX() < map.getSizeX() - 1) {
-                if (player.isMoveLocationValid(map.getTileAt(player.getPos().getX()+1, player.getPos().getY()))) {
+                targetTile = map.getTileAt(player.getPos().getX()+1, player.getPos().getY());
+                if (player.isMoveLocationValid(targetTile)) {
                     targetDirection = East;
                     isMovementValid = true;
                 }
@@ -173,6 +177,18 @@ bool Engine::evaluteInput() {
         map.moveEntity(player.getCurrentEngimon()->getPos(), player.getLastDirection());
         player.getLastDirectionRef() = targetDirection;
         return true;
+    }
+    else if (targetTile.getEntity() != NULL) {
+        Entity* targetEntity = targetTile.getEntity();
+        if (targetEntity->getEntityID() == EntityEngimon) {
+            Engimon *targetEngimon = (Engimon *) targetEntity;
+            if (not targetEngimon->isWildEngimon()) {
+                string interactionMessage = targetEngimon->getEngimonName();
+                interactionMessage = interactionMessage + " : ";
+                interactionMessage = interactionMessage + targetEngimon->getInteractString();
+                messageList.addMessage(interactionMessage);
+            }
+        }
     }
 
     return false;

@@ -13,18 +13,18 @@
 #include <vector>
 #include <set>
 
-class Engimon : public Entity, Species {
+class Engimon : public Entity, public Species {
     private:
-        // std::string Name;
+        std::string engimonName;
         std::vector<Skill> learnedSkill;
 
         // TODO : Breeding interaction
         // vector<Species> parentSpecies;
         std::vector<std::string> parentNames;
 
-        int Level;
-        int Experience;
-        int CumulativeExperience;
+        int level; // TODO : Getter
+        int experience;
+        int cumulativeExperience;
         bool isWild;
 
     public:
@@ -41,9 +41,10 @@ class Engimon : public Entity, Species {
         // TODO : isWild changer to false
 
         std::set<ElementType> getElement();
+        std::string getEngimonName();
 
         bool isWildEngimon();
-        std::string playerInteract();                               // Print description, only non-wild pokemon
+        std::string getInteractString();                               // Get description, only non-wild pokemon
 };
 
 

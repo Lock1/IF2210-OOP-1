@@ -28,6 +28,10 @@ void SpeciesDatabase::loadSpeciesDatabase(string filename, SkillDatabase& skillD
             ElementType secondType = stringToElement(typeString);
             speciesFile >> interactionDescription;
 
+            for (unsigned int i = 0; i < interactionDescription.length(); i++)
+                if (interactionDescription[i] == '-')
+                    interactionDescription[i] = ' ';
+
             if (secondType != NoElement)
                 addSpecies(Species(speciesID, speciesName, skillDB.getSkill(speciesID), interactionDescription, firstType, secondType));
             else
