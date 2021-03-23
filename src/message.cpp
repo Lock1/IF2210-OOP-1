@@ -18,6 +18,11 @@ void Message::addMessage(std::string newMsg) {
     messageQueue.push(newMsg);
 }
 
+void Message::clearMessage() {
+    for (unsigned i = 0; i < maxQueue; i++)
+        messageQueue.push("");
+}
+
 std::queue<std::string> Message::showMessage() {
     return messageQueue;
 }

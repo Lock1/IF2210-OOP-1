@@ -21,6 +21,9 @@ class Message {
         std::queue<std::string> showMessage();
         // Return copy queue of messages
 
+        void clearMessage();
+        // Push empty string to wipe message queue
+
         int getMaxMessage();
         // Get max message contained
 

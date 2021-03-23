@@ -81,17 +81,10 @@ void Engine::startGame() {
 
     map.setTileEntity(player.getPos(), &player);
     // DEBUG
-    // engimonList.push_back(new Engimon(Position(0, 0), Electric, 'z', false));
-    engimonList.push_back(new Engimon(speciesDB.getSpecies(3), false, Position(0, 0)));
+    engimonList.push_back(new Engimon(speciesDB.getSpecies(4), false, Position(0, 0)));
     player.changeEngimon(engimonList[0]);
-    // ^ Starter
-    // engimonList.push_back(new Engimon(Position(15, 10), Ground, 'x', true));
-    // engimonList.push_back(new Engimon(Position(40, 20), Water, 'a', true));
-    // engimonList.push_back(new Engimon(Position(25, 15), Ground, 'b', false));
+
     map.setTileEntity(engimonList[0]->getPos(), engimonList[0]);
-    // map.setTileEntity(engimonList[1]->getPos(), engimonList[1]);
-    // map.setTileEntity(engimonList[2]->getPos(), engimonList[2]);
-    // map.setTileEntity(engimonList[3]->getPos(), engimonList[3]);
 
 
     userInput.startReadInput();
@@ -217,6 +210,12 @@ void Engine::commandMode() {
     if (commandBuffer == "dbg") {
 
     }
+    // TODO : Add
+    // else if (commandBuffer == "breed")
+    // else if (commandBuffer == "item")
+    // else if (commandBuffer == "engimon")
+    // else if (commandBuffer == "change")
+    // else if (commandBuffer == "detail")
 
     userInput.toggleReadInput();
     renderer.clearCursorRestArea();
