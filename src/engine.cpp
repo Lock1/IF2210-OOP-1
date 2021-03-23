@@ -6,6 +6,7 @@
 #include "header/entities/player.hpp"
 #include "header/entities/engimon.hpp"
 #include "header/entities/attributes/elementtype.hpp"
+#include "header/inventory"
 #include <iostream>
 #include <string>
 #include <chrono>       // Time and tick system
