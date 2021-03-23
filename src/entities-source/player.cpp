@@ -18,6 +18,8 @@ Player::~Player() {
 }
 
 void Player::changeEngimon(Engimon *targetEngimon) {
+    if (currentEngimon != NULL)
+        targetEngimon->getPosRef() = currentEngimon->getPos();
     currentEngimon = targetEngimon;
 }
 

@@ -22,7 +22,7 @@ class Engimon : public Entity, public Species {
         // vector<Species> parentSpecies;
         std::vector<std::string> parentNames;
 
-        int level; // TODO : Getter
+        int level;
         int experience;
         int cumulativeExperience;
         bool isWild;

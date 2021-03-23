@@ -23,6 +23,11 @@ void Message::clearMessage() {
         messageQueue.pop();
 }
 
+void Message::fillEmptyBuffer() {
+    for (unsigned i = 0; i < maxQueue; i++)
+        addMessage("                                 ");
+}
+
 std::queue<std::string> Message::showMessage() {
     return messageQueue;
 }

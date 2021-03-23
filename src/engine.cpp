@@ -206,9 +206,17 @@ void Engine::commandMode() {
     string commandBuffer;
     cout << ">>> ";
     getline(cin, commandBuffer);
-    cout << endl << commandBuffer << endl; // TODO : Add
+    cout << endl << commandBuffer << endl;
+
+    messageList.fillEmptyBuffer();
+    renderer.drawMessageBox(messageList);
+    messageList.clearMessage();
+    // Clearing message list window
+
     if (commandBuffer == "dbg") { // DEBUG
         player.addEngimonItem(new Engimon(speciesDB.getSpecies(3), false, Position(0, 0)));
+        player.addEngimonItem(new Engimon(speciesDB.getSpecies(2), false, Position(0, 0)));
+        player.addEngimonItem(new Engimon(speciesDB.getSpecies(1), false, Position(0, 0)));
         player.addSkillItem(4);
         player.addSkillItem(3);
         player.addSkillItem(7);
@@ -219,6 +227,7 @@ void Engine::commandMode() {
         // TODO : Print everything + parent
         // TODO : Maybe add press enter to continue print
         list<EngimonItem> engimonInv = player.getEngimonInventory();
+        int number = 1;
         for (auto it = engimonInv.begin(); it != engimonInv.end(); ++it) {
             Engimon *targetEngimon = *it;
             string speciesNameMsg = "Species | ";
@@ -250,12 +259,20 @@ void Engine::commandMode() {
             else if (elements.find(Electric) != elements.end())
             typeMsg = typeMsg + "Electric ";
             messageList.addMessage(typeMsg);
-
+            // TODO : Print skill
             messageList.addMessage("");
-
+            number++;
+            if ((number-1) % 3 == 0 && number > 1) {
+                messageList.addMessage("Press enter to print next");
+                renderer.drawMessageBox(messageList);
+                renderer.clearCursorRestArea();
+                cout << ">>> ";
+                getline(cin, commandBuffer);
+                messageList.addMessage("");
+            }
         }
     }
-    else if (commandBuffer == "item") {
+    else if (commandBuffer == "inventory") {
         messageList.addMessage("ID Name    Count  Type");
         std::map<SkillItem,int> skillInv = player.getSkillInventory();
         for (int i = 0; i < maxSkillID; i++) {
@@ -285,8 +302,92 @@ void Engine::commandMode() {
         }
         // TODO : Use item
     }
-    // else if (commandBuffer == "change")
+    else if (commandBuffer == "change") {
+        messageList.addMessage("Select Engimon Number");
+        list<EngimonItem> engimonInv = player.getEngimonInventory();
+        int number = 1;
+        for (auto it = engimonInv.begin(); it != engimonInv.end(); ++it) {
+            Engimon *targetEngimon = *it;
+            string numberMsg = "-------";
+            numberMsg = numberMsg + to_string(number) + numberMsg;
+            messageList.addMessage(numberMsg);
+            number++;
+
+            string nameMsg = "Name    | ";
+            nameMsg = nameMsg + targetEngimon->getEngimonName();
+            messageList.addMessage(nameMsg);
+
+            string levelMsg = "Lvl     | ";
+            levelMsg = levelMsg + to_string(targetEngimon->getLevel());
+            messageList.addMessage(levelMsg);
+
+            set<ElementType> elements = targetEngimon->getElements();
+            string typeMsg = "Type    | ";
+            if (elements.find(Fire) != elements.end())
+                typeMsg = typeMsg + "Fire ";
+            else if (elements.find(Ice) != elements.end())
+                typeMsg = typeMsg + "Ice ";
+            else if (elements.find(Water) != elements.end())
+                typeMsg = typeMsg + "Water ";
+            else if (elements.find(Ground) != elements.end())
+                typeMsg = typeMsg + "Ground ";
+            else if (elements.find(Electric) != elements.end())
+            typeMsg = typeMsg + "Electric ";
+                messageList.addMessage(typeMsg);
+
+            messageList.addMessage("");
+            if ((number-1) % 3 == 0 && number > 1) {
+                messageList.addMessage("Press enter to print next");
+                renderer.drawMessageBox(messageList);
+                renderer.clearCursorRestArea();
+                cout << ">>> ";
+                getline(cin, commandBuffer);
+                messageList.addMessage("");
+            }
+        }
+        bool doneChanging = false;
+        messageList.addMessage("End of inventory list");
+        messageList.addMessage("");
+        messageList.addMessage("Input engimon number");
+        while (not doneChanging) {
+            renderer.drawMessageBox(messageList);
+            renderer.clearCursorRestArea();
+            cout << ">>> ";
+            getline(cin, commandBuffer);
+
+            // Trying to parsing to int
+            int targetNumber;
+            bool successParsing = false;
+            try {
+                targetNumber = stoi(commandBuffer);
+                successParsing = true;
+            }
+            catch (invalid_argument e) {
+                messageList.addMessage("Invalid input");
+            }
+
+            // If number are in valid range, then change
+            if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
+                doneChanging = true;
+                auto it = engimonInv.begin();
+                int i = 0;
+                while (i < targetNumber-1) {
+                    i++;
+                    ++it;
+                }
+                Engimon *targetEngimon = *it;
+                string changingString = "Changed to ";
+                changingString = changingString + targetEngimon->getEngimonName();
+                messageList.addMessage(changingString);
+            }
+            else if (successParsing) {
+                messageList.addMessage("Number is out of range");
+            }
+        }
+    }
     // else if (commandBuffer == "detail")
+    // else if (commandBuffer == "help")
+
 
     // getline(cin, commandBuffer);
     userInput.toggleReadInput();
