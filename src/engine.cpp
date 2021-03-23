@@ -8,6 +8,7 @@
 #include "header/entities/species.hpp"
 #include "header/skilldatabase.hpp"
 #include "header/speciesdatabase.hpp"
+#include "header/battle.hpp"
 #include "header/entities/attributes/elementtype.hpp"
 #include "header/inventory"
 #include <iostream>
@@ -225,8 +226,21 @@ bool Engine::evaluteInput() {
                     cout << ">>> ";
                     getline(cin, commandBuffer);
                     if (commandBuffer == "yes" || commandBuffer == "y") {
-                        // TODO : Battle
                         // TODO : Level up increase spawnLevelCap
+                        Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
+                        switch (doBattle.getBattleWinner()) {
+                            case 1:
+                                messageList.addMessage("enemy dies");
+                                // TODO : Catch
+                                break;
+                            case 2:
+                                messageList.addMessage("your engimon dies");
+                                break;
+                            default:
+                                messageList.addMessage("both dies");
+                                break;
+                        }
+
                         isPromptDone = true;
                     }
                     else if (commandBuffer == "no" || commandBuffer == "n")
