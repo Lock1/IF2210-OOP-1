@@ -23,7 +23,7 @@ using namespace std;
 
 
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
-        thisisfine(MAX_MESSAGE-15, MSG_MAX_X-5), // DEBUG
+        thisisfine(MAX_MESSAGE-12, MSG_MAX_X-5), // DEBUG
         player(MAX_INVENTORY, MAX_SKILL_ID), maxSkillID(MAX_SKILL_ID),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
         map("../other/mapfile.txt"),
@@ -41,9 +41,10 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // DEBUG
-    ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+13);
+    ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
     ok.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
+    // Set message box titles
     renderer.setMessageTitle("Ini kotak gan");
     statRenderer.setMessageTitle("Ini bukan kotak");
     ok.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
@@ -80,7 +81,6 @@ void Engine::clearConsoleInputBuffer() {
 
 
 void Engine::startGame() {
-    // TODO : Put game here
     system(CLEAR_SCREEN_CMD);
 
     map.setTileEntity(player.getPos(), &player);
@@ -124,7 +124,6 @@ bool Engine::evaluteInput() {
             isEngineRunning = false;
             break;
         case Up:
-            // TODO : Interaction completion
             if (player.getPos().getY() > 0) {
                 targetTile = map.getTileAt(player.getPos().getX(), player.getPos().getY()-1);
                 if (player.isMoveLocationValid(targetTile)) {
@@ -180,6 +179,59 @@ bool Engine::evaluteInput() {
                 interactionMessage = interactionMessage + " : ";
                 interactionMessage = interactionMessage + targetEngimon->getInteractString();
                 messageList.addMessage(interactionMessage);
+            }
+            else {
+                thisisfine.fillEmptyBuffer();
+                ok.drawMessageBox(thisisfine);
+                thisisfine.clearMessage();
+
+                string wildEngimonName = "Species \xB3 ";
+                wildEngimonName = wildEngimonName + targetEngimon->getName();
+                thisisfine.addMessage(wildEngimonName);
+
+                string wildEngimonLevel = "Lvl     \xB3 ";
+                wildEngimonLevel = wildEngimonLevel + to_string(targetEngimon->getLevel());
+                thisisfine.addMessage(wildEngimonLevel);
+
+                set<ElementType> elements = targetEngimon->getElements();
+                string typeMsg = "Type    \xB3 ";
+                if (elements.find(Fire) != elements.end())
+                    typeMsg = typeMsg + "Fire ";
+                else if (elements.find(Ice) != elements.end())
+                    typeMsg = typeMsg + "Ice ";
+                else if (elements.find(Water) != elements.end())
+                    typeMsg = typeMsg + "Water ";
+                else if (elements.find(Ground) != elements.end())
+                    typeMsg = typeMsg + "Ground ";
+                else if (elements.find(Electric) != elements.end())
+                    typeMsg = typeMsg + "Electric ";
+                thisisfine.addMessage(typeMsg);
+
+                // TODO : Battle
+                userInput.toggleReadInput();
+                // Temporary stop input thread from queueing movement input
+                clearConsoleInputBuffer();
+                // Clearing current input buffer (GetKeyState() does not clear buffer)
+                thisisfine.addMessage("");
+                thisisfine.addMessage("");
+                thisisfine.addMessage("Fight ? (yes/no)");
+                ok.drawMessageBox(thisisfine);
+
+                string commandBuffer;
+                bool isPromptDone = false;
+                while (not isPromptDone) {
+                    renderer.clearCursorRestArea();
+                    cout << ">>> ";
+                    getline(cin, commandBuffer);
+                    if (commandBuffer == "yes" || commandBuffer == "y") {
+                        isPromptDone = true;
+                    }
+                    else if (commandBuffer == "no" || commandBuffer == "n") {
+                        isPromptDone = true;
+                    }
+                }
+                userInput.toggleReadInput();
+                renderer.clearCursorRestArea();
             }
         }
     }
