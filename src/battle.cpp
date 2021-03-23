@@ -90,7 +90,9 @@ Battle::Battle(Engimon *e1, Engimon *e2){
                 }else{
                     adv1 = getElementAdvantage(type1_1, type2_1);
                 }
-            } else{ // getElementAdvantage(type1_1, type2_1) < getElementAdvantage(type1_2, type2_1)
+            }
+
+            if (getElementAdvantage(type1_1, type2_1) < getElementAdvantage(type1_2, type2_1)) {
                 if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_1, type2_2)){
                     adv2 = getElementAdvantage(type1_2, type2_1);
                 }else{
@@ -100,11 +102,11 @@ Battle::Battle(Engimon *e1, Engimon *e2){
         }
     }
 
-
-    //getElementAdvantage(elem_e1,elem_e2)
-    //getElementAdvantage(elem_e2,elem_e2)
-    // sum_e1 += e1->getLevel() * adv1;
-    // sum_e2 += e2->getLevel() * adv2;
+    //
+    // getElementAdvantage(elem_e1,elem_e2)
+    // getElementAdvantage(elem_e2,elem_e2)
+    sum_e1 += e1->getLevel() * adv1;
+    sum_e2 += e2->getLevel() * adv2;
 
     // cout << "Power Engimon 1 : " << sum_e1 << endl;
     // cout << "Power Engimon 2 : " << sum_e2 << endl;

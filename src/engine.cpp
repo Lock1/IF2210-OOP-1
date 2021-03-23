@@ -199,13 +199,13 @@ bool Engine::evaluteInput() {
                 string typeMsg = "Type    \xB3 ";
                 if (elements.find(Fire) != elements.end())
                     typeMsg = typeMsg + "Fire ";
-                else if (elements.find(Ice) != elements.end())
+                if (elements.find(Ice) != elements.end())
                     typeMsg = typeMsg + "Ice ";
-                else if (elements.find(Water) != elements.end())
+                if (elements.find(Water) != elements.end())
                     typeMsg = typeMsg + "Water ";
-                else if (elements.find(Ground) != elements.end())
+                if (elements.find(Ground) != elements.end())
                     typeMsg = typeMsg + "Ground ";
-                else if (elements.find(Electric) != elements.end())
+                if (elements.find(Electric) != elements.end())
                     typeMsg = typeMsg + "Electric ";
                 thisisfine.addMessage(typeMsg);
 
@@ -228,17 +228,39 @@ bool Engine::evaluteInput() {
                     if (commandBuffer == "yes" || commandBuffer == "y") {
                         // TODO : Level up increase spawnLevelCap
                         Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
+                        bool isEnemyDied = false, isPlayerEngimonDied = false;
                         switch (doBattle.getBattleWinner()) {
                             case 1:
-                                messageList.addMessage("enemy dies");
-                                // TODO : Catch
+                                messageList.addMessage("enemy dies"); // TODO : maybe remove
+                                isEnemyDied = true;
                                 break;
                             case 2:
                                 messageList.addMessage("your engimon dies");
+                                isPlayerEngimonDied = true;
                                 break;
                             default:
                                 messageList.addMessage("both dies");
+                                isPlayerEngimonDied = true;
+                                isEnemyDied = true;
                                 break;
+                        }
+                        // TODO : Catch
+                        // TODO : Kill
+                        // TODO : Debug multi-element battle, either adv1 or adv2 is not init properly
+                        if (isEnemyDied && not isPlayerEngimonDied) {
+                            // Level up checking
+                            if (player.getCurrentEngimon()->xpGain(targetEngimon->getLevel()*5)) {
+                                // TODO : Catch, temporary just delete engimon from existence
+                                spawnLevelCap++;
+                            }
+
+                            if (player.getCurrentEngimon()->isMaxCXP()) {
+                                // TODO : Kill
+                            }
+                            map.setTileEntity(targetEngimon->getPos(), NULL);
+                            delete targetEngimon;
+                            updateCurrentEngimonMessageStatus();
+                            // TODO : Roll item skill drop
                         }
 
                         isPromptDone = true;
@@ -336,13 +358,13 @@ void Engine::commandMode() {
             string typeMsg = "Type    \xB3 ";
             if (elements.find(Fire) != elements.end())
                 typeMsg = typeMsg + "Fire ";
-            else if (elements.find(Ice) != elements.end())
+            if (elements.find(Ice) != elements.end())
                 typeMsg = typeMsg + "Ice ";
-            else if (elements.find(Water) != elements.end())
+            if (elements.find(Water) != elements.end())
                 typeMsg = typeMsg + "Water ";
-            else if (elements.find(Ground) != elements.end())
+            if (elements.find(Ground) != elements.end())
                 typeMsg = typeMsg + "Ground ";
-            else if (elements.find(Electric) != elements.end())
+            if (elements.find(Electric) != elements.end())
                 typeMsg = typeMsg + "Electric ";
             messageList.addMessage(typeMsg);
 
@@ -539,13 +561,13 @@ void Engine::updateCurrentEngimonMessageStatus() {
     string typeMsg = "Type    \xB3 ";
     if (elements.find(Fire) != elements.end())
         typeMsg = typeMsg + "Fire ";
-    else if (elements.find(Ice) != elements.end())
+    if (elements.find(Ice) != elements.end())
         typeMsg = typeMsg + "Ice ";
-    else if (elements.find(Water) != elements.end())
+    if (elements.find(Water) != elements.end())
         typeMsg = typeMsg + "Water ";
-    else if (elements.find(Ground) != elements.end())
+    if (elements.find(Ground) != elements.end())
         typeMsg = typeMsg + "Ground ";
-    else if (elements.find(Electric) != elements.end())
+    if (elements.find(Electric) != elements.end())
         typeMsg = typeMsg + "Electric ";
     statMessage.addMessage(typeMsg);
 
@@ -623,15 +645,15 @@ void Engine::showEngimonInventory() {
         string typeMsg = "Type    \xB3 ";
         if (elements.find(Fire) != elements.end())
             typeMsg = typeMsg + "Fire ";
-        else if (elements.find(Ice) != elements.end())
+        if (elements.find(Ice) != elements.end())
             typeMsg = typeMsg + "Ice ";
-        else if (elements.find(Water) != elements.end())
+        if (elements.find(Water) != elements.end())
             typeMsg = typeMsg + "Water ";
-        else if (elements.find(Ground) != elements.end())
+        if (elements.find(Ground) != elements.end())
             typeMsg = typeMsg + "Ground ";
-        else if (elements.find(Electric) != elements.end())
-        typeMsg = typeMsg + "Electric ";
-            messageList.addMessage(typeMsg);
+        if (elements.find(Electric) != elements.end())
+            typeMsg = typeMsg + "Electric ";
+        messageList.addMessage(typeMsg);
 
         messageList.addMessage("");
         if ((number-1) % 3 == 0 && number > 1) {

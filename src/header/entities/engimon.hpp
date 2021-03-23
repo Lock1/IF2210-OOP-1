@@ -41,7 +41,7 @@ class Engimon : public Entity, public Species {
         bool deleteSkill(int targetSkillID);
         void tameEngimon();
 
-        std::vector<Skill> getSkillList();
+        std::vector<Skill> getSkillList(); // TODO : Add Mastery level ++
 
         std::vector<Species> getParentSpecies();
         std::vector<std::string> getParentNames();
