@@ -32,6 +32,7 @@ class Engine {
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;
+        const int maxSkillID;
 
         const unsigned int wildEngimonSpawnProbability;
         // Spawn probability in percent
@@ -46,6 +47,8 @@ class Engine {
         // Evaluating next tick
         void commandMode();
         // Change from movement mode to command mode
+        void updateCurrentEngimonMessageStatus();
+        // Update current engimon stat to stat message box
 
     public:
         Engine();

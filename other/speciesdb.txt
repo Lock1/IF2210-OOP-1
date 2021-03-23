@@ -18,7 +18,7 @@
 18 Umbreon Ground NoElement Not-umbrella
 19 Espeon Fire NoElement Pinky-fox
 20 Articuno Ice Water The-Water-refrigerator
-21 Moltres Fire Water The-Water-bonfire
+21 Moltres Fire Ground The-bonfire
 22 Tyranitar Ground NoElement Not-a-tyranosaurus
 23 Lugia Fire Water AAaaaarggh
 24 Ho-oh Fire Water Ho-oh-to?

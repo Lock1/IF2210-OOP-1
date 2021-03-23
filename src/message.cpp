@@ -19,8 +19,8 @@ void Message::addMessage(std::string newMsg) {
 }
 
 void Message::clearMessage() {
-    for (unsigned i = 0; i < maxQueue; i++)
-        messageQueue.push("");
+    while (not messageQueue.empty())
+        messageQueue.pop();
 }
 
 std::queue<std::string> Message::showMessage() {

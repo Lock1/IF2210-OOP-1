@@ -14,6 +14,7 @@
 #include <string>
 #include <chrono>       // Time and tick system
 #include <thread>       // For sleep()
+#include <map>
 #include <stdlib.h>
 #include <Windows.h>
 #include <time.h>
@@ -21,9 +22,9 @@
 using namespace std;
 
 
-Engine::Engine() : messageList(MAX_MESSAGE-10, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
+Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
         thisisfine(MAX_MESSAGE-15, MSG_MAX_X-5), // DEBUG
-        player(MAX_INVENTORY, MAX_SKILL_ID),
+        player(MAX_INVENTORY, MAX_SKILL_ID), maxSkillID(MAX_SKILL_ID),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
         map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20),
@@ -33,7 +34,7 @@ Engine::Engine() : messageList(MAX_MESSAGE-10, MSG_MAX_X), statMessage(MAX_MESSA
     isEngineRunning = true;
     isCommandMode = false;
     renderer.setMapOffset(MAP_OFFSET_X, MAP_OFFSET_Y);
-    renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y + 10);
+    renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y);
     renderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
@@ -42,6 +43,10 @@ Engine::Engine() : messageList(MAX_MESSAGE-10, MSG_MAX_X), statMessage(MAX_MESSA
     // DEBUG
     ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+13);
     ok.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
+
+    renderer.setMessageTitle("Ini kotak gan");
+    statRenderer.setMessageTitle("Ini bukan kotak");
+    ok.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
 
     // TODO : Add prompt (?)
     // TODO : Add splash screen (?)
@@ -77,7 +82,6 @@ void Engine::clearConsoleInputBuffer() {
 void Engine::startGame() {
     // TODO : Put game here
     system(CLEAR_SCREEN_CMD);
-    int i = 0;
 
     map.setTileEntity(player.getPos(), &player);
     // DEBUG
@@ -89,9 +93,8 @@ void Engine::startGame() {
 
 
     userInput.startReadInput();
-    renderer.setMessageTitle("Ini kotak gan");
-    statRenderer.setMessageTitle("Ini bukan kotak");
-    ok.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
+    updateCurrentEngimonMessageStatus();
+
     while (isEngineRunning) {
         // Drawing map and message box
         renderer.drawMap(map);
@@ -106,9 +109,7 @@ void Engine::startGame() {
             commandMode();
             // Call command mode
         }
-        // DEBUG
-        statMessage.addMessage(to_string(i));
-        i++;
+
     }
     userInput.stopReadInput();
 }
@@ -160,9 +161,7 @@ bool Engine::evaluteInput() {
             }
             break;
         case KeyboardE:
-            // TODO : Open menu / help, command mode
             isCommandMode = true;
-            messageList.addMessage("MASUKKKKKKKK");
             break;
     }
 
@@ -208,17 +207,124 @@ void Engine::commandMode() {
     cout << ">>> ";
     getline(cin, commandBuffer);
     cout << endl << commandBuffer << endl; // TODO : Add
-    if (commandBuffer == "dbg") {
-
+    if (commandBuffer == "dbg") { // DEBUG
+        player.addEngimonItem(new Engimon(speciesDB.getSpecies(3), false, Position(0, 0)));
+        player.addSkillItem(4);
+        player.addSkillItem(3);
+        player.addSkillItem(7);
     }
     // TODO : Add
     // else if (commandBuffer == "breed")
-    // else if (commandBuffer == "item")
-    // else if (commandBuffer == "engimon")
+    else if (commandBuffer == "engimon") {
+        // TODO : Print everything + parent
+        list<EngimonItem> engimonInv = player.getEngimonInventory();
+        for (auto it = engimonInv.begin(); it != engimonInv.end(); ++it) {
+            Engimon *targetEngimon = *it;
+            string speciesNameMsg = "Species | ";
+            speciesNameMsg = speciesNameMsg + targetEngimon->getName();
+            messageList.addMessage(speciesNameMsg);
+
+            string nameMsg = "Name    | ";
+            nameMsg = nameMsg + targetEngimon->getEngimonName();
+            messageList.addMessage(nameMsg);
+
+            string levelMsg = "Lvl     | ";
+            levelMsg = levelMsg + to_string(targetEngimon->getLevel());
+            messageList.addMessage(levelMsg);
+
+            string xpMsg = "XP      | ";
+            xpMsg = xpMsg + to_string(targetEngimon->getXP());
+            messageList.addMessage(xpMsg);
+
+            set<ElementType> elements = targetEngimon->getElements();
+            string typeMsg = "Type    | ";
+            if (elements.find(Fire) != elements.end())
+            typeMsg = typeMsg + "Fire ";
+            else if (elements.find(Ice) != elements.end())
+            typeMsg = typeMsg + "Ice ";
+            else if (elements.find(Water) != elements.end())
+            typeMsg = typeMsg + "Water ";
+            else if (elements.find(Ground) != elements.end())
+            typeMsg = typeMsg + "Ground ";
+            else if (elements.find(Electric) != elements.end())
+            typeMsg = typeMsg + "Electric ";
+            messageList.addMessage(typeMsg);
+
+            messageList.addMessage("");
+
+        }
+    }
+    else if (commandBuffer == "item") {
+        messageList.addMessage("ID Name    Count  Type");
+        std::map<SkillItem,int> skillInv = player.getSkillInventory();
+        for (int i = 0; i < maxSkillID; i++) {
+            if (skillInv[i] > 0) {
+                string skillRow;
+                Skill target = skillDB.getSkill(i);
+                skillRow = to_string(target.getSkillID())+ " " + target.getSkillName() + " " + to_string(skillInv[i]) +" ";
+                switch (target.getSkillElement()) {
+                    case Fire:
+                        skillRow = skillRow + "Fire ";
+                        break;
+                    case Ice:
+                        skillRow = skillRow + "Ice ";
+                        break;
+                    case Water:
+                        skillRow = skillRow + "Water ";
+                        break;
+                    case Ground:
+                        skillRow = skillRow + "Ground ";
+                        break;
+                    case Electric:
+                        skillRow = skillRow + "Electric ";
+                        break;
+                }
+                messageList.addMessage(skillRow);
+            }
+        }
+        // TODO : Use item
+    }
     // else if (commandBuffer == "change")
     // else if (commandBuffer == "detail")
 
+    // getline(cin, commandBuffer);
     userInput.toggleReadInput();
     renderer.clearCursorRestArea();
     isCommandMode = false;
+}
+
+void Engine::updateCurrentEngimonMessageStatus() {
+    statMessage.clearMessage();
+    string speciesNameMsg = "Species | ";
+    speciesNameMsg = speciesNameMsg + player.getCurrentEngimon()->getName();
+    statMessage.addMessage(speciesNameMsg);
+
+    string nameMsg = "Name    | ";
+    nameMsg = nameMsg + player.getCurrentEngimon()->getEngimonName();
+    statMessage.addMessage(nameMsg);
+
+    string levelMsg = "Lvl     | ";
+    levelMsg = levelMsg + to_string(player.getCurrentEngimon()->getLevel());
+    statMessage.addMessage(levelMsg);
+
+    string xpMsg = "XP      | ";
+    xpMsg = xpMsg + to_string(player.getCurrentEngimon()->getXP());
+    statMessage.addMessage(xpMsg);
+
+    set<ElementType> elements = player.getCurrentEngimon()->getElements();
+    string typeMsg = "Type    | ";
+    if (elements.find(Fire) != elements.end())
+        typeMsg = typeMsg + "Fire ";
+    else if (elements.find(Ice) != elements.end())
+        typeMsg = typeMsg + "Ice ";
+    else if (elements.find(Water) != elements.end())
+        typeMsg = typeMsg + "Water ";
+    else if (elements.find(Ground) != elements.end())
+        typeMsg = typeMsg + "Ground ";
+    else if (elements.find(Electric) != elements.end())
+        typeMsg = typeMsg + "Electric ";
+    statMessage.addMessage(typeMsg);
+    // TODO : Parent Check, after breeding
+
+    statRenderer.drawMessageBox(statMessage);
 }

@@ -45,6 +45,10 @@ void SkillDatabase::loadSkillDatabase(string filename) {
             else
                 skillElement = NoElement;
 
+            for (unsigned int i = 0; i < skillName.length(); i++)
+                if (skillName[i] == '-')
+                    skillName[i] = ' ';
+
             addSkill(Skill(skillID, skillPower, skillName, skillElement));
         }
 
