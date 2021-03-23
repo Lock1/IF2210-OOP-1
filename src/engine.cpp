@@ -226,6 +226,7 @@ bool Engine::evaluteInput() {
                     getline(cin, commandBuffer);
                     if (commandBuffer == "yes" || commandBuffer == "y") {
                         // TODO : Battle
+                        // TODO : Level up increase spawnLevelCap
                         isPromptDone = true;
                     }
                     else if (commandBuffer == "no" || commandBuffer == "n")
