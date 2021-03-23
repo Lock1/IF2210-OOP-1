@@ -23,7 +23,7 @@ using namespace std;
 
 Engine::Engine() : messageList(MAX_MESSAGE-10, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
         thisisfine(MAX_MESSAGE-15, MSG_MAX_X-5), // DEBUG
-        player(),
+        player(MAX_INVENTORY, MAX_SKILL_ID),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
         map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20),
@@ -81,10 +81,11 @@ void Engine::startGame() {
 
     map.setTileEntity(player.getPos(), &player);
     // DEBUG
-    engimonList.push_back(new Engimon(speciesDB.getSpecies(4), false, Position(0, 0)));
-    player.changeEngimon(engimonList[0]);
-
-    map.setTileEntity(engimonList[0]->getPos(), engimonList[0]);
+    Engimon *starterEngimon = new Engimon(speciesDB.getSpecies(4), false, Position(0, 0));
+    engimonList.push_back(starterEngimon);
+    player.changeEngimon(starterEngimon);
+    player.addEngimonItem(starterEngimon);
+    map.setTileEntity(starterEngimon->getPos(), starterEngimon);
 
 
     userInput.startReadInput();

@@ -23,12 +23,12 @@ class Engine {
         Message statMessage;
         Message thisisfine; // <<< DEBUG
         PlayerInput userInput;
+        SkillDatabase skillDB;
+        SpeciesDatabase speciesDB;
         Player player;
         Render renderer;
         Render statRenderer;
         Render ok; // <<<< DEBUG
-        SkillDatabase skillDB;
-        SpeciesDatabase speciesDB;
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;

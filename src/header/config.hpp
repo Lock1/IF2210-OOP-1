@@ -11,6 +11,8 @@
 // Common configuration
 #define INPUT_BUFFER_COUNT 4
 #define INPUT_DELAY_MS 100
+#define MAX_INVENTORY 20
+#define MAX_SKILL_ID 1000
 
 // Map
 #define SEA_STARTING_X 35

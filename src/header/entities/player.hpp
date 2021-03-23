@@ -12,19 +12,25 @@
 
 class Player : public Entity {
     private:
-        // Inventory<EngimonItem> EngimonInventory;
-        // Inventory<SkillItem> EngimonInventory; // TODO : ??
+        Inventory<EngimonItem> engimonInventory;
+        Inventory<SkillItem> skillInventory;
         Engimon *currentEngimon;
         Direction lastDirection;
+        const unsigned maxInventorySize;
 
     public:
-        Player();
+        Player(unsigned maxInv, unsigned maxSkillID);
         ~Player();
         void changeEngimon(Engimon *targetEngimon);
         Engimon* getCurrentEngimon();
         bool isMoveLocationValid(Tile& target) override; // Overriding virtual move() Entity
         Direction getLastDirection();
         Direction& getLastDirectionRef();
+        // TODO : Add
+        bool addSkillItem(int skillID);
+        bool addEngimonItem(EngimonItem engimon);
+        std::map<SkillItem, int> getSkillInventory();
+        std::list<EngimonItem> getEngimonInventory();
 };
 
 #endif
