@@ -43,3 +43,11 @@ bool Engimon::isMoveLocationValid(Tile& target) {
 bool Engimon::isWildEngimon() {
     return isWild;
 }
+
+int Engimon::getLevel(){
+    return Level;
+}
+
+void Engimon::setLevel(int level){
+    Level = level;
+}

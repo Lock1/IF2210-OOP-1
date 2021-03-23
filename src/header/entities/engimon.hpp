@@ -42,7 +42,9 @@ class Engimon : public Entity, Species {
         std::set<ElementType> getElement();
 
         bool isWildEngimon();
-        std::string playerInteract();                               // Print description, only non-wild pokemon
+        std::string playerInteract();                          // Print description, only non-wild pokemon
+        int getLevel();
+        void setLevel(int level);     
 };
 
 
