@@ -40,7 +40,7 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // DEBUG
-    ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
+    ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+13);
     ok.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // TODO : Add prompt (?)
@@ -194,10 +194,13 @@ void Engine::commandMode() {
     // Temporary stop input thread from queueing movement input
     clearConsoleInputBuffer();
     // Clearing current input buffer (GetKeyState() does not clear buffer)
-    string trash;
+    string commandBuffer;
     cout << ">>> ";
-    getline(cin, trash);
-    cout << endl << trash << endl;
+    getline(cin, commandBuffer);
+    cout << endl << commandBuffer << endl; // TODO : Add
+    if (commandBuffer == "dbg") {
+
+    }
 
     userInput.toggleReadInput();
     renderer.clearCursorRestArea();

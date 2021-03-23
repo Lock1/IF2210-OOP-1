@@ -6,6 +6,7 @@
 #include "direction.hpp"
 #include "engimon.hpp"
 #include "tile.hpp"
+#include "../inventory"
 
 #define PLAYER_CHAR '\x99' // O with umlaut
 
