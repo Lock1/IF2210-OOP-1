@@ -21,7 +21,7 @@
 using namespace std;
 
 
-Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X), player(),
+Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5), player(),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y),
         map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20), // DEBUG
@@ -101,15 +101,8 @@ void Engine::startGame() {
             messageList.addMessage("Move to : " + to_string(player.getPos().getX()) + "," + to_string(player.getPos().getY()));
         }
         else if (isCommandMode) {
-            // TODO : Add and fix, disable temporary
-            // evaluateCommand();
-
-            string trash;
-            clearConsoleInputBuffer();
-            cout << "> ";
-            getline(cin, trash);
-            cout << endl << trash << endl;
-            isCommandMode = false;
+            commandMode();
+            // Call command mode
         }
         // DEBUG
         statMessage.addMessage(to_string(i));
@@ -185,4 +178,18 @@ void Engine::evaluteTick() {
         // TODO : Extra, fix mod operator
         engimonList.push_back(map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID)));
     }
+}
+
+void Engine::commandMode() {
+    userInput.toggleReadInput();
+    // Temporary stop input thread from queueing movement input
+    clearConsoleInputBuffer();
+    // Clearing current input buffer (GetKeyState() does not clear buffer)
+    string trash;
+    cout << ">>> ";
+    getline(cin, trash);
+    cout << endl << trash << endl;
+
+    userInput.toggleReadInput();
+    isCommandMode = false;
 }

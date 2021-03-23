@@ -42,6 +42,8 @@ class Engine {
         // Evaluating input from PlayerInput class, if evaluated, return true
         void evaluteTick();
         // Evaluating next tick
+        void commandMode();
+        // Change from movement mode to command mode
 
     public:
         Engine();

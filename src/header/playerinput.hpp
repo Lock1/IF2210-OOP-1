@@ -30,6 +30,7 @@ class PlayerInput {
         const unsigned int maxInputBuffer;
         const unsigned int inputDelayMillisecond;
         bool isRunning;
+        bool isReading;
 
         void inputLoop();
         // Internal loop for reading input
@@ -40,8 +41,10 @@ class PlayerInput {
 
         void startReadInput();
         // Start input reading
+        void toggleReadInput();
+        // Temporary disable reading input
         void stopReadInput();
-        // Stop input reading
+        // Fully stop PlayerInput reading
 
         InputType getUserInput();
         // Get InputType from stdin

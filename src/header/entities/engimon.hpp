@@ -16,10 +16,9 @@
 class Engimon : public Entity, Species {
     private:
         // std::string Name;
-        // ii.    Parent Names & Species
-
         std::vector<Skill> learnedSkill;
 
+        // TODO : Breeding interaction
         // vector<Species> parentSpecies;
         std::vector<std::string> parentNames;
 
@@ -31,6 +30,8 @@ class Engimon : public Entity, Species {
     public:
         Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
         Engimon(Species species, bool wild, Position pos);
+        // Engimon constructor
+        // TODO : Breeding engimon constructor
 
         bool isMoveLocationValid(Tile &target) override;
         bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false
