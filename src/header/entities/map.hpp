@@ -34,6 +34,7 @@ class Map {
         void wildEngimonRandomMove();
         // Move all wild pokemon with element type checking
         Engimon* spawnWildEngimon(Species target);
+        Engimon* spawnWildEngimon(Species target, int levelCap);
         // Spawn random wild engimon at random valid position,
         // returning allocated heap pointer
         // WARNING : Will allocating at heap memory

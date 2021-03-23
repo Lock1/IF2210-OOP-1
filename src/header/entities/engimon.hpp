@@ -29,6 +29,7 @@ class Engimon : public Entity, public Species {
 
     public:
         Engimon(Species species, bool wild, Position pos);
+        Engimon(Species species, bool wild, Position pos, int startLevel);
         // Engimon constructor
         // TODO : Breeding engimon constructor
 

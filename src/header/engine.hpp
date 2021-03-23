@@ -32,6 +32,8 @@ class Engine {
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;
+        int spawnLevelCap;
+        // Increment for every engimon level up
         const int maxSkillID;
 
         const unsigned int wildEngimonSpawnProbability;

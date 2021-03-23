@@ -133,6 +133,24 @@ Engimon* Map::spawnWildEngimon(Species target) {
     return (Engimon *) wildEngimon;
 }
 
+Engimon* Map::spawnWildEngimon(Species target, int levelCap) {
+    bool isValidLocation = false;
+    int randomX, randomY;
+    do {
+        randomX = rand() % sizeX;
+        randomY = rand() % sizeY;
+        if (getEntityAt(randomX, randomY) == NULL) {
+            if (target.isTileCompatible(getTileTypeAt(randomX, randomY)))
+                isValidLocation = true;
+        }
+    } while (!isValidLocation);
+
+    Position targetPos = Position(randomX, randomY);
+    Entity *wildEngimon = new Engimon(target, true, targetPos, rand() % levelCap);
+    setTileEntity(targetPos, wildEngimon);
+    return (Engimon *) wildEngimon;
+}
+
 
 void Map::setTileEntity(int x, int y, Entity *newEntity) {
     tileMatrix[x][y].setTileEntity(newEntity);

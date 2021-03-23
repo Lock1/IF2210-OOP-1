@@ -10,7 +10,19 @@ using namespace std;
 
 
 Engimon::Engimon(Species species, bool wild, Position pos) : Species(species), Entity(pos, EntityEngimon, species.getSpeciesChar()) {
-    level = 9; // TODO : Level random
+    level = rand() % 20;
+    experience = 0;
+    cumulativeExperience = 0;
+    isWild = wild;
+    engimonName = speciesName;
+
+    Skill speciesSkill = baseSkill;
+    speciesSkill.levelUpMastery();
+    addSkill(speciesSkill);
+}
+
+Engimon::Engimon(Species species, bool wild, Position pos, int startLevel) : Species(species), Entity(pos, EntityEngimon, species.getSpeciesChar()) {
+    level = startLevel;
     experience = 0;
     cumulativeExperience = 0;
     isWild = wild;

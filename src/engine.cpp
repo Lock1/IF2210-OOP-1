@@ -33,6 +33,7 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     srand((unsigned) time(NULL));
     isEngineRunning = true;
     isCommandMode = false;
+    spawnLevelCap = 10;
     renderer.setMapOffset(MAP_OFFSET_X, MAP_OFFSET_Y);
     renderer.setMessageBoxOffset(MESSAGE_OFFSET_X, MESSAGE_OFFSET_Y);
     renderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
@@ -84,8 +85,8 @@ void Engine::startGame() {
     system(CLEAR_SCREEN_CMD);
 
     map.setTileEntity(player.getPos(), &player);
-    // DEBUG
-    Engimon *starterEngimon = new Engimon(speciesDB.getSpecies(4), false, Position(0, 0));
+    // Starting item
+    Engimon *starterEngimon = new Engimon(speciesDB.getSpecies((rand() % 10) + 1), false, Position(0, 0), (rand() % 10) + 1);
     engimonList.push_back(starterEngimon);
     player.changeEngimon(starterEngimon);
     player.addEngimonItem(starterEngimon);
@@ -207,7 +208,7 @@ bool Engine::evaluteInput() {
                     typeMsg = typeMsg + "Electric ";
                 thisisfine.addMessage(typeMsg);
 
-                // TODO : Battle
+
                 userInput.toggleReadInput();
                 // Temporary stop input thread from queueing movement input
                 clearConsoleInputBuffer();
@@ -224,12 +225,16 @@ bool Engine::evaluteInput() {
                     cout << ">>> ";
                     getline(cin, commandBuffer);
                     if (commandBuffer == "yes" || commandBuffer == "y") {
+                        // TODO : Battle
                         isPromptDone = true;
                     }
-                    else if (commandBuffer == "no" || commandBuffer == "n") {
+                    else if (commandBuffer == "no" || commandBuffer == "n")
                         isPromptDone = true;
-                    }
                 }
+                thisisfine.fillEmptyBuffer();
+                ok.drawMessageBox(thisisfine);
+                thisisfine.clearMessage();
+
                 userInput.toggleReadInput();
                 renderer.clearCursorRestArea();
             }
@@ -246,7 +251,7 @@ void Engine::evaluteTick() {
     if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability) {
         unsigned int randomSpeciesID = (rand() % (speciesDB.getSpeciesCount() - 1)) + 1;
         // TODO : Extra, fix mod operator
-        engimonList.push_back(map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID)));
+        engimonList.push_back(map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID), spawnLevelCap));
     }
 }
 
