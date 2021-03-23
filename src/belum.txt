@@ -3,21 +3,6 @@
 
 
 
-// Inventory <Template>
-template<class T>
-class Inventory {
-    private:
-        T *itemPtr;
-        int currentCapacity;
-        int maxCapacity;
-
-    public:
-        T *getItemList();
-        bool addItem(); // False if overcapacity
-        bool deleteItem(); // False if not found item
-};
-
-
 
 
 

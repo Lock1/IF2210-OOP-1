@@ -1,0 +1,117 @@
+// Inventory template
+
+#ifndef INVENTORY
+#define INVENTORY
+
+#include "entities/item.hpp"
+#include "entities/attributes/skill.hpp"
+#include <list>
+#include <map>
+
+// TODO : Testing interaction with DB
+template<class T>
+class Inventory {
+    private:
+        std::list<T> itemList;
+        const unsigned int maxCapacity;
+
+    public:
+        Inventory(unsigned int maxCap) : maxCapacity(maxCap), itemList() {
+        }
+
+        std::list<T> getItemList() {
+            return itemList;
+        }
+        // Getting entire copy list of inventory
+
+        bool addItem(int skillID) {
+
+        }
+        // Return false if overcapacity
+        bool deleteItem(int skillID) {
+
+        }
+        // Return false if not found item
+};
+
+template<>
+class Inventory<SkillItem> {
+    private:
+        std::map<SkillItem, int> itemList;
+        unsigned int currentTotalItem;
+        const unsigned int maxCapacity;
+
+    public:
+        Inventory(unsigned int maxCap, int skillCount) : maxCapacity(maxCap), itemList() {
+            currentTotalItem = 0;
+            for (int i = 0; i < skillCount; i++)
+                itemList[i] = 0;
+        }
+
+        std::map<SkillItem, int> getItemList() {
+            return itemList;
+        }
+        // Getting entire copy list of inventory
+
+        bool addItem(int skillID) {
+            if (currentTotalItem < maxCapacity) {
+                itemList[skillID]++;
+                currentTotalItem++;
+                return true;
+            }
+            else
+                return false;
+        }
+        // Return false if overcapacity
+        bool deleteItem(int skillID) {
+            if (itemList[skillID] > 0) {
+                itemList[skillID]--;
+                return true;
+            }
+            else
+                return false;
+        }
+        // Return false if not found item
+};
+
+template<>
+class Inventory<EngimonItem> {
+    private:
+        std::list<EngimonItem> itemList;
+        const unsigned int maxCapacity;
+
+    public:
+        Inventory(unsigned int maxCap) : maxCapacity(maxCap), itemList() {
+
+        }
+
+        std::list<EngimonItem> getItemList() {
+            return itemList;
+        }
+        // Getting entire copy list of inventory
+
+        bool addItem(EngimonItem target) {
+            if (itemList.size() < maxCapacity) {
+                itemList.push_back(target);
+                return true;
+            }
+            else
+                return false;
+        }
+        // Return false if overcapacity
+        bool deleteItem(EngimonItem target) {
+            auto it = itemList.begin();
+            while (it != itemList.end()) {
+                if (*it == target) {
+                    itemList.erase(it);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        // Return false if not found item
+};
+
+
+#endif
