@@ -21,10 +21,12 @@ class Engine {
         Map map;
         Message messageList;
         Message statMessage;
+        Message thisisfine; // <<< DEBUG
         PlayerInput userInput;
         Player player;
         Render renderer;
         Render statRenderer;
+        Render ok; // <<<< DEBUG
         SkillDatabase skillDB;
         SpeciesDatabase speciesDB;
         bool isEngineRunning;

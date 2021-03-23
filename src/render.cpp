@@ -19,6 +19,7 @@ Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), m
     mapOffsetX = mapOffsetY = 1;
     msgOffsetX = 55;
     msgOffsetY = 1;
+    msgBoxTitle = "";
 
     // Map Border
     mapBorderCornerBottomLeft = '\xC8';
@@ -53,6 +54,7 @@ Render::Render(Message& msgTarget) : mapSizeX(0), mapSizeY(0),
     mapOffsetX = mapOffsetY = 1;
     msgOffsetX = 55;
     msgOffsetY = 1;
+    msgBoxTitle = "";
 
     // Message border
     msgBorderCornerBottomLeft = '\xC0';
@@ -195,6 +197,7 @@ void Render::drawMap(Map& target) {
 void Render::drawMessageBox(Message& target) {
     if (!isMessageBorderDrawn) {
         drawMsgBorder();
+        drawMessageTitle();
         isMessageBorderDrawn = true;
     }
 
@@ -211,4 +214,24 @@ void Render::drawMessageBox(Message& target) {
     }
 
     setCursorPosition(cursorRestX, cursorRestY);
+}
+
+void Render::setMessageTitle(string title) {
+    msgBoxTitle = title;
+    // If already draw, redraw
+    if (isMessageBorderDrawn) {
+        drawMsgBorder();
+        drawMessageTitle();
+    }
+}
+
+void Render::clearCursorRestArea() {
+    setCursorPosition(cursorRestX, cursorRestY);
+    cout << "                                         ";
+    setCursorPosition(cursorRestX, cursorRestY);
+}
+
+void Render::drawMessageTitle() {
+    setCursorPosition(msgOffsetX, msgOffsetY-1);
+    cout << msgBoxTitle;
 }
