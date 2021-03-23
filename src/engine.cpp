@@ -368,7 +368,6 @@ void Engine::commandMode() {
 
             // If number are in valid range, then change
             if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
-                doneChanging = true;
                 auto it = engimonInv.begin();
                 int i = 0;
                 while (i < targetNumber-1) {
@@ -378,7 +377,12 @@ void Engine::commandMode() {
                 Engimon *targetEngimon = *it;
                 string changingString = "Changed to ";
                 changingString = changingString + targetEngimon->getEngimonName();
+                messageList.addMessage("");
                 messageList.addMessage(changingString);
+                map.setTileEntity(player.getCurrentEngimon()->getPos(), targetEngimon);
+                player.changeEngimon(targetEngimon);
+                updateCurrentEngimonMessageStatus();
+                doneChanging = true;
             }
             else if (successParsing) {
                 messageList.addMessage("Number is out of range");
@@ -389,7 +393,6 @@ void Engine::commandMode() {
     // else if (commandBuffer == "help")
 
 
-    // getline(cin, commandBuffer);
     userInput.toggleReadInput();
     renderer.clearCursorRestArea();
     isCommandMode = false;
