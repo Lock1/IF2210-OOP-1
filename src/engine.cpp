@@ -21,11 +21,13 @@
 using namespace std;
 
 
-Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5), player(),
-        // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y),
+Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
+        thisisfine(MAX_MESSAGE-15, MSG_MAX_X-5), // DEBUG
+        player(),
+        // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
         map("../other/mapfile.txt"),
-        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20), // DEBUG
-        renderer(map, messageList), statRenderer(statMessage) {
+        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20),
+        renderer(map, messageList), statRenderer(statMessage), ok(thisisfine) {
     // Internal variable setup
     srand((unsigned) time(NULL));
     isEngineRunning = true;
@@ -36,6 +38,10 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
 
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
+
+    // DEBUG
+    ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
+    ok.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // TODO : Add prompt (?)
     // TODO : Add splash screen (?)
@@ -89,13 +95,16 @@ void Engine::startGame() {
 
 
     userInput.startReadInput();
+    renderer.setMessageTitle("Ini kotak gan");
+    statRenderer.setMessageTitle("Ini bukan kotak");
+    ok.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
     while (isEngineRunning) {
         // Drawing map and message box
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
+        ok.drawMessageBox(thisisfine);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
             messageList.addMessage("Move to : " + to_string(player.getPos().getX()) + "," + to_string(player.getPos().getY()));
@@ -191,5 +200,6 @@ void Engine::commandMode() {
     cout << endl << trash << endl;
 
     userInput.toggleReadInput();
+    renderer.clearCursorRestArea();
     isCommandMode = false;
 }
