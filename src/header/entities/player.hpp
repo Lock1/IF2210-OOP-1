@@ -28,7 +28,9 @@ class Player : public Entity {
         Direction& getLastDirectionRef();
         // TODO : Add
         bool addSkillItem(int skillID);
+        bool delSkillItem(int skillID);
         bool addEngimonItem(EngimonItem engimon);
+        bool delEngimonItem(EngimonItem engimon);
         std::map<SkillItem, int> getSkillInventory();
         std::list<EngimonItem> getEngimonInventory();
 };

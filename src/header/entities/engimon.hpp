@@ -19,7 +19,7 @@ class Engimon : public Entity, public Species {
         std::vector<Skill> learnedSkill;
 
         // TODO : Breeding interaction
-        // vector<Species> parentSpecies;
+        std::vector<Species> parentSpecies;
         std::vector<std::string> parentNames;
 
         int level;
@@ -41,6 +41,9 @@ class Engimon : public Entity, public Species {
         void tameEngimon();
 
         std::vector<Skill> getSkillList();
+
+        std::vector<Species> getParentSpecies();
+        std::vector<std::string> getParentNames();
 
         std::set<ElementType> getElement();
         std::string getEngimonName();

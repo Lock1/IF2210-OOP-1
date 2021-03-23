@@ -60,6 +60,14 @@ bool Player::addEngimonItem(EngimonItem engimon) {
         return false;
 }
 
+bool Player::delSkillItem(int skillID) {
+    return skillInventory.deleteItem(skillID);
+}
+
+bool Player::delEngimonItem(EngimonItem engimon) {
+    return engimonInventory.deleteItem(engimon);
+}
+
 map<SkillItem, int> Player::getSkillInventory() {
     return skillInventory.getItemList();
 }

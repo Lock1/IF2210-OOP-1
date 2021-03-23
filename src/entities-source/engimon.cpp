@@ -111,3 +111,11 @@ void Engimon::tameEngimon() {
 string Engimon::getInteractString() {
     return interactionDescription;
 }
+
+vector<Species> Engimon::getParentSpecies() {
+    return parentSpecies;
+}
+
+vector<std::string> Engimon::getParentNames() {
+    return parentNames;
+}

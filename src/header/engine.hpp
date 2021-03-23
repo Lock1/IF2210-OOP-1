@@ -50,6 +50,10 @@ class Engine {
         void updateCurrentEngimonMessageStatus();
         // Update current engimon stat to stat message box
 
+        void showItemInventory();
+        // Show player item inventory to message list box
+        void showEngimonInventory();
+        // Show player engimon inventory to message list box
     public:
         Engine();
         // Constructor
