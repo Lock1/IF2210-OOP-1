@@ -230,24 +230,24 @@ void Engine::commandMode() {
         int number = 1;
         for (auto it = engimonInv.begin(); it != engimonInv.end(); ++it) {
             Engimon *targetEngimon = *it;
-            string speciesNameMsg = "Species | ";
+            string speciesNameMsg = "Species \xB3 ";
             speciesNameMsg = speciesNameMsg + targetEngimon->getName();
             messageList.addMessage(speciesNameMsg);
 
-            string nameMsg = "Name    | ";
+            string nameMsg = "Name    \xB3 ";
             nameMsg = nameMsg + targetEngimon->getEngimonName();
             messageList.addMessage(nameMsg);
 
-            string levelMsg = "Lvl     | ";
+            string levelMsg = "Lvl     \xB3 ";
             levelMsg = levelMsg + to_string(targetEngimon->getLevel());
             messageList.addMessage(levelMsg);
 
-            string xpMsg = "XP      | ";
+            string xpMsg = "XP      \xB3 ";
             xpMsg = xpMsg + to_string(targetEngimon->getXP());
             messageList.addMessage(xpMsg);
 
             set<ElementType> elements = targetEngimon->getElements();
-            string typeMsg = "Type    | ";
+            string typeMsg = "Type    \xB3 ";
             if (elements.find(Fire) != elements.end())
             typeMsg = typeMsg + "Fire ";
             else if (elements.find(Ice) != elements.end())
@@ -308,21 +308,21 @@ void Engine::commandMode() {
         int number = 1;
         for (auto it = engimonInv.begin(); it != engimonInv.end(); ++it) {
             Engimon *targetEngimon = *it;
-            string numberMsg = "-------";
-            numberMsg = numberMsg + to_string(number) + numberMsg;
+            string numberMsg = "\xCD\xCD\xCD\xCD\xCD\xCD\xCD";
+            numberMsg = numberMsg + "  " + to_string(number) + "  " + numberMsg;
             messageList.addMessage(numberMsg);
             number++;
 
-            string nameMsg = "Name    | ";
+            string nameMsg = "Name    \xB3 ";
             nameMsg = nameMsg + targetEngimon->getEngimonName();
             messageList.addMessage(nameMsg);
 
-            string levelMsg = "Lvl     | ";
+            string levelMsg = "Lvl     \xB3 ";
             levelMsg = levelMsg + to_string(targetEngimon->getLevel());
             messageList.addMessage(levelMsg);
 
             set<ElementType> elements = targetEngimon->getElements();
-            string typeMsg = "Type    | ";
+            string typeMsg = "Type    \xB3 ";
             if (elements.find(Fire) != elements.end())
                 typeMsg = typeMsg + "Fire ";
             else if (elements.find(Ice) != elements.end())
@@ -348,12 +348,15 @@ void Engine::commandMode() {
         bool doneChanging = false;
         messageList.addMessage("End of inventory list");
         messageList.addMessage("");
-        messageList.addMessage("Input engimon number");
+        messageList.addMessage("Input engimon number or exit");
         while (not doneChanging) {
             renderer.drawMessageBox(messageList);
             renderer.clearCursorRestArea();
             cout << ">>> ";
             getline(cin, commandBuffer);
+
+            if (commandBuffer == "exit")
+                break;
 
             // Trying to parsing to int
             int targetNumber;
@@ -400,24 +403,24 @@ void Engine::commandMode() {
 
 void Engine::updateCurrentEngimonMessageStatus() {
     statMessage.clearMessage();
-    string speciesNameMsg = "Species | ";
+    string speciesNameMsg = "Species \xB3 ";
     speciesNameMsg = speciesNameMsg + player.getCurrentEngimon()->getName();
     statMessage.addMessage(speciesNameMsg);
 
-    string nameMsg = "Name    | ";
+    string nameMsg = "Name    \xB3 ";
     nameMsg = nameMsg + player.getCurrentEngimon()->getEngimonName();
     statMessage.addMessage(nameMsg);
 
-    string levelMsg = "Lvl     | ";
+    string levelMsg = "Lvl     \xB3 ";
     levelMsg = levelMsg + to_string(player.getCurrentEngimon()->getLevel());
     statMessage.addMessage(levelMsg);
 
-    string xpMsg = "XP      | ";
+    string xpMsg = "XP      \xB3 ";
     xpMsg = xpMsg + to_string(player.getCurrentEngimon()->getXP());
     statMessage.addMessage(xpMsg);
 
     set<ElementType> elements = player.getCurrentEngimon()->getElements();
-    string typeMsg = "Type    | ";
+    string typeMsg = "Type    \xB3 ";
     if (elements.find(Fire) != elements.end())
         typeMsg = typeMsg + "Fire ";
     else if (elements.find(Ice) != elements.end())
