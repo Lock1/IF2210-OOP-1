@@ -22,7 +22,10 @@ class Message {
         // Return copy queue of messages
 
         void clearMessage();
-        // Push empty string to wipe message queue
+        // Pop all queue
+
+        void fillEmptyBuffer();
+        // Fill queue with empty string
 
         int getMaxMessage();
         // Get max message contained

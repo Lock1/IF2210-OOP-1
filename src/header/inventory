@@ -72,6 +72,10 @@ class Inventory<SkillItem> {
                 return false;
         }
         // Return false if not found item
+
+        int getCurrentSize() {
+            return currentTotalItem;
+        }
 };
 
 template<>
@@ -111,6 +115,10 @@ class Inventory<EngimonItem> {
             return false;
         }
         // Return false if not found item
+
+        int getCurrentSize() {
+            return itemList.size();
+        }
 };
 
 

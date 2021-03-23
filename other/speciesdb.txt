@@ -18,13 +18,13 @@
 18 Umbreon Ground NoElement Not-umbrella
 19 Espeon Fire NoElement Pinky-fox
 20 Articuno Ice Water The-Water-refrigerator
-21 Moltres Fire Water The-Water-bonfire
+21 Moltres Fire NoElement The-bonfire
 22 Tyranitar Ground NoElement Not-a-tyranosaurus
-23 Lugia Fire Water AAaaaarggh
-24 Ho-oh Fire Water Ho-oh-to?
+23 Lugia Fire Electric AAaaaarggh
+24 Ho-oh Fire Electric Ho-oh-to?
 25 Sableye Water Ice Living-jewelry
 26 Tornadus Water NoElement Green-genie
-27 Thundurus Electric Water Blue-genie
+27 Thundurus Electric NoElement Blue-genie
 28 Landorus Ground Water Brown-genie
 29 Kumon Water Ice Kids-always-hate-them
 30 Bloon Water NoElement Not-too-smart

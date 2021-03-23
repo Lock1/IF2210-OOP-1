@@ -23,15 +23,16 @@ class Engine {
         Message statMessage;
         Message thisisfine; // <<< DEBUG
         PlayerInput userInput;
+        SkillDatabase skillDB;
+        SpeciesDatabase speciesDB;
         Player player;
         Render renderer;
         Render statRenderer;
         Render ok; // <<<< DEBUG
-        SkillDatabase skillDB;
-        SpeciesDatabase speciesDB;
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;
+        const int maxSkillID;
 
         const unsigned int wildEngimonSpawnProbability;
         // Spawn probability in percent
@@ -46,7 +47,13 @@ class Engine {
         // Evaluating next tick
         void commandMode();
         // Change from movement mode to command mode
+        void updateCurrentEngimonMessageStatus();
+        // Update current engimon stat to stat message box
 
+        void showItemInventory();
+        // Show player item inventory to message list box
+        void showEngimonInventory();
+        // Show player engimon inventory to message list box
     public:
         Engine();
         // Constructor

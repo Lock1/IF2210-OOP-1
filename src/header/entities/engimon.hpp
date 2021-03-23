@@ -19,29 +19,36 @@ class Engimon : public Entity, public Species {
         std::vector<Skill> learnedSkill;
 
         // TODO : Breeding interaction
-        // vector<Species> parentSpecies;
+        std::vector<Species> parentSpecies;
         std::vector<std::string> parentNames;
 
-        int level; // TODO : Getter
+        int level;
         int experience;
         int cumulativeExperience;
         bool isWild;
 
     public:
-        Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
         Engimon(Species species, bool wild, Position pos);
         // Engimon constructor
         // TODO : Breeding engimon constructor
 
-        bool isMoveLocationValid(Tile &target) override;
+        bool isMoveLocationValid(Tile& target) override;
         bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false
         bool isMaxCXP();                                            // If over CumulativeExperience, return true
-        bool addSkill(Skill newSkill);                             // Only add if skill slot enough
-        bool deleteskill(Skill targetSkill);
-        // TODO : isWild changer to false
+        bool addSkill(Skill newSkill);
+        // Only add if skill slot enough returning false if failed
+        bool deleteSkill(int targetSkillID);
+        void tameEngimon();
+
+        std::vector<Skill> getSkillList();
+
+        std::vector<Species> getParentSpecies();
+        std::vector<std::string> getParentNames();
 
         std::set<ElementType> getElement();
         std::string getEngimonName();
+        int getLevel();
+        int getXP();
 
         bool isWildEngimon();
         std::string getInteractString();                               // Get description, only non-wild pokemon
