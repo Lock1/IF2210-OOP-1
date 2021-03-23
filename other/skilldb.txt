@@ -28,5 +28,5 @@
 28 Earth-power 120 Ground
 29 Study-hard 70 Ice
 30 Lazy-bite 50 Water
-31 Draining-energy 100 Electric
+31 Drain-energy 100 Electric
 32 Fire-punch 80 Fire

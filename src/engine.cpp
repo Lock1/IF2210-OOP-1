@@ -199,6 +199,7 @@ void Engine::evaluteTick() {
 }
 
 void Engine::commandMode() {
+    // TODO : Extra, super-duper-repetition :(
     userInput.toggleReadInput();
     // Temporary stop input thread from queueing movement input
     clearConsoleInputBuffer();
@@ -219,7 +220,7 @@ void Engine::commandMode() {
         player.addEngimonItem(new Engimon(speciesDB.getSpecies(1), false, Position(0, 0)));
         player.addSkillItem(4);
         player.addSkillItem(3);
-        player.addSkillItem(7);
+        player.addSkillItem(rand()%10+1);
     }
     // TODO : Add
     // else if (commandBuffer == "breed")
@@ -249,20 +250,29 @@ void Engine::commandMode() {
             set<ElementType> elements = targetEngimon->getElements();
             string typeMsg = "Type    \xB3 ";
             if (elements.find(Fire) != elements.end())
-            typeMsg = typeMsg + "Fire ";
+                typeMsg = typeMsg + "Fire ";
             else if (elements.find(Ice) != elements.end())
-            typeMsg = typeMsg + "Ice ";
+                typeMsg = typeMsg + "Ice ";
             else if (elements.find(Water) != elements.end())
-            typeMsg = typeMsg + "Water ";
+                typeMsg = typeMsg + "Water ";
             else if (elements.find(Ground) != elements.end())
-            typeMsg = typeMsg + "Ground ";
+                typeMsg = typeMsg + "Ground ";
             else if (elements.find(Electric) != elements.end())
-            typeMsg = typeMsg + "Electric ";
+                typeMsg = typeMsg + "Electric ";
             messageList.addMessage(typeMsg);
-            // TODO : Print skill
+
+            messageList.addMessage(" \xCD\xCD\xCD\xCD Learned skill \xCD\xCD\xCD\xCD ");
+            vector<Skill> skillList = targetEngimon->getSkillList();
+            for (int i = 0; (unsigned) i < skillList.size(); i++) {
+                string skillRow = skillList[i].getSkillName();
+                skillRow = skillRow + " Lvl-" + to_string(skillList[i].getMasteryLevel());
+                skillRow = skillRow + " Pow-" + to_string(skillList[i].getBasePower());
+                messageList.addMessage(skillRow);
+            }
+            messageList.addMessage(" \xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD ");
             messageList.addMessage("");
             number++;
-            if ((number-1) % 3 == 0 && number > 1) {
+            if (number > 1) {
                 messageList.addMessage("Press enter to print next");
                 renderer.drawMessageBox(messageList);
                 renderer.clearCursorRestArea();
@@ -273,30 +283,38 @@ void Engine::commandMode() {
         }
     }
     else if (commandBuffer == "inventory") {
-        messageList.addMessage("ID Name    Count  Type");
+        messageList.addMessage("Inventory list");
+        messageList.addMessage("ID Name       Count Type Power");
         std::map<SkillItem,int> skillInv = player.getSkillInventory();
         for (int i = 0; i < maxSkillID; i++) {
             if (skillInv[i] > 0) {
                 string skillRow;
                 Skill target = skillDB.getSkill(i);
-                skillRow = to_string(target.getSkillID())+ " " + target.getSkillName() + " " + to_string(skillInv[i]) +" ";
+                string paddedID = to_string(target.getSkillID());
+                for (int i = paddedID.length(); i < 2; i++)
+                    paddedID = paddedID + " ";
+                string paddedSkillName = target.getSkillName();
+                for (int i = paddedSkillName.length(); i < 12; i++)
+                    paddedSkillName = paddedSkillName + " ";
+                skillRow = paddedID + " " + paddedSkillName + " " + to_string(skillInv[i]) + " ";
                 switch (target.getSkillElement()) {
                     case Fire:
-                        skillRow = skillRow + "Fire ";
+                        skillRow = skillRow + "Fire     ";
                         break;
                     case Ice:
-                        skillRow = skillRow + "Ice ";
+                        skillRow = skillRow + "Ice      ";
                         break;
                     case Water:
-                        skillRow = skillRow + "Water ";
+                        skillRow = skillRow + "Wate     ";
                         break;
                     case Ground:
-                        skillRow = skillRow + "Ground ";
+                        skillRow = skillRow + "Ground   ";
                         break;
                     case Electric:
                         skillRow = skillRow + "Electric ";
                         break;
                 }
+                skillRow = skillRow + to_string(target.getBasePower());
                 messageList.addMessage(skillRow);
             }
         }

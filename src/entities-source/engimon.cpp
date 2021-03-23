@@ -16,7 +16,9 @@ Engimon::Engimon(Species species, bool wild, Position pos) : Species(species), E
     isWild = wild;
     engimonName = speciesName;
 
-    addSkill(baseSkill);
+    Skill speciesSkill = baseSkill;
+    speciesSkill.levelUpMastery();
+    addSkill(speciesSkill);
 }
 
 bool Engimon::addSkill(Skill newSkill) {
