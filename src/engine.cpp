@@ -217,6 +217,7 @@ void Engine::commandMode() {
     // else if (commandBuffer == "breed")
     else if (commandBuffer == "engimon") {
         // TODO : Print everything + parent
+        // TODO : Maybe add press enter to continue print
         list<EngimonItem> engimonInv = player.getEngimonInventory();
         for (auto it = engimonInv.begin(); it != engimonInv.end(); ++it) {
             Engimon *targetEngimon = *it;
