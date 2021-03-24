@@ -208,19 +208,25 @@ void Render::drawMessageBox(Message& target) {
         isMessageBorderDrawn = true;
     }
 
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    int color = 0x09;
+    
     queue<string> buffer = target.showMessage();
     int size = buffer.size();
     for (int i = 0; i < size; i++) {
         setCursorPosition(msgOffsetX, msgOffsetY+i);
         // String padding
         string message = buffer.front();
+        SetConsoleTextAttribute(hstdout, color);
         for (int j = message.length(); j < target.getMaxStringLength(); j++)
             message += " ";
         cout << message;
         buffer.pop();
+        color++;
     }
 
     setCursorPosition(cursorRestX, cursorRestY);
+    SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
 void Render::setMessageTitle(string title) {
