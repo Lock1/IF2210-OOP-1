@@ -92,6 +92,8 @@ void Render::setCursorPosition(int x, int y) {
 
 void Render::drawBox(Box& target) {
     // Left right border
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hstdout, 0x0E);
     for (unsigned int i = target.offsetY; i < target.offsetY + target.sizeY + 1; i++) {
         setCursorPosition(target.offsetX-1, i);
         cout << target.lineVertical;
@@ -114,6 +116,7 @@ void Render::drawBox(Box& target) {
     cout << target.cornerTopRight;   // Upper right corner
     setCursorPosition(target.offsetX+target.sizeX, target.offsetY+target.sizeY);
     cout << target.cornerBottomRight;   // Bottom right corner
+    SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
 void Render::drawMapBorder() {
@@ -236,8 +239,11 @@ void Render::clearCursorRestArea() {
 }
 
 void Render::drawMessageTitle() {
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hstdout, 0x0E);
     setCursorPosition(msgOffsetX, msgOffsetY-1);
     cout << msgBoxTitle;
+    SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
 int Render::floorEuclidean(Position pos1, Position pos2) {

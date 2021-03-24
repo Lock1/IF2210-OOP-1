@@ -2,6 +2,7 @@
 #include "header/message.hpp"
 #include <string>
 #include <queue>
+#include <Windows.h>
 
 Message::Message(unsigned int maxBuf, unsigned int maxLength) : maxQueue(maxBuf), maxStringLength(maxLength) {
 
