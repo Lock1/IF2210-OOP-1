@@ -441,7 +441,8 @@ void Engine::commandMode() {
     messageList.addMessage("5. breed       ");
     messageList.addMessage("6. delete      ");
     messageList.addMessage("7. legend      ");
-    // TODO : Help
+    messageList.addMessage("8. rename      ");
+
 
     renderer.drawMessageBox(messageList);
 
@@ -461,6 +462,9 @@ void Engine::commandMode() {
     }
     else if (commandBuffer == "legend") {
         showLegendHelp();
+    }
+    else if (commandBuffer == "rename") {
+        renameEngimon();
     }
     else if (commandBuffer == "delete") {
         deleteInventory();
@@ -960,4 +964,63 @@ void Engine::showLegendHelp() {
 
 
     renderer.drawMessageBox(messageList);
+}
+
+void Engine::renameEngimon() {
+    // TODO : Extra, generalize picking engimon, skill, item
+    string commandBuffer;
+    messageList.addMessage("Select Engimon Number");
+    list<EngimonItem> engimonInv = player.getEngimonInventory();
+    showEngimonInventory();
+    bool doneChanging = false;
+    messageList.addMessage("End of inventory list");
+    messageList.addMessage("");
+    messageList.addMessage("Input engimon number or exit");
+    while (not doneChanging) {
+        renderer.drawMessageBox(messageList);
+        renderer.clearCursorRestArea();
+        commandModeInput(commandBuffer);
+
+        if (commandBuffer == "exit")
+            break;
+
+        // Trying to parsing to int
+        int targetNumber;
+        bool successParsing = false;
+        try {
+            targetNumber = stoi(commandBuffer);
+            successParsing = true;
+        }
+        catch (invalid_argument e) {
+            messageList.addMessage("Invalid input");
+        }
+
+        // If number are in valid range, then change
+        if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
+            auto it = engimonInv.begin();
+            int i = 0;
+            while (i < targetNumber-1) {
+                i++;
+                ++it;
+            }
+            Engimon *targetEngimon = *it;
+
+            messageList.addMessage("");
+            messageList.addMessage("Type new name");
+            renderer.drawMessageBox(messageList);
+            renderer.clearCursorRestArea();
+            commandModeInput(commandBuffer);
+            targetEngimon->setEngimonName(commandBuffer);
+
+            string changingString = "Changed to ";
+            changingString = changingString + targetEngimon->getEngimonName();
+            messageList.addMessage("");
+            messageList.addMessage(changingString);
+            updateCurrentEngimonMessageStatus();
+            doneChanging = true;
+        }
+        else if (successParsing) {
+            messageList.addMessage("Number is out of range");
+        }
+    }
 }

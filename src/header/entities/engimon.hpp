@@ -49,6 +49,7 @@ class Engimon : public Entity, public Species {
 
         std::set<ElementType> getElement();
         std::string getEngimonName();
+        void setEngimonName(std::string target);
         int getLevel();
         int getXP();
 

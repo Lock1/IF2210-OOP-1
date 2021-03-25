@@ -146,3 +146,7 @@ vector<Species> Engimon::getParentSpecies() {
 vector<std::string> Engimon::getParentNames() {
     return parentNames;
 }
+
+void Engimon::setEngimonName(string target) {
+    engimonName = target;
+}

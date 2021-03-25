@@ -75,6 +75,8 @@ class Engine {
 
         void showLegendHelp();
         // Printing legend help in message list
+        void renameEngimon();
+        // Change engimon name
     public:
         Engine();
         // Constructor
