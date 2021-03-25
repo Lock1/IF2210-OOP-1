@@ -70,6 +70,8 @@ class Engine {
         // Draw lose screen
         void changeCurrentEngimon();
         // Change current engimon
+        void commandModeInput(std::string& target);
+        // Get command mode input from user
     public:
         Engine();
         // Constructor

@@ -224,8 +224,7 @@ bool Engine::evaluteInput() {
                 bool isPromptDone = false;
                 while (not isPromptDone) {
                     renderer.clearCursorRestArea();
-                    cout << ">>> ";
-                    getline(cin, commandBuffer);
+                    commandModeInput(commandBuffer);
                     if (commandBuffer == "yes" || commandBuffer == "y") {
                         bool isEnemyDied = false, isPlayerEngimonDied = false;
                         messageList.addMessage("");
@@ -306,8 +305,7 @@ bool Engine::evaluteInput() {
                                 messageList.addMessage("Catch engimon? (y/n)");
                                 renderer.drawMessageBox(messageList);
                                 renderer.clearCursorRestArea();
-                                cout << ">>> ";
-                                getline(cin, commandBuffer);
+                                commandModeInput(commandBuffer);
                                 if (commandBuffer == "y") {
                                     player.addEngimonItem(targetEngimon); // TODO : << Delete inventory
                                     messageList.addMessage(targetEngimon->getEngimonName() + " catched!");
@@ -419,8 +417,7 @@ void Engine::commandMode() {
     renderer.drawMessageBox(messageList);
 
     string commandBuffer;
-    cout << ">>> ";
-    getline(cin, commandBuffer);
+    commandModeInput(commandBuffer);
 
     renderer.clearMessageBox(messageList);
     // Clearing message list window
@@ -488,8 +485,7 @@ void Engine::commandMode() {
                 messageList.addMessage("Press enter to print next");
                 renderer.drawMessageBox(messageList);
                 renderer.clearCursorRestArea();
-                cout << ">>> ";
-                getline(cin, commandBuffer);
+                commandModeInput(commandBuffer);
                 messageList.addMessage("");
             }
         }
@@ -510,8 +506,7 @@ void Engine::commandMode() {
 
         renderer.drawMessageBox(messageList);
         renderer.clearCursorRestArea();
-        cout << ">>> ";
-        getline(cin, commandBuffer);
+            commandModeInput(commandBuffer);
 
         // Trying to parsing to int
         int targetNumber;
@@ -534,8 +529,7 @@ void Engine::commandMode() {
                 messageList.addMessage("Input engimon number");
                 renderer.drawMessageBox(messageList);
                 renderer.clearCursorRestArea();
-                cout << ">>> ";
-                getline(cin, commandBuffer);
+                commandModeInput(commandBuffer);
 
                 // Trying to parsing to int
                 targetNumber = 0;
@@ -720,8 +714,7 @@ void Engine::showEngimonInventory() {
             messageList.addMessage("Press enter to print next");
             renderer.drawMessageBox(messageList);
             renderer.clearCursorRestArea();
-            cout << ">>> ";
-            getline(cin, commandBuffer);
+            commandModeInput(commandBuffer);
             messageList.addMessage("");
         }
     }
@@ -735,15 +728,108 @@ bool Engine::deleteInventory() {
     messageList.addMessage("2. item");
     messageList.addMessage("3. exit");
     renderer.drawMessageBox(messageList);
-    cout << ">>> ";
-    getline(cin, commandBuffer);
+    commandModeInput(commandBuffer);
     renderer.clearMessageBox(messageList);
     if (commandBuffer == "engimon") {
         showEngimonInventory();
+        messageList.addMessage("");
+        messageList.addMessage("Select Engimon Number or exit");
+
+        list<EngimonItem> engimonInv = player.getEngimonInventory();
+        bool doneDeleting = false;
+        while (not doneDeleting) {
+            renderer.drawMessageBox(messageList);
+            renderer.clearCursorRestArea();
+            commandModeInput(commandBuffer);
+
+            if (commandBuffer == "exit") {
+                renderer.clearMessageBox(messageList);
+                break;
+            }
+
+            // Trying to parsing to int
+            int targetNumber;
+            bool successParsing = false;
+            try {
+                targetNumber = stoi(commandBuffer);
+                successParsing = true;
+            }
+            catch (invalid_argument e) {
+                messageList.addMessage("Invalid input");
+            }
+
+            // If number are in valid range, then change
+            if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
+                auto it = engimonInv.begin();
+                int i = 0;
+                while (i < targetNumber-1) {
+                    i++;
+                    ++it;
+                }
+                Engimon *targetEngimon = *it;
+
+                // Checking whether selected engimon is not current engimon
+                if (targetEngimon != player.getCurrentEngimon()) {
+                    string deletingString = "Deleted ";
+                    deletingString = deletingString + targetEngimon->getEngimonName();
+                    messageList.addMessage("");
+                    messageList.addMessage(deletingString);
+                    player.delEngimonItem(targetEngimon);
+                    doneDeleting = true;
+                    delete targetEngimon;
+                }
+                else {
+                    messageList.addMessage("Cannot delete current engimon");
+                }
+            }
+            else if (successParsing) {
+                messageList.addMessage("Number is out of range");
+            }
+        }
+        if (doneDeleting) {
+            return true;
+            // Returning delete success
+        }
     }
     else if (commandBuffer == "item") {
         showItemInventory();
+        std::map<SkillItem,int> skillInv = player.getSkillInventory();
+        messageList.addMessage("");
+        messageList.addMessage("Input item ID");
+
+        renderer.drawMessageBox(messageList);
+        renderer.clearCursorRestArea();
+        commandModeInput(commandBuffer);
+
+        // Trying to parsing to int
+        int targetNumber;
+        bool successParsing = false;
+        try {
+            targetNumber = stoi(commandBuffer);
+            successParsing = true;
+        }
+        catch (invalid_argument e) {
+            messageList.addMessage("Invalid input");
+        }
+
+        // If number are in valid range, then process
+        if (successParsing && 0 < targetNumber && targetNumber <= (int) maxSkillID) {
+            if (skillInv[targetNumber] > 0) {
+                renderer.clearMessageBox(messageList);
+                Skill targetSkill = skillDB.getSkill(targetNumber);
+                player.delSkillItem(targetNumber);
+                string deletingString = targetSkill.getSkillName();
+                deletingString = deletingString + " deleted";
+                messageList.addMessage(deletingString);
+            }
+            else
+                messageList.addMessage("Item not found");
+        }
+        else if (successParsing) {
+            messageList.addMessage("Number is out of range");
+        }
     }
+
 
     return false;
 }
@@ -760,8 +846,7 @@ void Engine::changeCurrentEngimon() {
     while (not doneChanging) {
         renderer.drawMessageBox(messageList);
         renderer.clearCursorRestArea();
-        cout << ">>> ";
-        getline(cin, commandBuffer);
+        commandModeInput(commandBuffer);
 
         if (commandBuffer == "exit")
             break;
@@ -821,4 +906,10 @@ void Engine::killCurrentEngimon() {
     }
     else
         loseScreen();
+}
+
+
+void Engine::commandModeInput(string& target) {
+    cout << ">>> ";
+    getline(cin, target);
 }
