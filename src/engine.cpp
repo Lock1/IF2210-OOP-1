@@ -28,7 +28,9 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
         player(MAX_INVENTORY, MAX_SKILL_ID), maxSkillID(MAX_SKILL_ID),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
         map("../other/mapfile.txt"),
-        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20),
+        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
+        wildEngimonSpawnProbability(4), wildEngimonDropProbability(30),
+        entitySpawnLimit(20),
         renderer(map, messageList), statRenderer(statMessage), ok(thisisfine) {
     // Internal variable setup
     srand((unsigned) time(NULL));
@@ -183,6 +185,7 @@ bool Engine::evaluteInput() {
                 messageList.addMessage(interactionMessage);
             }
             else {
+                Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
                 thisisfine.fillEmptyBuffer();
                 ok.drawMessageBox(thisisfine);
                 thisisfine.clearMessage();
@@ -214,8 +217,10 @@ bool Engine::evaluteInput() {
                 // Temporary stop input thread from queueing movement input
                 clearConsoleInputBuffer();
                 // Clearing current input buffer (GetKeyState() does not clear buffer)
+                thisisfine.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon2Power()));
                 thisisfine.addMessage("");
-                thisisfine.addMessage("");
+                thisisfine.addMessage("Your engimon stat");
+                thisisfine.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon1Power()));
                 thisisfine.addMessage("Fight ? (yes/no)");
                 ok.drawMessageBox(thisisfine);
 
@@ -227,7 +232,6 @@ bool Engine::evaluteInput() {
                     getline(cin, commandBuffer);
                     if (commandBuffer == "yes" || commandBuffer == "y") {
                         // TODO : Level up increase spawnLevelCap
-                        Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
                         bool isEnemyDied = false, isPlayerEngimonDied = false;
                         switch (doBattle.getBattleWinner()) {
                             case 1:
@@ -245,8 +249,12 @@ bool Engine::evaluteInput() {
                                 break;
                         }
                         // TODO : Catch
-                        // TODO : Kill
-                        // TODO : Debug multi-element battle, either adv1 or adv2 is not init properly
+                        // TODO : Kill player engimon
+                        // Branch if player engimon died
+                        // TODO : Add
+                        // TODO : Delete item
+
+                        // Branch if enemy died
                         if (isEnemyDied && not isPlayerEngimonDied) {
                             // Level up checking
                             if (player.getCurrentEngimon()->xpGain(targetEngimon->getLevel()*5)) {
@@ -257,11 +265,52 @@ bool Engine::evaluteInput() {
                             if (player.getCurrentEngimon()->isMaxCXP()) {
                                 // TODO : Kill
                             }
+
+                            // Random skill dropw
+                            int dropRoll = rand() % 100;
+                            if ((unsigned) dropRoll < wildEngimonDropProbability) {
+                                SkillItem droppedSkill = 1; // Placeholder
+                                string droppedSkillName = "";
+                                bool isSkillDropValid = false;
+                                set<ElementType> targetEngimonElements = targetEngimon->getElements();
+                                while (not isSkillDropValid) {
+                                    // Try catch block for random skill picking
+                                    try {
+                                        Skill randomSkill = skillDB.getSkill(rand() % maxSkillID);
+                                        if (randomSkill.isElementCompatible(*(targetEngimonElements.begin()))) {
+                                            isSkillDropValid = true;
+                                        }
+                                        else if (++(targetEngimonElements.begin()) != targetEngimonElements.end()) {
+                                            // If multi element, check other one
+                                            if (randomSkill.isElementCompatible(*(++(targetEngimonElements.begin()))))
+                                                isSkillDropValid = true;
+                                        }
+
+                                        if (isSkillDropValid) {
+                                            droppedSkill = randomSkill.getSkillID();
+                                            droppedSkillName = randomSkill.getSkillName();
+                                        }
+                                    }
+                                    catch (int e) {
+                                        // Empty catch block
+                                    }
+
+                                }
+
+                                player.addSkillItem(droppedSkill);
+                                messageList.addMessage(droppedSkillName + " dropped");
+
+                            }
+
                             map.setTileEntity(targetEngimon->getPos(), NULL);
+                            targetEngimon->tameEngimon();
+                            // TODO : Add catch
                             delete targetEngimon;
                             updateCurrentEngimonMessageStatus();
-                            // TODO : Roll item skill drop
+                            // Remove from map and add to inventory
                         }
+
+
 
                         isPromptDone = true;
                     }
@@ -310,6 +359,7 @@ void Engine::commandMode() {
     messageList.addMessage("3. change      ");
     messageList.addMessage("4. item        ");
     messageList.addMessage("5. breed       ");
+    // TODO : Delete
 
     renderer.drawMessageBox(messageList);
 
@@ -325,7 +375,7 @@ void Engine::commandMode() {
     if (commandBuffer == "dbg") { // DEBUG
         player.addEngimonItem(new Engimon(speciesDB.getSpecies(3), false, Position(0, 0)));
         player.addEngimonItem(new Engimon(speciesDB.getSpecies(2), false, Position(0, 0)));
-        player.addEngimonItem(new Engimon(speciesDB.getSpecies(1), false, Position(0, 0)));
+        player.addEngimonItem(new Engimon(speciesDB.getSpecies(rand()%10+1), false, Position(0, 0)));
         player.addSkillItem(4);
         player.addSkillItem(3);
         player.addSkillItem(rand()%10+1);
@@ -515,6 +565,9 @@ void Engine::commandMode() {
                         else
                             messageList.addMessage("Skill already learned");
                         updateCurrentEngimonMessageStatus();
+                        messageList.addMessage("");
+                        messageList.addMessage("");
+                        messageList.addMessage("");
                     }
                     else {
                         messageList.addMessage("Skill not compatible");
