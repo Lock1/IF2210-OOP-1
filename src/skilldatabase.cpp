@@ -45,6 +45,10 @@ void SkillDatabase::loadSkillDatabase(string filename) {
             else
                 skillElement = NoElement;
 
+            for (unsigned int i = 0; i < skillName.length(); i++)
+                if (skillName[i] == '-')
+                    skillName[i] = ' ';
+
             addSkill(Skill(skillID, skillPower, skillName, skillElement));
         }
 
@@ -55,7 +59,6 @@ void SkillDatabase::loadSkillDatabase(string filename) {
 }
 
 bool SkillDatabase::isCompatible(Engimon& engimonTarget, int skillID) {
-    // TODO : Testing after species database done
     ElementType targetType = getSkill(skillID).getSkillElement();
     set<ElementType> engimonElements = engimonTarget.getElement();
     if (engimonElements.find(targetType) != engimonElements.end())

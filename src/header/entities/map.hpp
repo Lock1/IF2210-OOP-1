@@ -25,7 +25,9 @@ class Map {
 
     public:
         Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY);
+        // User constructor for simple box map
         Map(std::string filename);
+        // User Constructor for reading from files
 
         int getSizeX();
         int getSizeY();
@@ -34,6 +36,7 @@ class Map {
         void wildEngimonRandomMove();
         // Move all wild pokemon with element type checking
         Engimon* spawnWildEngimon(Species target);
+        Engimon* spawnWildEngimon(Species target, int levelCap);
         // Spawn random wild engimon at random valid position,
         // returning allocated heap pointer
         // WARNING : Will allocating at heap memory

@@ -8,6 +8,7 @@
 #include "entities/map.hpp"
 #include "message.hpp"
 #include <vector>
+#include <string>
 
 class Box {
     // Data class for drawing box
@@ -51,6 +52,7 @@ class Render {
         char mapBorderLineVertical;
         char mapBorderLineHorizontal;
 
+        std::string msgBoxTitle;
         char msgBorderCornerBottomLeft;
         char msgBorderCornerBottomRight;
         char msgBorderCornerTopLeft;
@@ -70,12 +72,16 @@ class Render {
         // Border method, size need to be initialize first
         void drawBox(Box& target);
 
-
         void drawMapBorder();
-        // Drawing map border
-
         void drawMsgBorder();
-        // Drawing message border
+        // Drawing border
+
+        int floorEuclidean(Position pos1, Position pos2); // TODO : Search fast truncated ver
+        // Calculating floored euclidean distance
+
+        void drawMessageTitle();
+        // Drawing message box title at top left corner
+
     public:
         Render(Map& target, Message& msgTarget);
         // User Constructor
@@ -90,7 +96,7 @@ class Render {
         // Offset setting
 
         // -- Draw Method --
-        // Use double buffering
+        // Using double buffering
         // TODO : Extra, Const
         void drawMap(Map& target);
         // Drawing map at offset location
@@ -98,6 +104,17 @@ class Render {
         void drawMessageBox(Message& target);
         // Draw message box at offset location
 
+        void clearMessageBox(Message& target);
+        // Clear message box
+
+        void setMessageTitle(std::string title);
+        // Set message box title, will redrawing if border already drawn
+
+        void clearCursorRestArea();
+        // Writing space at rest area
+
+        void drawLoseScreen();
+        // Draw lose screen
 };
 
 #endif

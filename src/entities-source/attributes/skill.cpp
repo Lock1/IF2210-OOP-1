@@ -44,3 +44,10 @@ bool Skill::isElementCompatible(ElementType type) {
     else
         return false;
 }
+
+bool Skill::operator==(const Skill& target) {
+    if (target.skillID == skillID)
+        return true;
+    else
+        return false;
+}

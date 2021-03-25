@@ -13,38 +13,49 @@
 #include <vector>
 #include <set>
 
-class Engimon : public Entity, Species {
+class Engimon : public Entity, public Species {
     private:
-        // std::string Name;
-        // ii.    Parent Names & Species
-
+        std::string engimonName;
         std::vector<Skill> learnedSkill;
 
-        // vector<Species> parentSpecies;
+        // TODO : Breeding interaction
+        std::vector<Species> parentSpecies;
         std::vector<std::string> parentNames;
 
-        int Level;
-        int Experience;
-        int CumulativeExperience;
+        int level;
+        int experience;
+        int cumulativeExperience;
         bool isWild;
 
     public:
-        Engimon(Position pos, ElementType type, char icon, bool wild);  // WARNING : Basic, only for debugging
         Engimon(Species species, bool wild, Position pos);
+        Engimon(Species species, bool wild, Position pos, int startLevel);
+        // Engimon constructor
+        // TODO : Breeding engimon constructor
 
-        bool isMoveLocationValid(Tile &target) override;
-        bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false
+        bool isMoveLocationValid(Tile& target) override;
+        int xpGain(int gainedXP); // Returning level up count
         bool isMaxCXP();                                            // If over CumulativeExperience, return true
-        bool addSkill(Skill newSkill);                             // Only add if skill slot enough
-        bool deleteskill(Skill targetSkill);
-        // TODO : isWild changer to false
+        bool addSkill(Skill newSkill);
+        // Only add if skill slot enough and not learned returning false if failed
+        bool deleteSkill(int targetSkillID);
+        void tameEngimon();
+
+        std::vector<Skill> getSkillList();
+        std::vector<Skill>& getSkillListRef();
+
+        std::vector<Species> getParentSpecies();
+        std::vector<std::string> getParentNames();
 
         std::set<ElementType> getElement();
+        std::string getEngimonName();
+        void setEngimonName(std::string target);
+        int getLevel();
+        int getXP();
+        int getLearnedSkillCount();
 
         bool isWildEngimon();
-        std::string playerInteract();                          // Print description, only non-wild pokemon
-        int getLevel();
-        void setLevel(int level);     
+        std::string getInteractString();                               // Get description, only non-wild pokemon
 };
 
 

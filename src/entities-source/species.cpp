@@ -18,15 +18,15 @@ Species::Species(int id, string name, Skill skill, string desc, ElementType elem
 	// Char evaluator
 	if (elements.find(Water) != elements.end()) {
 		if (elements.find(Ground) != elements.end())
-			speciesChar = 'b';
+			speciesChar = 'n';
 		else if (elements.find(Ice) != elements.end())
-			speciesChar = 'z';
+			speciesChar = 's';
 		else
 			speciesChar = 'w';
 	}
 	else if (elements.find(Fire) != elements.end()) {
 		if (elements.find(Electric) != elements.end())
-			speciesChar = 'r';
+			speciesChar = 'l';
 		else
 			speciesChar = 'f';
 	}

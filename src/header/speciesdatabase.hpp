@@ -18,7 +18,6 @@ class SpeciesDatabase {
         std::vector<Species> speciesDatabase;
 
         ElementType stringToElement(std::string target);
-        // TODO : Extra, generalize
     public:
         SpeciesDatabase();
 

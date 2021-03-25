@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\battle.cpp" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\entities-source\attributes\skill.cpp" />
     <ClCompile Include="src\entities-source\engimon.cpp" />

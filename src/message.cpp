@@ -18,6 +18,16 @@ void Message::addMessage(std::string newMsg) {
     messageQueue.push(newMsg);
 }
 
+void Message::clearMessage() {
+    while (not messageQueue.empty())
+        messageQueue.pop();
+}
+
+void Message::fillEmptyBuffer() {
+    for (unsigned i = 0; i < maxQueue; i++)
+        addMessage("                                 ");
+}
+
 std::queue<std::string> Message::showMessage() {
     return messageQueue;
 }

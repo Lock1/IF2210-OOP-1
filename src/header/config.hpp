@@ -11,6 +11,11 @@
 // Common configuration
 #define INPUT_BUFFER_COUNT 4
 #define INPUT_DELAY_MS 100
+#define MAX_INVENTORY 20
+#define MAX_SKILL_ID 1000
+#define XP_MULTIPLIER 100
+// #define FOG_OF_WAR // Define FOG_OF_WAR for activating FoW // TODO : Move from render
+#define LINE_OF_SIGHT // For activating line of sight limit // TODO : Add
 
 // Map
 #define SEA_STARTING_X 35

@@ -1,5 +1,6 @@
 // 13519214
-
+// TODO : A E S T H E T I C -> Message border shadow
+#include "header/config.hpp"
 #include "header/entities/tile.hpp"
 #include "header/entities/map.hpp"
 #include "header/render.hpp"
@@ -8,6 +9,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <math.h>
 
 using namespace std;
 
@@ -19,6 +21,7 @@ Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), m
     mapOffsetX = mapOffsetY = 1;
     msgOffsetX = 55;
     msgOffsetY = 1;
+    msgBoxTitle = "";
 
     // Map Border
     mapBorderCornerBottomLeft = '\xC8';
@@ -53,6 +56,7 @@ Render::Render(Message& msgTarget) : mapSizeX(0), mapSizeY(0),
     mapOffsetX = mapOffsetY = 1;
     msgOffsetX = 55;
     msgOffsetY = 1;
+    msgBoxTitle = "";
 
     // Message border
     msgBorderCornerBottomLeft = '\xC0';
@@ -148,7 +152,6 @@ void Render::drawMsgBorder() {
 }
 
 void Render::drawMap(Map& target) {
-    // TODO : Extra, maybe using static variable on Entity
     if (isEmptyMapBuffer) {
         for (unsigned int i = 0; i < mapSizeY; i++) {
             for (unsigned int j = 0; j < mapSizeX; j++) {
@@ -163,7 +166,10 @@ void Render::drawMap(Map& target) {
                 else {
                     mapFrameBuffer[i][j] = target.getTileTypeAt(j, i);
                     setCursorPosition(j + mapOffsetX, i + mapOffsetY);
+
+                    #ifndef FOG_OF_WAR
                     cout << mapFrameBuffer[i][j];
+                    #endif
                 }
             }
         }
@@ -195,6 +201,7 @@ void Render::drawMap(Map& target) {
 void Render::drawMessageBox(Message& target) {
     if (!isMessageBorderDrawn) {
         drawMsgBorder();
+        drawMessageTitle();
         isMessageBorderDrawn = true;
     }
 
@@ -211,4 +218,42 @@ void Render::drawMessageBox(Message& target) {
     }
 
     setCursorPosition(cursorRestX, cursorRestY);
+}
+
+void Render::setMessageTitle(string title) {
+    msgBoxTitle = title;
+    // If already draw, redraw
+    if (isMessageBorderDrawn) {
+        drawMsgBorder();
+        drawMessageTitle();
+    }
+}
+
+void Render::clearCursorRestArea() {
+    setCursorPosition(cursorRestX, cursorRestY);
+    cout << "                                         ";
+    setCursorPosition(cursorRestX, cursorRestY);
+}
+
+void Render::drawMessageTitle() {
+    setCursorPosition(msgOffsetX, msgOffsetY-1);
+    cout << msgBoxTitle;
+}
+
+int Render::floorEuclidean(Position pos1, Position pos2) {
+    double xDiff = pos1.getX()-pos2.getX();
+    double yDiff = pos1.getY()-pos2.getY();
+    return (int) sqrt((xDiff*xDiff) + (yDiff*yDiff));
+}
+
+void Render::drawLoseScreen() {
+    system(CLEAR_SCREEN_CMD);
+    // TODO : Steal prolog red lose screen
+}
+
+void Render::clearMessageBox(Message& target) {
+    target.fillEmptyBuffer();
+    drawMessageBox(target);
+    target.clearMessage();
+    clearCursorRestArea();
 }

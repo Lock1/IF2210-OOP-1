@@ -6,7 +6,8 @@
 #include <chrono>
 #include <mutex>
 
-PlayerInput::PlayerInput(unsigned int maxBuf, unsigned int inpDelay) : inputDelayMillisecond(inpDelay), maxInputBuffer(maxBuf), inputLock(), inputThread(NULL), isRunning(false) {
+PlayerInput::PlayerInput(unsigned int maxBuf, unsigned int inpDelay) : inputDelayMillisecond(inpDelay),
+        maxInputBuffer(maxBuf), inputLock(), inputThread(NULL), isRunning(false), isReading(false) {
 
 }
 
@@ -16,8 +17,7 @@ PlayerInput::~PlayerInput() {
 
 void PlayerInput::inputLoop() {
     while (isRunning) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(inputDelayMillisecond));
-        if (inputBuffer.size() < maxInputBuffer) {
+        if (inputBuffer.size() < maxInputBuffer && isReading) {
             // Critical section, blocking input buffer processing
             inputLock.lock();
             if ((GetKeyState(VK_UP) & 0x8000) || (GetKeyState('W') & 0x8000))
@@ -44,18 +44,28 @@ void PlayerInput::inputLoop() {
             if ((GetKeyState(VK_ESCAPE) & 0x8000))
                 inputBuffer.push(EscKey);
             inputLock.unlock();
+            
+            std::this_thread::sleep_for(std::chrono::milliseconds(inputDelayMillisecond));
+            // If input reading condition satisfied, then wait for few ms before register new input
         }
     }
 }
 
 void PlayerInput::startReadInput() {
-    // TODO : Extra, potential memory leak
+    // TODO : Extra, potential memory leak, use .join() at stop
     inputThread = new std::thread(&PlayerInput::inputLoop, this);
     isRunning = true;
+    isReading = true;
 }
-// Start input reading
+
+void PlayerInput::toggleReadInput() {
+    isReading = !isReading;
+}
+
+
 void PlayerInput::stopReadInput() {
     isRunning = false;
+    isReading = false;
 }
 
 InputType PlayerInput::getUserInput() {
