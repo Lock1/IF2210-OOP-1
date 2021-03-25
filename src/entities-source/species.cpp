@@ -13,7 +13,7 @@ Species::Species(int id, string name, Skill skill, string desc, ElementType elem
     elements.insert(element1);
 	if (element2 != NoElement)
 		elements.insert(element2);
-    interactionDescription = desc; // TODO : Strip bar and check
+    interactionDescription = desc;
 
 	// Char evaluator
 	if (elements.find(Water) != elements.end()) {

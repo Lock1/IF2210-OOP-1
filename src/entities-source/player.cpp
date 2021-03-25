@@ -14,7 +14,7 @@ Player::Player(unsigned maxInv, unsigned maxSkillID) : Entity(1, 0, EntityPlayer
 }
 
 Player::~Player() {
-    // TODO : Maybe not needed
+    
 }
 
 void Player::changeEngimon(Engimon *targetEngimon) {

@@ -24,9 +24,9 @@ using namespace std;
 
 
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
-        battleMessage(MAX_MESSAGE-12, MSG_MAX_X-5), // DEBUG
+        battleMessage(MAX_MESSAGE-12, MSG_MAX_X-5),
         player(MAX_INVENTORY, MAX_SKILL_ID), maxSkillID(MAX_SKILL_ID),
-        // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
+        // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y),
         map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
         wildEngimonSpawnProbability(4), wildEngimonDropProbability(30),
@@ -44,14 +44,14 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
-    // DEBUG
     battleRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
     battleRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // Set message box titles
-    renderer.setMessageTitle("Ini kotak gan");
-    statRenderer.setMessageTitle("Ini bukan kotak");
-    battleRenderer.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
+    string titleBar = "\xC4";
+    renderer.setMessageTitle(titleBar + "Message");
+    statRenderer.setMessageTitle(titleBar + "Current Engimon Stats");
+    battleRenderer.setMessageTitle(titleBar + "Battle");
 
     // TODO : Add prompt (?)
     // TODO : Add splash screen (?)
@@ -349,7 +349,6 @@ bool Engine::evaluteInput() {
 }
 
 void Engine::evaluteTick() {
-    // TODO : Add here
     map.wildEngimonRandomMove();
     unsigned int randomNumber = rand() % 100;
     if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability) {

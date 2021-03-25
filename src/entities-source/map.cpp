@@ -32,7 +32,7 @@ Map::Map(string filename) : randomEngimonMoveProbability(20) {
     // Unused
     seaStartX = 0;
     seaStartY = 0;
-    // TODO : Engimon loading (???), maybe not needed
+    // Reading from file
     ifstream mapFile = ifstream(filename);
     if (mapFile.is_open()) {
         vector<vector<Tile>> flippedMap;

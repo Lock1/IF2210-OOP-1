@@ -152,7 +152,6 @@ void Render::drawMsgBorder() {
 }
 
 void Render::drawMap(Map& target) {
-    // TODO : Extra, maybe using static variable on Entity
     if (isEmptyMapBuffer) {
         for (unsigned int i = 0; i < mapSizeY; i++) {
             for (unsigned int j = 0; j < mapSizeX; j++) {
