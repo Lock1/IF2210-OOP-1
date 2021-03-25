@@ -82,7 +82,7 @@ int Engimon::xpGain(int gainedXP) {
     int levelGained = 0;
     experience += gainedXP;
     cumulativeExperience += gainedXP;
-    if (experience > 100) {
+    if (experience >= 100) {
         levelGained = experience/100;
         level += (levelGained);
         experience %= 100;

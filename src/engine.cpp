@@ -406,7 +406,7 @@ void Engine::evaluteTick() {
                         }
 
                         if (isSkillGeneratedValid) {
-                            int masteryLevelUp = (rand() % (1 + spawnLevelCap/5));
+                            int masteryLevelUp = (rand() % (1 + spawnLevelCap/5)) + 1;
                             for (int j = 0; j < masteryLevelUp; j++)
                                 generatedSkill.levelUpMastery();
 
@@ -913,6 +913,7 @@ void Engine::changeCurrentEngimon() {
             map.setTileEntity(player.getCurrentEngimon()->getPos(), targetEngimon);
             player.changeEngimon(targetEngimon);
             updateCurrentEngimonMessageStatus();
+            statRenderer.clearMessageBox(statMessage);
             doneChanging = true;
         }
         else if (successParsing) {

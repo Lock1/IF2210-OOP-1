@@ -44,17 +44,8 @@ Battle::Battle(Engimon *e1, Engimon *e2){
             ElementType type2_1 = *it_e2;
             ElementType type2_2 = *(++it_e2);
 
-            if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_1, type2_2)){
-                adv1 = getElementAdvantage(type1_1, type2_1);
-            } else{
-                adv1 = getElementAdvantage(type1_1, type2_2);
-            }
-
-            if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_1, type2_2)){
-                adv2 = getElementAdvantage(type1_1, type2_2);
-            } else{
-                adv2 = getElementAdvantage(type1_1, type2_1);
-            }
+            adv1 = getMax(getElementAdvantage(type1_1, type2_1), getElementAdvantage(type1_1, type2_2));
+            adv2 = getMax(getElementAdvantage(type2_1, type1_1), getElementAdvantage(type2_1, type1_1));
         }
     }
     else{
@@ -65,17 +56,8 @@ Battle::Battle(Engimon *e1, Engimon *e2){
             ElementType type1_2 = *(++it_e1);
             ElementType type2_1 = *it_e2;
 
-            if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_2, type2_1)){
-                adv1 = getElementAdvantage(type1_1, type2_1);
-            } else{
-                adv1 = getElementAdvantage(type1_2, type2_1);
-            }
-
-            if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_2, type2_1)){
-                adv2 = getElementAdvantage(type1_2, type2_1);
-            } else{
-                adv2 = getElementAdvantage(type1_1, type2_1);
-            }
+            adv1 = getMax(getElementAdvantage(type1_1, type2_1), getElementAdvantage(type1_2, type2_1));
+            adv2 = getMax(getElementAdvantage(type2_1, type1_1), getElementAdvantage(type2_1, type1_2));
         } else{
             auto it_e1 = elements_e1.begin();
             auto it_e2 = elements_e2.begin();
@@ -84,22 +66,17 @@ Battle::Battle(Engimon *e1, Engimon *e2){
             ElementType type2_1 = *it_e2;
             ElementType type2_2 = *(++it_e2);
 
-            // if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_2, type2_1)){
-                if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_1, type2_2)){
-                    adv1 = getElementAdvantage(type1_1, type2_2);
-                }else{
-                    adv1 = getElementAdvantage(type1_1, type2_1);
-                }
-            // }
-            // else {
-            // if (getElementAdvantage(type1_1, type2_1) < getElementAdvantage(type1_2, type2_1)) {
-                if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_1, type2_2)){
-                    adv2 = getElementAdvantage(type1_2, type2_1);
-                }else{
-                    adv2 = getElementAdvantage(type1_1, type2_1);
-                }
-            // }
-            // Comment : ??????
+            // Get first engimon, first element vs enemy adv
+            float first1_second_adv = getMax(getElementAdvantage(type1_1, type2_1), getElementAdvantage(type1_1, type2_2));
+            // Get first engimon, second element vs enemy adv
+            float first2_second_adv = getMax(getElementAdvantage(type1_2, type2_1), getElementAdvantage(type1_2, type2_2));
+            adv1 = getMax(first1_second_adv, first2_second_adv);
+
+            // Get second engimon, first element vs enemy adv
+            float first_second1_adv = getMax(getElementAdvantage(type2_1, type1_1), getElementAdvantage(type2_1, type1_2));
+            // Get second engimon, second element vs enemy adv
+            float first_second2_adv = getMax(getElementAdvantage(type2_2, type1_1), getElementAdvantage(type2_2, type1_2));
+            adv2 = getMax(first_second1_adv, first_second2_adv);
         }
     }
 
@@ -261,4 +238,11 @@ float Battle::getEngimon1Power() {
 
 float Battle::getEngimon2Power() {
     return advantage2;
+}
+
+float Battle::getMax(float a, float b) {
+    if (a > b)
+        return a;
+    else
+        return b;
 }

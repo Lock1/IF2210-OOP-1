@@ -13,6 +13,7 @@ class Battle {
         float advantage1;
         float advantage2;
         float getElementAdvantage(ElementType elem1, ElementType elem2);
+        float getMax(float a, float b);
     public:
         Battle(Engimon *e1, Engimon *e2);
 
