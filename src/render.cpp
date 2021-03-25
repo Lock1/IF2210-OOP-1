@@ -251,3 +251,10 @@ void Render::drawLoseScreen() {
     system(CLEAR_SCREEN_CMD);
     // TODO : Steal prolog red lose screen
 }
+
+void Render::clearMessageBox(Message& target) {
+    target.fillEmptyBuffer();
+    drawMessageBox(target);
+    target.clearMessage();
+    clearCursorRestArea();
+}

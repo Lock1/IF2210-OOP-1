@@ -104,6 +104,9 @@ class Render {
         void drawMessageBox(Message& target);
         // Draw message box at offset location
 
+        void clearMessageBox(Message& target);
+        // Clear message box
+
         void setMessageTitle(std::string title);
         // Set message box title, will redrawing if border already drawn
 

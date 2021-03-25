@@ -184,9 +184,7 @@ bool Engine::evaluteInput() {
             }
             else {
                 Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
-                battleMessage.fillEmptyBuffer();
-                battleRenderer.drawMessageBox(battleMessage);
-                battleMessage.clearMessage();
+                battleRenderer.clearMessageBox(battleMessage);
 
                 string wildEngimonName = "Species \xB3 ";
                 wildEngimonName = wildEngimonName + targetEngimon->getName();
@@ -341,9 +339,7 @@ bool Engine::evaluteInput() {
                     else if (commandBuffer == "no" || commandBuffer == "n")
                         isPromptDone = true;
                 }
-                battleMessage.fillEmptyBuffer();
-                battleRenderer.drawMessageBox(battleMessage);
-                battleMessage.clearMessage();
+                battleRenderer.clearMessageBox(battleMessage);
 
                 userInput.toggleReadInput();
                 renderer.clearCursorRestArea();
@@ -408,9 +404,7 @@ void Engine::commandMode() {
     clearConsoleInputBuffer();
     // Clearing current input buffer (GetKeyState() does not clear buffer)
 
-    messageList.fillEmptyBuffer();
-    renderer.drawMessageBox(messageList);
-    messageList.clearMessage();
+    renderer.clearMessageBox(messageList);
     // Clearing message list window
 
     messageList.addMessage(" \xCD\xCD\xCD\xCD Command list \xCD\xCD\xCD\xCD ");
@@ -428,9 +422,7 @@ void Engine::commandMode() {
     cout << ">>> ";
     getline(cin, commandBuffer);
 
-    messageList.fillEmptyBuffer();
-    renderer.drawMessageBox(messageList);
-    messageList.clearMessage();
+    renderer.clearMessageBox(messageList);
     // Clearing message list window
 
     if (commandBuffer == "dbg") { // DEBUG
@@ -441,7 +433,9 @@ void Engine::commandMode() {
         player.addSkillItem(3);
         player.addSkillItem(rand()%10+1);
     }
-    // TODO : Add
+    else if (commandBuffer == "delete") {
+        deleteInventory();
+    }
     // else if (commandBuffer == "breed")
     else if (commandBuffer == "engimon") {
         // TODO : Print parent
@@ -733,8 +727,25 @@ void Engine::showEngimonInventory() {
     }
 }
 
-void Engine::deleteInventory() {
+bool Engine::deleteInventory() {
+    string commandBuffer;
+    renderer.clearMessageBox(messageList);
+    messageList.addMessage("Delete");
+    messageList.addMessage("1. engimon");
+    messageList.addMessage("2. item");
+    messageList.addMessage("3. exit");
+    renderer.drawMessageBox(messageList);
+    cout << ">>> ";
+    getline(cin, commandBuffer);
+    renderer.clearMessageBox(messageList);
+    if (commandBuffer == "engimon") {
+        showEngimonInventory();
+    }
+    else if (commandBuffer == "item") {
+        showItemInventory();
+    }
 
+    return false;
 }
 
 void Engine::changeCurrentEngimon() {

@@ -64,8 +64,8 @@ class Engine {
         void killCurrentEngimon();
         // Kill current engimon, no engimon left will cause game over
 
-        void deleteInventory();
-        // Delete from engimon or item inventory
+        bool deleteInventory();
+        // Delete from engimon or item inventory, return true if success deleting
         void loseScreen();
         // Draw lose screen
         void changeCurrentEngimon();
