@@ -147,6 +147,7 @@ Engimon* Map::spawnWildEngimon(Species target, int levelCap) {
 
     Position targetPos = Position(randomX, randomY);
     Entity *wildEngimon = new Engimon(target, true, targetPos, (rand() % levelCap) + 1);
+
     setTileEntity(targetPos, wildEngimon);
     return (Engimon *) wildEngimon;
 }

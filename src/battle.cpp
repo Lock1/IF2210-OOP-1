@@ -84,13 +84,13 @@ Battle::Battle(Engimon *e1, Engimon *e2){
             ElementType type2_1 = *it_e2;
             ElementType type2_2 = *(++it_e2);
 
-            if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_2, type2_1)){
+            // if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_2, type2_1)){
                 if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_1, type2_2)){
                     adv1 = getElementAdvantage(type1_1, type2_2);
                 }else{
                     adv1 = getElementAdvantage(type1_1, type2_1);
                 }
-            }
+            // }
             // else {
             // if (getElementAdvantage(type1_1, type2_1) < getElementAdvantage(type1_2, type2_1)) {
                 if (getElementAdvantage(type1_1, type2_1) >= getElementAdvantage(type1_1, type2_2)){

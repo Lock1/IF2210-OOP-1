@@ -34,14 +34,15 @@ class Engimon : public Entity, public Species {
         // TODO : Breeding engimon constructor
 
         bool isMoveLocationValid(Tile& target) override;
-        bool xpGain(int gainedXP);                                  // If Levelup -> return true, else false
+        int xpGain(int gainedXP); // Returning level up count
         bool isMaxCXP();                                            // If over CumulativeExperience, return true
         bool addSkill(Skill newSkill);
         // Only add if skill slot enough returning false if failed
         bool deleteSkill(int targetSkillID);
         void tameEngimon();
 
-        std::vector<Skill> getSkillList(); // TODO : Add Mastery level ++
+        std::vector<Skill> getSkillList();
+        std::vector<Skill>& getSkillListRef();
 
         std::vector<Species> getParentSpecies();
         std::vector<std::string> getParentNames();

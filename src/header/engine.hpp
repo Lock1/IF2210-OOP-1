@@ -40,6 +40,8 @@ class Engine {
         // Spawn probability in percent
         const unsigned int wildEngimonDropProbability;
         // Drop probability in percent
+        const unsigned int xpMultiplier;
+        // XP multiplier on win battle
         const unsigned int entitySpawnLimit;
         // Entity count limit, player included
 

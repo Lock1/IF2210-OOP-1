@@ -13,6 +13,7 @@
 #define INPUT_DELAY_MS 100
 #define MAX_INVENTORY 20
 #define MAX_SKILL_ID 1000
+#define XP_MULTIPLIER 100
 
 // Map
 #define SEA_STARTING_X 35

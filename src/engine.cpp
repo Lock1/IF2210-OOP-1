@@ -30,7 +30,7 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
         map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
         wildEngimonSpawnProbability(4), wildEngimonDropProbability(30),
-        entitySpawnLimit(20),
+        entitySpawnLimit(20), xpMultiplier(XP_MULTIPLIER),
         renderer(map, messageList), statRenderer(statMessage), ok(thisisfine) {
     // Internal variable setup
     srand((unsigned) time(NULL));
@@ -233,6 +233,7 @@ bool Engine::evaluteInput() {
                     if (commandBuffer == "yes" || commandBuffer == "y") {
                         // TODO : Level up increase spawnLevelCap
                         bool isEnemyDied = false, isPlayerEngimonDied = false;
+                        messageList.addMessage("");
                         switch (doBattle.getBattleWinner()) {
                             case 1:
                                 messageList.addMessage(targetEngimon->getEngimonName() + " defeated");
@@ -257,8 +258,16 @@ bool Engine::evaluteInput() {
                         // Branch if enemy died
                         if (isEnemyDied && not isPlayerEngimonDied) {
                             // Level up checking
-                            if (player.getCurrentEngimon()->xpGain(targetEngimon->getLevel()*5)) {
-                                spawnLevelCap++;
+                            int levelGained = player.getCurrentEngimon()->xpGain(targetEngimon->getLevel()*xpMultiplier);
+                            if (levelGained > 0) {
+                                spawnLevelCap += levelGained;
+                            }
+
+                            // Random mastery level up
+                            vector<Skill>& SkillReference = player.getCurrentEngimon()->getSkillListRef();
+                            for (unsigned i = 0; i < SkillReference.size(); i++) {
+                                if ((rand() % 100) < 40)
+                                    SkillReference[i].levelUpMastery();
                             }
 
                             // Random skill drop
@@ -303,8 +312,9 @@ bool Engine::evaluteInput() {
                             bool validCatchCommand = false, catchEngimon = false;
                             while (not validCatchCommand) {
                                 messageList.addMessage("Catch engimon? (y/n)");
-                                renderer.clearCursorRestArea();
                                 renderer.drawMessageBox(messageList);
+                                renderer.clearCursorRestArea();
+                                cout << ">>> ";
                                 getline(cin, commandBuffer);
                                 if (commandBuffer == "y") {
                                     player.addEngimonItem(targetEngimon); // TODO : << Delete inventory
@@ -320,6 +330,7 @@ bool Engine::evaluteInput() {
 
                             if (not catchEngimon)
                                 delete targetEngimon;
+
                             updateCurrentEngimonMessageStatus();
                         }
 
@@ -353,7 +364,43 @@ void Engine::evaluteTick() {
     if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability) {
         unsigned int randomSpeciesID = (rand() % (speciesDB.getSpeciesCount() - 1)) + 1;
         // TODO : Extra, fix mod operator
-        engimonList.push_back(map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID), spawnLevelCap));
+        Engimon *spawnedEngimon = map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID), spawnLevelCap);
+
+        // Random skill adder, 3x roll chance to get additional skill
+        // Higher level cap also grant higher chance to get multiple skill,
+        // up to 100% chance getting 4 skill
+        set<ElementType> engimonElements = spawnedEngimon->getElements();
+        for (int i = 0; i < 3; i++) {
+            if ((rand() % 100) < 10 + spawnLevelCap) {
+                // Try catch block random skill
+                Skill generatedSkill = skillDB.getSkill(1); // Placeholder
+                bool isSkillGeneratedValid = false;
+                while (not isSkillGeneratedValid) {
+                    try {
+                        generatedSkill = skillDB.getSkill(rand() % maxSkillID);
+                        if (generatedSkill.isElementCompatible(*engimonElements.begin())) {
+                            isSkillGeneratedValid = true;
+                        }
+                        else if (++engimonElements.begin() != engimonElements.end()) {
+                            if (generatedSkill.isElementCompatible(*(++engimonElements.begin())))
+                                isSkillGeneratedValid = true;
+                        }
+
+                        if (isSkillGeneratedValid) {
+                            int masteryLevelUp = (rand() % (1 + spawnLevelCap/5));
+                            for (int j = 0; j < masteryLevelUp; j++)
+                                generatedSkill.levelUpMastery();
+
+                            spawnedEngimon->addSkill(generatedSkill);
+                        }
+                    }
+                    catch (int e) {
+
+                    }
+                }
+            }
+        }
+        engimonList.push_back(spawnedEngimon);
     }
 }
 
