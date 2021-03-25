@@ -21,14 +21,14 @@ class Engine {
         Map map;
         Message messageList;
         Message statMessage;
-        Message thisisfine; // <<< DEBUG
+        Message battleMessage;
         PlayerInput userInput;
         SkillDatabase skillDB;
         SpeciesDatabase speciesDB;
         Player player;
         Render renderer;
         Render statRenderer;
-        Render ok; // <<<< DEBUG
+        Render battleRenderer;
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;
@@ -38,6 +38,10 @@ class Engine {
 
         const unsigned int wildEngimonSpawnProbability;
         // Spawn probability in percent
+        const unsigned int wildEngimonDropProbability;
+        // Drop probability in percent
+        const unsigned int xpMultiplier;
+        // XP multiplier on win battle
         const unsigned int entitySpawnLimit;
         // Entity count limit, player included
 
@@ -56,6 +60,25 @@ class Engine {
         // Show player item inventory to message list box
         void showEngimonInventory();
         // Show player engimon inventory to message list box
+
+        void killCurrentEngimon();
+        // Kill current engimon, no engimon left will cause game over
+
+        bool deleteInventory();
+        // Delete from engimon or item inventory, return true if success deleting
+        void loseScreen();
+        // Draw lose screen
+        void changeCurrentEngimon();
+        // Change current engimon
+        void commandModeInput(std::string& target);
+        // Get command mode input from user
+
+        void showLegendHelp();
+        // Printing legend help in message list
+        void renameEngimon();
+        // Change engimon name
+        bool engimonForgetSkill(Engimon *targetEngimon);
+        // Forgetting skill in engimon, return true if success
     public:
         Engine();
         // Constructor

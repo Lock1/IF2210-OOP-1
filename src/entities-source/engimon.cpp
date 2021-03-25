@@ -5,6 +5,7 @@
 #include "../header/entities/tile.hpp"
 #include <set>
 #include <vector>
+#include <string.h>
 
 using namespace std;
 
@@ -27,6 +28,10 @@ Engimon::Engimon(Species species, bool wild, Position pos, int startLevel) : Spe
     cumulativeExperience = 0;
     isWild = wild;
     engimonName = speciesName;
+
+    if (level > 50) {
+        entityChar = toupper(speciesChar);
+    }
 
     Skill speciesSkill = baseSkill;
     speciesSkill.levelUpMastery();
@@ -53,10 +58,12 @@ bool Engimon::addSkill(Skill newSkill) {
 bool Engimon::deleteSkill(int targetSkillID) {
     auto it = learnedSkill.begin();
     bool isFound = false;
+    // TODO : Extra, use short circuit instead
     while (it != learnedSkill.end() && not isFound) {
         if ((*it).getSkillID() == targetSkillID) {
             learnedSkill.erase(it);
             isFound = true;
+            break; // Preventing to access iterator if already erased
         }
         ++it;
     }
@@ -67,24 +74,34 @@ bool Engimon::deleteSkill(int targetSkillID) {
 }
 
 bool Engimon::isMaxCXP() {
-    if (cumulativeExperience > 100)
+    if (cumulativeExperience > 100*100) // Maximum level is 100
         return true;
     else
         return false;
 }
 
-bool Engimon::xpGain(int gainedXP) {
+int Engimon::xpGain(int gainedXP) {
+    int levelGained = 0;
     experience += gainedXP;
     cumulativeExperience += gainedXP;
-    if (experience > 100) {
-        level += (experience/100);
+    if (experience >= 100) {
+        levelGained = experience/100;
+        level += (levelGained);
         experience %= 100;
-        return true;
     }
-    return false;
+    // If reaching level 50, change char
+    if (level > 50) {
+        entityChar = toupper(speciesChar);
+    }
+
+    return levelGained;
 }
 
 vector<Skill> Engimon::getSkillList() {
+    return learnedSkill;
+}
+
+vector<Skill>& Engimon::getSkillListRef() {
     return learnedSkill;
 }
 
@@ -130,4 +147,12 @@ vector<Species> Engimon::getParentSpecies() {
 
 vector<std::string> Engimon::getParentNames() {
     return parentNames;
+}
+
+void Engimon::setEngimonName(string target) {
+    engimonName = target;
+}
+
+int Engimon::getLearnedSkillCount() {
+    return (int) learnedSkill.size();
 }

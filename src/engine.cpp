@@ -24,12 +24,14 @@ using namespace std;
 
 
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
-        thisisfine(MAX_MESSAGE-12, MSG_MAX_X-5), // DEBUG
+        battleMessage(MAX_MESSAGE-12, MSG_MAX_X-5),
         player(MAX_INVENTORY, MAX_SKILL_ID), maxSkillID(MAX_SKILL_ID),
-        // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
+        // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y),
         map("../other/mapfile.txt"),
-        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS), wildEngimonSpawnProbability(4), entitySpawnLimit(20),
-        renderer(map, messageList), statRenderer(statMessage), ok(thisisfine) {
+        userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
+        wildEngimonSpawnProbability(4), wildEngimonDropProbability(30),
+        entitySpawnLimit(40), xpMultiplier(XP_MULTIPLIER),
+        renderer(map, messageList), statRenderer(statMessage), battleRenderer(battleMessage) {
     // Internal variable setup
     srand((unsigned) time(NULL));
     isEngineRunning = true;
@@ -42,14 +44,14 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     statRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y);
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
-    // DEBUG
-    ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
-    ok.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
+    battleRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
+    battleRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // Set message box titles
-    renderer.setMessageTitle("Ini kotak gan");
-    statRenderer.setMessageTitle("Ini bukan kotak");
-    ok.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
+    string titleBar = "\xC4";
+    renderer.setMessageTitle(titleBar + "Message");
+    statRenderer.setMessageTitle(titleBar + "Current Engimon Stats");
+    battleRenderer.setMessageTitle(titleBar + "Battle");
 
     // TODO : Add prompt (?)
     // TODO : Add splash screen (?)
@@ -69,8 +71,6 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
 }
 
 Engine::~Engine() {
-    // TODO : Cleanup variable
-    // TODO : Destroy allocated engimonList
 }
 
 void Engine::clearConsoleInputBuffer() {
@@ -96,13 +96,14 @@ void Engine::startGame() {
 
     userInput.startReadInput();
     updateCurrentEngimonMessageStatus();
+    showLegendHelp();
 
     while (isEngineRunning) {
         // Drawing map and message box
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
-        ok.drawMessageBox(thisisfine);
+        battleRenderer.drawMessageBox(battleMessage);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
@@ -183,17 +184,16 @@ bool Engine::evaluteInput() {
                 messageList.addMessage(interactionMessage);
             }
             else {
-                thisisfine.fillEmptyBuffer();
-                ok.drawMessageBox(thisisfine);
-                thisisfine.clearMessage();
+                Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
+                battleRenderer.clearMessageBox(battleMessage);
 
                 string wildEngimonName = "Species \xB3 ";
                 wildEngimonName = wildEngimonName + targetEngimon->getName();
-                thisisfine.addMessage(wildEngimonName);
+                battleMessage.addMessage(wildEngimonName);
 
                 string wildEngimonLevel = "Lvl     \xB3 ";
                 wildEngimonLevel = wildEngimonLevel + to_string(targetEngimon->getLevel());
-                thisisfine.addMessage(wildEngimonLevel);
+                battleMessage.addMessage(wildEngimonLevel);
 
                 set<ElementType> elements = targetEngimon->getElements();
                 string typeMsg = "Type    \xB3 ";
@@ -207,60 +207,155 @@ bool Engine::evaluteInput() {
                     typeMsg = typeMsg + "Ground ";
                 if (elements.find(Electric) != elements.end())
                     typeMsg = typeMsg + "Electric ";
-                thisisfine.addMessage(typeMsg);
+                battleMessage.addMessage(typeMsg);
 
 
                 userInput.toggleReadInput();
                 // Temporary stop input thread from queueing movement input
                 clearConsoleInputBuffer();
                 // Clearing current input buffer (GetKeyState() does not clear buffer)
-                thisisfine.addMessage("");
-                thisisfine.addMessage("");
-                thisisfine.addMessage("Fight ? (yes/no)");
-                ok.drawMessageBox(thisisfine);
+                battleMessage.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon2Power()));
+                battleMessage.addMessage("");
+                battleMessage.addMessage("Your engimon stat");
+                battleMessage.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon1Power()));
+                battleMessage.addMessage("Fight ? (yes/no)");
+                battleRenderer.drawMessageBox(battleMessage);
 
                 string commandBuffer;
                 bool isPromptDone = false;
                 while (not isPromptDone) {
-                    renderer.clearCursorRestArea();
-                    cout << ">>> ";
-                    getline(cin, commandBuffer);
+                    commandModeInput(commandBuffer);
                     if (commandBuffer == "yes" || commandBuffer == "y") {
-                        // TODO : Level up increase spawnLevelCap
-                        Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
                         bool isEnemyDied = false, isPlayerEngimonDied = false;
+                        messageList.addMessage("");
                         switch (doBattle.getBattleWinner()) {
                             case 1:
-                                messageList.addMessage("enemy dies"); // TODO : maybe remove
+                                messageList.addMessage(targetEngimon->getEngimonName() + " defeated");
                                 isEnemyDied = true;
                                 break;
                             case 2:
-                                messageList.addMessage("your engimon dies");
+                                messageList.addMessage("Your " + player.getCurrentEngimon()->getEngimonName() + " defeated");
                                 isPlayerEngimonDied = true;
                                 break;
                             default:
-                                messageList.addMessage("both dies");
-                                isPlayerEngimonDied = true;
                                 isEnemyDied = true;
                                 break;
                         }
-                        // TODO : Catch
-                        // TODO : Kill
-                        // TODO : Debug multi-element battle, either adv1 or adv2 is not init properly
+                        // Branch if player engimon died
+                        if (isPlayerEngimonDied) {
+                            killCurrentEngimon();
+                        }
+
+                        // Branch if enemy died
                         if (isEnemyDied && not isPlayerEngimonDied) {
                             // Level up checking
-                            if (player.getCurrentEngimon()->xpGain(targetEngimon->getLevel()*5)) {
-                                // TODO : Catch, temporary just delete engimon from existence
-                                spawnLevelCap++;
+                            int levelGained = player.getCurrentEngimon()->xpGain(targetEngimon->getLevel()*xpMultiplier);
+                            if (levelGained > 0) {
+                                spawnLevelCap += levelGained;
                             }
 
-                            if (player.getCurrentEngimon()->isMaxCXP()) {
-                                // TODO : Kill
+                            // Random mastery level up
+                            vector<Skill>& SkillReference = player.getCurrentEngimon()->getSkillListRef();
+                            for (unsigned i = 0; i < SkillReference.size(); i++) {
+                                if ((rand() % 100) < 40)
+                                    SkillReference[i].levelUpMastery();
                             }
+
+                            // Random skill drop
+                            int dropRoll = rand() % 100;
+                            if ((unsigned) dropRoll < wildEngimonDropProbability) {
+                                SkillItem droppedSkill = 1; // Placeholder
+                                string droppedSkillName = "";
+                                bool isSkillDropValid = false;
+                                set<ElementType> targetEngimonElements = targetEngimon->getElements();
+                                while (not isSkillDropValid) {
+                                    // Try catch block for random skill picking
+                                    try {
+                                        Skill randomSkill = skillDB.getSkill(rand() % maxSkillID);
+                                        if (randomSkill.isElementCompatible(*(targetEngimonElements.begin()))) {
+                                            isSkillDropValid = true;
+                                        }
+                                        else if (++(targetEngimonElements.begin()) != targetEngimonElements.end()) {
+                                            // If multi element, check other one
+                                            if (randomSkill.isElementCompatible(*(++(targetEngimonElements.begin()))))
+                                                isSkillDropValid = true;
+                                        }
+
+                                        if (isSkillDropValid) {
+                                            droppedSkill = randomSkill.getSkillID();
+                                            droppedSkillName = randomSkill.getSkillName();
+                                        }
+                                    }
+                                    catch (int) {
+                                        // Empty catch block
+                                    }
+
+                                }
+
+                                messageList.addMessage(droppedSkillName + " dropped");
+                                renderer.drawMessageBox(messageList);
+                                // If inventory is full
+                                if (not player.addSkillItem(droppedSkill)) {
+                                    messageList.addMessage("Inventory is full, take? (y/n)");
+                                    renderer.drawMessageBox(messageList);
+                                    commandModeInput(commandBuffer);
+                                    if (commandBuffer == "y") {
+                                        if (deleteInventory()) {
+                                            Skill targetSkill = skillDB.getSkill(droppedSkill);
+                                            player.addSkillItem(droppedSkill);
+                                            messageList.addMessage(targetSkill.getSkillName() + " added!");
+                                        }
+                                    }
+                                }
+                                else {
+                                    Skill targetSkill = skillDB.getSkill(droppedSkill);
+                                    messageList.addMessage(targetSkill.getSkillName() + " added!");
+                                }
+                            }
+
                             map.setTileEntity(targetEngimon->getPos(), NULL);
-                            delete targetEngimon;
+                            targetEngimon->tameEngimon();
+                            // Catching prompt
+                            bool validCatchCommand = false, catchEngimon = false;
+                            while (not validCatchCommand) {
+                                messageList.addMessage("Catch engimon? (y/n)");
+                                renderer.drawMessageBox(messageList);
+                                commandModeInput(commandBuffer);
+                                if (commandBuffer == "y") {
+                                    // If success adding item / inventory is not full
+                                    if (player.addEngimonItem(targetEngimon)) {
+                                        messageList.addMessage(targetEngimon->getEngimonName() + " catched!");
+                                        catchEngimon = true;
+                                        validCatchCommand = true;
+                                    }
+                                    else {
+                                        // If failed to add and delete succeed
+                                        if (deleteInventory()) {
+                                            player.addEngimonItem(targetEngimon);
+                                            messageList.addMessage(targetEngimon->getEngimonName() + " catched!");
+                                            catchEngimon = true;
+                                            validCatchCommand = true;
+                                        }
+                                    }
+                                    // Remove from map and add to inventory
+                                }
+                                else if (commandBuffer == "n") {
+                                    validCatchCommand = true;
+                                }
+                            }
+
+                            if (not catchEngimon) {
+                                delete targetEngimon;
+                                targetEngimon = NULL;
+                            }
+
                             updateCurrentEngimonMessageStatus();
-                            // TODO : Roll item skill drop
+                        }
+
+                        // Maximum cummulative XP check
+                        if (player.getCurrentEngimon()->isMaxCXP()) {
+                            messageList.addMessage("Over cummulative XP");
+                            killCurrentEngimon();
                         }
 
                         isPromptDone = true;
@@ -268,9 +363,7 @@ bool Engine::evaluteInput() {
                     else if (commandBuffer == "no" || commandBuffer == "n")
                         isPromptDone = true;
                 }
-                thisisfine.fillEmptyBuffer();
-                ok.drawMessageBox(thisisfine);
-                thisisfine.clearMessage();
+                battleRenderer.clearMessageBox(battleMessage);
 
                 userInput.toggleReadInput();
                 renderer.clearCursorRestArea();
@@ -282,13 +375,48 @@ bool Engine::evaluteInput() {
 }
 
 void Engine::evaluteTick() {
-    // TODO : Add here
     map.wildEngimonRandomMove();
     unsigned int randomNumber = rand() % 100;
     if (Entity::getEntityCount() < entitySpawnLimit && randomNumber < wildEngimonSpawnProbability) {
         unsigned int randomSpeciesID = (rand() % (speciesDB.getSpeciesCount() - 1)) + 1;
         // TODO : Extra, fix mod operator
-        engimonList.push_back(map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID), spawnLevelCap));
+        Engimon *spawnedEngimon = map.spawnWildEngimon(speciesDB.getSpecies(randomSpeciesID), spawnLevelCap);
+
+        // Random skill adder, 3x roll chance to get additional skill
+        // Higher level cap also grant higher chance to get multiple skill,
+        // up to 100% chance getting 4 skill
+        set<ElementType> engimonElements = spawnedEngimon->getElements();
+        for (int i = 0; i < 3; i++) {
+            if ((rand() % 100) < 10 + spawnLevelCap) {
+                // Try catch block random skill
+                Skill generatedSkill = skillDB.getSkill(1); // Placeholder
+                bool isSkillGeneratedValid = false;
+                while (not isSkillGeneratedValid) {
+                    try {
+                        generatedSkill = skillDB.getSkill(rand() % maxSkillID);
+                        if (generatedSkill.isElementCompatible(*engimonElements.begin())) {
+                            isSkillGeneratedValid = true;
+                        }
+                        else if (++engimonElements.begin() != engimonElements.end()) {
+                            if (generatedSkill.isElementCompatible(*(++engimonElements.begin())))
+                                isSkillGeneratedValid = true;
+                        }
+
+                        if (isSkillGeneratedValid) {
+                            int masteryLevelUp = (rand() % (1 + spawnLevelCap/5)) + 1;
+                            for (int j = 0; j < masteryLevelUp; j++)
+                                generatedSkill.levelUpMastery();
+
+                            spawnedEngimon->addSkill(generatedSkill);
+                        }
+                    }
+                    catch (int) {
+
+                    }
+                }
+            }
+        }
+        engimonList.push_back(spawnedEngimon);
     }
 }
 
@@ -299,9 +427,7 @@ void Engine::commandMode() {
     clearConsoleInputBuffer();
     // Clearing current input buffer (GetKeyState() does not clear buffer)
 
-    messageList.fillEmptyBuffer();
-    renderer.drawMessageBox(messageList);
-    messageList.clearMessage();
+    renderer.clearMessageBox(messageList);
     // Clearing message list window
 
     messageList.addMessage(" \xCD\xCD\xCD\xCD Command list \xCD\xCD\xCD\xCD ");
@@ -310,27 +436,39 @@ void Engine::commandMode() {
     messageList.addMessage("3. change      ");
     messageList.addMessage("4. item        ");
     messageList.addMessage("5. breed       ");
+    messageList.addMessage("6. delete      ");
+    messageList.addMessage("7. legend      ");
+    messageList.addMessage("8. rename      ");
+
 
     renderer.drawMessageBox(messageList);
 
     string commandBuffer;
-    cout << ">>> ";
-    getline(cin, commandBuffer);
+    commandModeInput(commandBuffer);
 
-    messageList.fillEmptyBuffer();
-    renderer.drawMessageBox(messageList);
-    messageList.clearMessage();
+    renderer.clearMessageBox(messageList);
     // Clearing message list window
 
     if (commandBuffer == "dbg") { // DEBUG
-        player.addEngimonItem(new Engimon(speciesDB.getSpecies(3), false, Position(0, 0)));
-        player.addEngimonItem(new Engimon(speciesDB.getSpecies(2), false, Position(0, 0)));
-        player.addEngimonItem(new Engimon(speciesDB.getSpecies(1), false, Position(0, 0)));
-        player.addSkillItem(4);
-        player.addSkillItem(3);
-        player.addSkillItem(rand()%10+1);
+        player.addEngimonItem(new Engimon(speciesDB.getSpecies(5), false, Position(0, 0)));
+        // player.addEngimonItem(new Engimon(speciesDB.getSpecies(2), false, Position(0, 0)));
+        // player.addEngimonItem(new Engimon(speciesDB.getSpecies(rand()%10+1), false, Position(0, 0)));
+        player.addSkillItem(5);
+        player.addSkillItem(9);
+        player.addSkillItem(11);
+        player.addSkillItem(14);
+        player.addSkillItem(15);
+        // player.addSkillItem(rand()%10+1);
     }
-    // TODO : Add
+    else if (commandBuffer == "legend") {
+        showLegendHelp();
+    }
+    else if (commandBuffer == "rename") {
+        renameEngimon();
+    }
+    else if (commandBuffer == "delete") {
+        deleteInventory();
+    }
     // else if (commandBuffer == "breed")
     else if (commandBuffer == "engimon") {
         // TODO : Print parent
@@ -382,9 +520,7 @@ void Engine::commandMode() {
             if (number > 1) {
                 messageList.addMessage("Press enter to print next");
                 renderer.drawMessageBox(messageList);
-                renderer.clearCursorRestArea();
-                cout << ">>> ";
-                getline(cin, commandBuffer);
+                commandModeInput(commandBuffer);
                 messageList.addMessage("");
             }
         }
@@ -395,55 +531,7 @@ void Engine::commandMode() {
         showItemInventory();
     }
     else if (commandBuffer == "change") {
-        messageList.addMessage("Select Engimon Number");
-        list<EngimonItem> engimonInv = player.getEngimonInventory();
-        showEngimonInventory();
-        bool doneChanging = false;
-        messageList.addMessage("End of inventory list");
-        messageList.addMessage("");
-        messageList.addMessage("Input engimon number or exit");
-        while (not doneChanging) {
-            renderer.drawMessageBox(messageList);
-            renderer.clearCursorRestArea();
-            cout << ">>> ";
-            getline(cin, commandBuffer);
-
-            if (commandBuffer == "exit")
-                break;
-
-            // Trying to parsing to int
-            int targetNumber;
-            bool successParsing = false;
-            try {
-                targetNumber = stoi(commandBuffer);
-                successParsing = true;
-            }
-            catch (invalid_argument e) {
-                messageList.addMessage("Invalid input");
-            }
-
-            // If number are in valid range, then change
-            if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
-                auto it = engimonInv.begin();
-                int i = 0;
-                while (i < targetNumber-1) {
-                    i++;
-                    ++it;
-                }
-                Engimon *targetEngimon = *it;
-                string changingString = "Changed to ";
-                changingString = changingString + targetEngimon->getEngimonName();
-                messageList.addMessage("");
-                messageList.addMessage(changingString);
-                map.setTileEntity(player.getCurrentEngimon()->getPos(), targetEngimon);
-                player.changeEngimon(targetEngimon);
-                updateCurrentEngimonMessageStatus();
-                doneChanging = true;
-            }
-            else if (successParsing) {
-                messageList.addMessage("Number is out of range");
-            }
-        }
+        changeCurrentEngimon();
     }
     else if (commandBuffer == "item") {
         showItemInventory();
@@ -452,9 +540,7 @@ void Engine::commandMode() {
         messageList.addMessage("Input item ID");
 
         renderer.drawMessageBox(messageList);
-        renderer.clearCursorRestArea();
-        cout << ">>> ";
-        getline(cin, commandBuffer);
+        commandModeInput(commandBuffer);
 
         // Trying to parsing to int
         int targetNumber;
@@ -476,9 +562,7 @@ void Engine::commandMode() {
 
                 messageList.addMessage("Input engimon number");
                 renderer.drawMessageBox(messageList);
-                renderer.clearCursorRestArea();
-                cout << ">>> ";
-                getline(cin, commandBuffer);
+                commandModeInput(commandBuffer);
 
                 // Trying to parsing to int
                 targetNumber = 0;
@@ -507,14 +591,34 @@ void Engine::commandMode() {
                         learningString = learningString + targetSkill.getSkillName();
 
                         targetSkill.levelUpMastery();
-                        if (targetEngimon->addSkill(targetSkill)) {
-                            messageList.addMessage("");
-                            messageList.addMessage(learningString);
-                            player.delSkillItem(skillIDTarget);
+                        if (targetEngimon->getLearnedSkillCount() < 4) {
+                            if (targetEngimon->addSkill(targetSkill)) {
+                                messageList.addMessage("");
+                                messageList.addMessage(learningString);
+                                player.delSkillItem(skillIDTarget);
+                            }
+                            else
+                                messageList.addMessage("Skill already learned");
                         }
-                        else
-                            messageList.addMessage("Skill already learned");
+                        else {
+                            messageList.addMessage("Skill slot is full");
+                            messageList.addMessage("Forget skill ? (y/n)");
+                            renderer.drawMessageBox(messageList);
+                            commandModeInput(commandBuffer);
+                            if (commandBuffer == "y") {
+                                if (engimonForgetSkill(targetEngimon)) {
+                                    // If success removing skill, learn skill
+                                    targetEngimon->addSkill(targetSkill);
+                                    messageList.addMessage("");
+                                    messageList.addMessage(learningString);
+                                    player.delSkillItem(skillIDTarget);
+                                }
+                            }
+                        }
                         updateCurrentEngimonMessageStatus();
+                        messageList.addMessage("");
+                        messageList.addMessage("");
+                        messageList.addMessage("");
                     }
                     else {
                         messageList.addMessage("Skill not compatible");
@@ -659,10 +763,322 @@ void Engine::showEngimonInventory() {
         if ((number-1) % 3 == 0 && number > 1) {
             messageList.addMessage("Press enter to print next");
             renderer.drawMessageBox(messageList);
-            renderer.clearCursorRestArea();
-            cout << ">>> ";
-            getline(cin, commandBuffer);
+            commandModeInput(commandBuffer);
             messageList.addMessage("");
         }
     }
+}
+
+bool Engine::deleteInventory() {
+    string commandBuffer;
+    renderer.clearMessageBox(messageList);
+    messageList.addMessage("Delete");
+    messageList.addMessage("1. engimon");
+    messageList.addMessage("2. item");
+    messageList.addMessage("3. exit");
+    renderer.drawMessageBox(messageList);
+    commandModeInput(commandBuffer);
+    renderer.clearMessageBox(messageList);
+    if (commandBuffer == "engimon") {
+        showEngimonInventory();
+        messageList.addMessage("");
+        messageList.addMessage("Select Engimon Number or exit");
+
+        list<EngimonItem> engimonInv = player.getEngimonInventory();
+        bool doneDeleting = false;
+        while (not doneDeleting) {
+            renderer.drawMessageBox(messageList);
+            commandModeInput(commandBuffer);
+
+            if (commandBuffer == "exit") {
+                renderer.clearMessageBox(messageList);
+                break;
+            }
+
+            // Trying to parsing to int
+            int targetNumber;
+            bool successParsing = false;
+            try {
+                targetNumber = stoi(commandBuffer);
+                successParsing = true;
+            }
+            catch (invalid_argument e) {
+                messageList.addMessage("Invalid input");
+            }
+
+            // If number are in valid range, then change
+            if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
+                auto it = engimonInv.begin();
+                int i = 0;
+                while (i < targetNumber-1) {
+                    i++;
+                    ++it;
+                }
+                Engimon *targetEngimon = *it;
+
+                // Checking whether selected engimon is not current engimon
+                if (targetEngimon != player.getCurrentEngimon()) {
+                    string deletingString = "Deleted ";
+                    deletingString = deletingString + targetEngimon->getEngimonName();
+                    messageList.addMessage("");
+                    messageList.addMessage(deletingString);
+                    player.delEngimonItem(targetEngimon);
+                    doneDeleting = true;
+                    delete targetEngimon;
+                }
+                else {
+                    messageList.addMessage("Cannot delete current engimon");
+                }
+            }
+            else if (successParsing) {
+                messageList.addMessage("Number is out of range");
+            }
+        }
+        if (doneDeleting) {
+            return true;
+            // Returning delete success
+        }
+    }
+    else if (commandBuffer == "item") {
+        showItemInventory();
+        std::map<SkillItem,int> skillInv = player.getSkillInventory();
+        messageList.addMessage("");
+        messageList.addMessage("Input item ID");
+
+        renderer.drawMessageBox(messageList);
+        commandModeInput(commandBuffer);
+
+        // Trying to parsing to int
+        int targetNumber;
+        bool successParsing = false;
+        try {
+            targetNumber = stoi(commandBuffer);
+            successParsing = true;
+        }
+        catch (invalid_argument e) {
+            messageList.addMessage("Invalid input");
+        }
+
+        // If number are in valid range, then process
+        if (successParsing && 0 < targetNumber && targetNumber <= (int) maxSkillID) {
+            if (skillInv[targetNumber] > 0) {
+                renderer.clearMessageBox(messageList);
+                Skill targetSkill = skillDB.getSkill(targetNumber);
+                player.delSkillItem(targetNumber);
+                string deletingString = targetSkill.getSkillName();
+                deletingString = deletingString + " deleted";
+                messageList.addMessage(deletingString);
+            }
+            else
+                messageList.addMessage("Item not found");
+        }
+        else if (successParsing) {
+            messageList.addMessage("Number is out of range");
+        }
+    }
+
+    return false;
+}
+
+void Engine::changeCurrentEngimon() {
+    string commandBuffer;
+    messageList.addMessage("Select Engimon Number");
+    list<EngimonItem> engimonInv = player.getEngimonInventory();
+    showEngimonInventory();
+    bool doneChanging = false;
+    messageList.addMessage("End of inventory list");
+    messageList.addMessage("");
+    messageList.addMessage("Input engimon number or exit");
+    while (not doneChanging) {
+        renderer.drawMessageBox(messageList);
+        commandModeInput(commandBuffer);
+
+        if (commandBuffer == "exit")
+            break;
+
+        // Trying to parsing to int
+        int targetNumber;
+        bool successParsing = false;
+        try {
+            targetNumber = stoi(commandBuffer);
+            successParsing = true;
+        }
+        catch (invalid_argument e) {
+            messageList.addMessage("Invalid input");
+        }
+
+        // If number are in valid range, then change
+        if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
+            auto it = engimonInv.begin();
+            int i = 0;
+            while (i < targetNumber-1) {
+                i++;
+                ++it;
+            }
+            Engimon *targetEngimon = *it;
+            string changingString = "Changed to ";
+            changingString = changingString + targetEngimon->getEngimonName();
+            messageList.addMessage("");
+            messageList.addMessage(changingString);
+            map.setTileEntity(player.getCurrentEngimon()->getPos(), targetEngimon);
+            player.changeEngimon(targetEngimon);
+            statRenderer.clearMessageBox(statMessage);
+            updateCurrentEngimonMessageStatus();
+            doneChanging = true;
+        }
+        else if (successParsing) {
+            messageList.addMessage("Number is out of range");
+        }
+    }
+}
+
+void Engine::loseScreen() {
+    renderer.drawLoseScreen();
+    isEngineRunning = false;
+}
+
+void Engine::killCurrentEngimon() {
+    Engimon *currentEngimon = player.getCurrentEngimon();
+    if (player.getEngimonInventoryCount() > 1) {
+        // Doing force changing
+        player.delEngimonItem(currentEngimon);
+        messageList.addMessage("- Select another engimon -");
+        messageList.addMessage("");
+        renderer.clearCursorRestArea();
+        renderer.drawMessageBox(messageList);
+        changeCurrentEngimon();
+        updateCurrentEngimonMessageStatus();
+        delete currentEngimon;
+    }
+    else
+        loseScreen();
+}
+
+
+void Engine::commandModeInput(string& target) {
+    renderer.clearCursorRestArea();
+    cout << ">>> ";
+    getline(cin, target);
+}
+
+void Engine::showLegendHelp() {
+    renderer.clearMessageBox(messageList);
+    messageList.addMessage("        \xCD\xCD Legend \xCD\xCD ");
+    messageList.addMessage("");
+    messageList.addMessage("   W \xAF Water type");
+    messageList.addMessage("   F \xAF Fire type");
+    messageList.addMessage("   G \xAF Ground type");
+    messageList.addMessage("   E \xAF Electric type");
+    messageList.addMessage("   I \xAF Ice type");
+    messageList.addMessage("   L \xAF Fire & Electric type");
+    messageList.addMessage("   S \xAF Water & Ice type");
+    messageList.addMessage("   N \xAF Water & Ground type");
+
+
+    renderer.drawMessageBox(messageList);
+}
+
+void Engine::renameEngimon() {
+    // TODO : Extra, generalize picking engimon, skill, item
+    string commandBuffer;
+    messageList.addMessage("Select Engimon Number");
+    list<EngimonItem> engimonInv = player.getEngimonInventory();
+    showEngimonInventory();
+    bool doneChanging = false;
+    messageList.addMessage("End of inventory list");
+    messageList.addMessage("");
+    messageList.addMessage("Input engimon number or exit");
+    while (not doneChanging) {
+        renderer.drawMessageBox(messageList);
+        commandModeInput(commandBuffer);
+
+        if (commandBuffer == "exit")
+            break;
+
+        // Trying to parsing to int
+        int targetNumber;
+        bool successParsing = false;
+        try {
+            targetNumber = stoi(commandBuffer);
+            successParsing = true;
+        }
+        catch (invalid_argument e) {
+            messageList.addMessage("Invalid input");
+        }
+
+        // If number are in valid range, then change
+        if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
+            auto it = engimonInv.begin();
+            int i = 0;
+            while (i < targetNumber-1) {
+                i++;
+                ++it;
+            }
+            Engimon *targetEngimon = *it;
+
+            messageList.addMessage("");
+            messageList.addMessage("Type new name");
+            renderer.drawMessageBox(messageList);
+            commandModeInput(commandBuffer);
+            targetEngimon->setEngimonName(commandBuffer);
+
+            string changingString = "Changed to ";
+            changingString = changingString + targetEngimon->getEngimonName();
+            messageList.addMessage("");
+            messageList.addMessage(changingString);
+            updateCurrentEngimonMessageStatus();
+            doneChanging = true;
+        }
+        else if (successParsing) {
+            messageList.addMessage("Number is out of range");
+        }
+    }
+}
+
+bool Engine::engimonForgetSkill(Engimon *targetEngimon) {
+    string commandBuffer;
+    messageList.addMessage(" \xC4\xC4 Skill List \xC4\xC4 ");
+    vector<Skill> skillListRef = targetEngimon->getSkillList();
+    for (unsigned i = 0; i < skillListRef.size(); i++) {
+        string skillID = to_string(skillListRef[i].getSkillID());
+        messageList.addMessage(skillID + " " + skillListRef[i].getSkillName());
+    }
+
+    messageList.addMessage("");
+    messageList.addMessage("Input skill ID");
+    renderer.drawMessageBox(messageList);
+    commandModeInput(commandBuffer);
+
+    // Trying to parsing to int
+    int targetNumber;
+    bool successParsing = false;
+    try {
+        targetNumber = stoi(commandBuffer);
+        successParsing = true;
+    }
+    catch (invalid_argument e) {
+        messageList.addMessage("Invalid input");
+    }
+
+    bool isFound = false;
+    if (successParsing && 0 < targetNumber && targetNumber < maxSkillID) {
+        for (unsigned i = 0; i < skillListRef.size(); i++) {
+            if (skillListRef[i].getSkillID() == targetNumber) {
+                messageList.addMessage(skillListRef[i].getSkillName() + " removed");
+                targetEngimon->deleteSkill(targetNumber);
+                isFound = true;
+                break;
+            }
+        }
+        if (not isFound) {
+            messageList.addMessage("Skill not found");
+        }
+    }
+    else {
+        messageList.addMessage("Number out of range");
+    }
+    statRenderer.clearMessageBox(statMessage);
+    updateCurrentEngimonMessageStatus();
+
+    return isFound;
 }

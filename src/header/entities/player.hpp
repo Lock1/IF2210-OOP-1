@@ -26,13 +26,14 @@ class Player : public Entity {
         bool isMoveLocationValid(Tile& target) override; // Overriding virtual move() Entity
         Direction getLastDirection();
         Direction& getLastDirectionRef();
-        // TODO : Add
+
         bool addSkillItem(int skillID);
         bool delSkillItem(int skillID);
         bool addEngimonItem(EngimonItem engimon);
         bool delEngimonItem(EngimonItem engimon);
         std::map<SkillItem, int> getSkillInventory();
         std::list<EngimonItem> getEngimonInventory();
+        int getEngimonInventoryCount();
 };
 
 #endif

@@ -32,7 +32,7 @@ Map::Map(string filename) : randomEngimonMoveProbability(20) {
     // Unused
     seaStartX = 0;
     seaStartY = 0;
-    // TODO : Engimon loading (???), maybe not needed
+    // Reading from file
     ifstream mapFile = ifstream(filename);
     if (mapFile.is_open()) {
         vector<vector<Tile>> flippedMap;
@@ -147,6 +147,7 @@ Engimon* Map::spawnWildEngimon(Species target, int levelCap) {
 
     Position targetPos = Position(randomX, randomY);
     Entity *wildEngimon = new Engimon(target, true, targetPos, (rand() % levelCap) + 1);
+
     setTileEntity(targetPos, wildEngimon);
     return (Engimon *) wildEngimon;
 }

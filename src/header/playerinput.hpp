@@ -23,7 +23,6 @@ enum InputType {
 
 class PlayerInput {
     private:
-        // TODO : Add temporary disabler
         std::thread *inputThread;
         std::mutex inputLock;
         std::queue<InputType> inputBuffer;

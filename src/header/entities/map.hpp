@@ -25,7 +25,9 @@ class Map {
 
     public:
         Map(unsigned int sX, unsigned int sY, unsigned int seaX, unsigned int seaY);
+        // User constructor for simple box map
         Map(std::string filename);
+        // User Constructor for reading from files
 
         int getSizeX();
         int getSizeY();

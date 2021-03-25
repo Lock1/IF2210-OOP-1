@@ -8,7 +8,6 @@
 #include <list>
 #include <map>
 
-// TODO : Testing interaction with DB
 template<class T>
 class Inventory {
     private:
@@ -110,6 +109,7 @@ class Inventory<EngimonItem> {
                     itemList.erase(it);
                     return true;
                 }
+                ++it;
             }
 
             return false;
