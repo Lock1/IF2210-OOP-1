@@ -96,6 +96,7 @@ void Engine::startGame() {
 
     userInput.startReadInput();
     updateCurrentEngimonMessageStatus();
+    showLegendHelp();
 
     while (isEngineRunning) {
         // Drawing map and message box
@@ -439,6 +440,7 @@ void Engine::commandMode() {
     messageList.addMessage("4. item        ");
     messageList.addMessage("5. breed       ");
     messageList.addMessage("6. delete      ");
+    messageList.addMessage("7. legend      ");
     // TODO : Help
 
     renderer.drawMessageBox(messageList);
@@ -456,6 +458,9 @@ void Engine::commandMode() {
         player.addSkillItem(4);
         player.addSkillItem(3);
         player.addSkillItem(rand()%10+1);
+    }
+    else if (commandBuffer == "legend") {
+        showLegendHelp();
     }
     else if (commandBuffer == "delete") {
         deleteInventory();
@@ -857,7 +862,6 @@ bool Engine::deleteInventory() {
         }
     }
 
-
     return false;
 }
 
@@ -939,4 +943,21 @@ void Engine::killCurrentEngimon() {
 void Engine::commandModeInput(string& target) {
     cout << ">>> ";
     getline(cin, target);
+}
+
+void Engine::showLegendHelp() {
+    renderer.clearMessageBox(messageList);
+    messageList.addMessage("        \xCD\xCD Legend \xCD\xCD ");
+    messageList.addMessage("");
+    messageList.addMessage("   W \xAF Water type");
+    messageList.addMessage("   F \xAF Fire type");
+    messageList.addMessage("   G \xAF Ground type");
+    messageList.addMessage("   E \xAF Electric type");
+    messageList.addMessage("   I \xAF Ice type");
+    messageList.addMessage("   L \xAF Fire & Electric type");
+    messageList.addMessage("   S \xAF Water & Ice type");
+    messageList.addMessage("   N \xAF Water & Ground type");
+
+
+    renderer.drawMessageBox(messageList);
 }

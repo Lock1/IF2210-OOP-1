@@ -72,6 +72,9 @@ class Engine {
         // Change current engimon
         void commandModeInput(std::string& target);
         // Get command mode input from user
+
+        void showLegendHelp();
+        // Printing legend help in message list
     public:
         Engine();
         // Constructor
