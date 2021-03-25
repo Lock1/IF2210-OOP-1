@@ -37,7 +37,7 @@ class Engimon : public Entity, public Species {
         int xpGain(int gainedXP); // Returning level up count
         bool isMaxCXP();                                            // If over CumulativeExperience, return true
         bool addSkill(Skill newSkill);
-        // Only add if skill slot enough returning false if failed
+        // Only add if skill slot enough and not learned returning false if failed
         bool deleteSkill(int targetSkillID);
         void tameEngimon();
 
@@ -52,6 +52,7 @@ class Engimon : public Entity, public Species {
         void setEngimonName(std::string target);
         int getLevel();
         int getXP();
+        int getLearnedSkillCount();
 
         bool isWildEngimon();
         std::string getInteractString();                               // Get description, only non-wild pokemon

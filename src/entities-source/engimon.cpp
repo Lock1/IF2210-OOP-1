@@ -58,10 +58,12 @@ bool Engimon::addSkill(Skill newSkill) {
 bool Engimon::deleteSkill(int targetSkillID) {
     auto it = learnedSkill.begin();
     bool isFound = false;
+    // TODO : Extra, use short circuit instead
     while (it != learnedSkill.end() && not isFound) {
         if ((*it).getSkillID() == targetSkillID) {
             learnedSkill.erase(it);
             isFound = true;
+            break; // Preventing to access iterator if already erased
         }
         ++it;
     }
@@ -149,4 +151,8 @@ vector<std::string> Engimon::getParentNames() {
 
 void Engimon::setEngimonName(string target) {
     engimonName = target;
+}
+
+int Engimon::getLearnedSkillCount() {
+    return (int) learnedSkill.size();
 }

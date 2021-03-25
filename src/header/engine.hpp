@@ -77,6 +77,8 @@ class Engine {
         // Printing legend help in message list
         void renameEngimon();
         // Change engimon name
+        bool engimonForgetSkill(Engimon *targetEngimon);
+        // Forgetting skill in engimon, return true if success
     public:
         Engine();
         // Constructor
