@@ -76,8 +76,12 @@ class Render {
         void drawMsgBorder();
         // Drawing border
 
+        int floorEuclidean(Position pos1, Position pos2);
+        // Calculating floored euclidean distance
+
         void drawMessageTitle();
         // Drawing message box title at top left corner
+
     public:
         Render(Map& target, Message& msgTarget);
         // User Constructor
@@ -105,6 +109,9 @@ class Render {
 
         void clearCursorRestArea();
         // Writing space at rest area
+        
+        void drawLoseScreen();
+        // Draw lose screen
 };
 
 #endif

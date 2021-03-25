@@ -60,6 +60,12 @@ class Engine {
         // Show player item inventory to message list box
         void showEngimonInventory();
         // Show player engimon inventory to message list box
+
+
+        void loseScreen();
+        // Draw lose screen
+        void changeCurrentEngimon();
+        // Change current engimon
     public:
         Engine();
         // Constructor

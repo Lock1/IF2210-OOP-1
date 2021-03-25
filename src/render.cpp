@@ -1,5 +1,6 @@
 // 13519214
 // TODO : A E S T H E T I C -> Message border shadow
+#include "header/config.hpp"
 #include "header/entities/tile.hpp"
 #include "header/entities/map.hpp"
 #include "header/render.hpp"
@@ -8,6 +9,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <math.h>
 
 using namespace std;
 
@@ -165,7 +167,10 @@ void Render::drawMap(Map& target) {
                 else {
                     mapFrameBuffer[i][j] = target.getTileTypeAt(j, i);
                     setCursorPosition(j + mapOffsetX, i + mapOffsetY);
+
+                    #ifndef FOG_OF_WAR
                     cout << mapFrameBuffer[i][j];
+                    #endif
                 }
             }
         }
@@ -234,4 +239,15 @@ void Render::clearCursorRestArea() {
 void Render::drawMessageTitle() {
     setCursorPosition(msgOffsetX, msgOffsetY-1);
     cout << msgBoxTitle;
+}
+
+int Render::floorEuclidean(Position pos1, Position pos2) {
+    double xDiff = pos1.getX()-pos2.getX();
+    double yDiff = pos1.getY()-pos2.getY();
+    return (int) sqrt((xDiff*xDiff) + (yDiff*yDiff));
+}
+
+void Render::drawLoseScreen() {
+    system(CLEAR_SCREEN_CMD);
+    // TODO : Steal prolog red lose screen
 }

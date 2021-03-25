@@ -241,19 +241,29 @@ bool Engine::evaluteInput() {
                                 isEnemyDied = true;
                                 break;
                             case 2:
-                                messageList.addMessage("your engimon dies");
+                                messageList.addMessage("Your " + player.getCurrentEngimon()->getEngimonName() + " defeated");
                                 isPlayerEngimonDied = true;
                                 break;
                             default:
-                                messageList.addMessage("both dies");
-                                isPlayerEngimonDied = true;
                                 isEnemyDied = true;
                                 break;
                         }
-                        // TODO : Kill player engimon
                         // Branch if player engimon died
-                        // TODO : Add
-                        // TODO : Delete item
+                        if (isPlayerEngimonDied) {
+                            Engimon *currentEngimon = player.getCurrentEngimon();
+                            if (player.getEngimonInventoryCount() > 1) {
+                                // Doing force changing
+                                messageList.addMessage("Select another engimon");
+                                renderer.clearCursorRestArea();
+                                renderer.drawMessageBox(messageList);
+                                while (currentEngimon == player.getCurrentEngimon()) {
+
+                                }
+                                updateCurrentEngimonMessageStatus();
+                            }
+                            else
+                                loseScreen();
+                        }
 
                         // Branch if enemy died
                         if (isEnemyDied && not isPlayerEngimonDied) {
@@ -328,8 +338,10 @@ bool Engine::evaluteInput() {
                                 }
                             }
 
-                            if (not catchEngimon)
+                            if (not catchEngimon) {
                                 delete targetEngimon;
+                                targetEngimon = NULL;
+                            }
 
                             updateCurrentEngimonMessageStatus();
                         }
@@ -508,55 +520,7 @@ void Engine::commandMode() {
         showItemInventory();
     }
     else if (commandBuffer == "change") {
-        messageList.addMessage("Select Engimon Number");
-        list<EngimonItem> engimonInv = player.getEngimonInventory();
-        showEngimonInventory();
-        bool doneChanging = false;
-        messageList.addMessage("End of inventory list");
-        messageList.addMessage("");
-        messageList.addMessage("Input engimon number or exit");
-        while (not doneChanging) {
-            renderer.drawMessageBox(messageList);
-            renderer.clearCursorRestArea();
-            cout << ">>> ";
-            getline(cin, commandBuffer);
-
-            if (commandBuffer == "exit")
-                break;
-
-            // Trying to parsing to int
-            int targetNumber;
-            bool successParsing = false;
-            try {
-                targetNumber = stoi(commandBuffer);
-                successParsing = true;
-            }
-            catch (invalid_argument e) {
-                messageList.addMessage("Invalid input");
-            }
-
-            // If number are in valid range, then change
-            if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
-                auto it = engimonInv.begin();
-                int i = 0;
-                while (i < targetNumber-1) {
-                    i++;
-                    ++it;
-                }
-                Engimon *targetEngimon = *it;
-                string changingString = "Changed to ";
-                changingString = changingString + targetEngimon->getEngimonName();
-                messageList.addMessage("");
-                messageList.addMessage(changingString);
-                map.setTileEntity(player.getCurrentEngimon()->getPos(), targetEngimon);
-                player.changeEngimon(targetEngimon);
-                updateCurrentEngimonMessageStatus();
-                doneChanging = true;
-            }
-            else if (successParsing) {
-                messageList.addMessage("Number is out of range");
-            }
-        }
+        changeCurrentEngimon();
     }
     else if (commandBuffer == "item") {
         showItemInventory();
@@ -786,3 +750,61 @@ void Engine::showEngimonInventory() {
 // void Engine::deleteInventory() {
 //  // TODO : Add
 // }
+
+void Engine::changeCurrentEngimon() {
+    string commandBuffer;
+    messageList.addMessage("Select Engimon Number");
+    list<EngimonItem> engimonInv = player.getEngimonInventory();
+    showEngimonInventory();
+    bool doneChanging = false;
+    messageList.addMessage("End of inventory list");
+    messageList.addMessage("");
+    messageList.addMessage("Input engimon number or exit");
+    while (not doneChanging) {
+        renderer.drawMessageBox(messageList);
+        renderer.clearCursorRestArea();
+        cout << ">>> ";
+        getline(cin, commandBuffer);
+
+        if (commandBuffer == "exit")
+            break;
+
+        // Trying to parsing to int
+        int targetNumber;
+        bool successParsing = false;
+        try {
+            targetNumber = stoi(commandBuffer);
+            successParsing = true;
+        }
+        catch (invalid_argument e) {
+            messageList.addMessage("Invalid input");
+        }
+
+        // If number are in valid range, then change
+        if (successParsing && 0 < targetNumber && targetNumber <= (int) engimonInv.size()) {
+            auto it = engimonInv.begin();
+            int i = 0;
+            while (i < targetNumber-1) {
+                i++;
+                ++it;
+            }
+            Engimon *targetEngimon = *it;
+            string changingString = "Changed to ";
+            changingString = changingString + targetEngimon->getEngimonName();
+            messageList.addMessage("");
+            messageList.addMessage(changingString);
+            map.setTileEntity(player.getCurrentEngimon()->getPos(), targetEngimon);
+            player.changeEngimon(targetEngimon);
+            updateCurrentEngimonMessageStatus();
+            doneChanging = true;
+        }
+        else if (successParsing) {
+            messageList.addMessage("Number is out of range");
+        }
+    }
+}
+
+void Engine::loseScreen() {
+    renderer.drawLoseScreen();
+    isEngineRunning = false;
+}

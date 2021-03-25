@@ -75,3 +75,7 @@ map<SkillItem, int> Player::getSkillInventory() {
 list<EngimonItem> Player::getEngimonInventory() {
     return engimonInventory.getItemList();
 }
+
+int Player::getEngimonInventoryCount() {
+    return (int) engimonInventory.getCurrentSize();
+}
