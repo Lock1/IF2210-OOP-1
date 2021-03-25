@@ -24,14 +24,14 @@ using namespace std;
 
 
 Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-10, MSG_MAX_X-5),
-        thisisfine(MAX_MESSAGE-12, MSG_MAX_X-5), // DEBUG
+        battleMessage(MAX_MESSAGE-12, MSG_MAX_X-5), // DEBUG
         player(MAX_INVENTORY, MAX_SKILL_ID), maxSkillID(MAX_SKILL_ID),
         // map(MAP_MAX_X, MAP_MAX_Y, SEA_STARTING_X, SEA_STARTING_Y), // DEBUG
         map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
         wildEngimonSpawnProbability(4), wildEngimonDropProbability(30),
         entitySpawnLimit(20), xpMultiplier(XP_MULTIPLIER),
-        renderer(map, messageList), statRenderer(statMessage), ok(thisisfine) {
+        renderer(map, messageList), statRenderer(statMessage), battleRenderer(battleMessage) {
     // Internal variable setup
     srand((unsigned) time(NULL));
     isEngineRunning = true;
@@ -45,13 +45,13 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
     statRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // DEBUG
-    ok.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
-    ok.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
+    battleRenderer.setMessageBoxOffset(MESSAGE_OFFSET_X+messageList.getMaxStringLength()+3, MESSAGE_OFFSET_Y+12);
+    battleRenderer.setCursorRestLocation(CURSOR_REST_X, CURSOR_REST_Y);
 
     // Set message box titles
     renderer.setMessageTitle("Ini kotak gan");
     statRenderer.setMessageTitle("Ini bukan kotak");
-    ok.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
+    battleRenderer.setMessageTitle("Ini bo'ongan"); // <<< DEBUG
 
     // TODO : Add prompt (?)
     // TODO : Add splash screen (?)
@@ -102,7 +102,7 @@ void Engine::startGame() {
         renderer.drawMap(map);
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
-        ok.drawMessageBox(thisisfine);
+        battleRenderer.drawMessageBox(battleMessage);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
@@ -184,17 +184,17 @@ bool Engine::evaluteInput() {
             }
             else {
                 Battle doBattle = Battle(player.getCurrentEngimon(), targetEngimon);
-                thisisfine.fillEmptyBuffer();
-                ok.drawMessageBox(thisisfine);
-                thisisfine.clearMessage();
+                battleMessage.fillEmptyBuffer();
+                battleRenderer.drawMessageBox(battleMessage);
+                battleMessage.clearMessage();
 
                 string wildEngimonName = "Species \xB3 ";
                 wildEngimonName = wildEngimonName + targetEngimon->getName();
-                thisisfine.addMessage(wildEngimonName);
+                battleMessage.addMessage(wildEngimonName);
 
                 string wildEngimonLevel = "Lvl     \xB3 ";
                 wildEngimonLevel = wildEngimonLevel + to_string(targetEngimon->getLevel());
-                thisisfine.addMessage(wildEngimonLevel);
+                battleMessage.addMessage(wildEngimonLevel);
 
                 set<ElementType> elements = targetEngimon->getElements();
                 string typeMsg = "Type    \xB3 ";
@@ -208,19 +208,19 @@ bool Engine::evaluteInput() {
                     typeMsg = typeMsg + "Ground ";
                 if (elements.find(Electric) != elements.end())
                     typeMsg = typeMsg + "Electric ";
-                thisisfine.addMessage(typeMsg);
+                battleMessage.addMessage(typeMsg);
 
 
                 userInput.toggleReadInput();
                 // Temporary stop input thread from queueing movement input
                 clearConsoleInputBuffer();
                 // Clearing current input buffer (GetKeyState() does not clear buffer)
-                thisisfine.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon2Power()));
-                thisisfine.addMessage("");
-                thisisfine.addMessage("Your engimon stat");
-                thisisfine.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon1Power()));
-                thisisfine.addMessage("Fight ? (yes/no)");
-                ok.drawMessageBox(thisisfine);
+                battleMessage.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon2Power()));
+                battleMessage.addMessage("");
+                battleMessage.addMessage("Your engimon stat");
+                battleMessage.addMessage("Power   \xB3 " + to_string(doBattle.getEngimon1Power()));
+                battleMessage.addMessage("Fight ? (yes/no)");
+                battleRenderer.drawMessageBox(battleMessage);
 
                 string commandBuffer;
                 bool isPromptDone = false;
@@ -289,7 +289,7 @@ bool Engine::evaluteInput() {
                                             droppedSkillName = randomSkill.getSkillName();
                                         }
                                     }
-                                    catch (int e) {
+                                    catch (int) {
                                         // Empty catch block
                                     }
 
@@ -341,9 +341,9 @@ bool Engine::evaluteInput() {
                     else if (commandBuffer == "no" || commandBuffer == "n")
                         isPromptDone = true;
                 }
-                thisisfine.fillEmptyBuffer();
-                ok.drawMessageBox(thisisfine);
-                thisisfine.clearMessage();
+                battleMessage.fillEmptyBuffer();
+                battleRenderer.drawMessageBox(battleMessage);
+                battleMessage.clearMessage();
 
                 userInput.toggleReadInput();
                 renderer.clearCursorRestArea();
@@ -391,7 +391,7 @@ void Engine::evaluteTick() {
                             spawnedEngimon->addSkill(generatedSkill);
                         }
                     }
-                    catch (int e) {
+                    catch (int) {
 
                     }
                 }
@@ -419,7 +419,8 @@ void Engine::commandMode() {
     messageList.addMessage("3. change      ");
     messageList.addMessage("4. item        ");
     messageList.addMessage("5. breed       ");
-    // TODO : Delete
+    messageList.addMessage("6. delete      ");
+
 
     renderer.drawMessageBox(messageList);
 
@@ -732,9 +733,9 @@ void Engine::showEngimonInventory() {
     }
 }
 
-// void Engine::deleteInventory() {
-//  // TODO : Add
-// }
+void Engine::deleteInventory() {
+
+}
 
 void Engine::changeCurrentEngimon() {
     string commandBuffer;

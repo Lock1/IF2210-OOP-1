@@ -76,7 +76,7 @@ class Render {
         void drawMsgBorder();
         // Drawing border
 
-        int floorEuclidean(Position pos1, Position pos2);
+        int floorEuclidean(Position pos1, Position pos2); // TODO : Search fast truncated ver
         // Calculating floored euclidean distance
 
         void drawMessageTitle();
@@ -109,7 +109,7 @@ class Render {
 
         void clearCursorRestArea();
         // Writing space at rest area
-        
+
         void drawLoseScreen();
         // Draw lose screen
 };

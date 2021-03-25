@@ -21,14 +21,14 @@ class Engine {
         Map map;
         Message messageList;
         Message statMessage;
-        Message thisisfine; // <<< DEBUG
+        Message battleMessage;
         PlayerInput userInput;
         SkillDatabase skillDB;
         SpeciesDatabase speciesDB;
         Player player;
         Render renderer;
         Render statRenderer;
-        Render ok; // <<<< DEBUG
+        Render battleRenderer;
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;
@@ -64,6 +64,8 @@ class Engine {
         void killCurrentEngimon();
         // Kill current engimon, no engimon left will cause game over
 
+        void deleteInventory();
+        // Delete from engimon or item inventory
         void loseScreen();
         // Draw lose screen
         void changeCurrentEngimon();
