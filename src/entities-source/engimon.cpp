@@ -156,3 +156,4 @@ void Engimon::setEngimonName(string target) {
 int Engimon::getLearnedSkillCount() {
     return (int) learnedSkill.size();
 }
+
