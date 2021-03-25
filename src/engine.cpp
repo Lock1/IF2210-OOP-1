@@ -30,7 +30,7 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
         map("../other/mapfile.txt"),
         userInput(INPUT_BUFFER_COUNT, INPUT_DELAY_MS),
         wildEngimonSpawnProbability(4), wildEngimonDropProbability(30),
-        entitySpawnLimit(20), xpMultiplier(XP_MULTIPLIER),
+        entitySpawnLimit(40), xpMultiplier(XP_MULTIPLIER),
         renderer(map, messageList), statRenderer(statMessage), battleRenderer(battleMessage) {
     // Internal variable setup
     srand((unsigned) time(NULL));
@@ -292,9 +292,26 @@ bool Engine::evaluteInput() {
 
                                 }
 
-                                player.addSkillItem(droppedSkill); // TODO : << Catch bool return, delete if full
                                 messageList.addMessage(droppedSkillName + " dropped");
-
+                                renderer.drawMessageBox(messageList);
+                                // If inventory is full
+                                if (not player.addSkillItem(droppedSkill)) {
+                                    messageList.addMessage("Inventory is full, take? (y/n)");
+                                    renderer.drawMessageBox(messageList);
+                                    renderer.clearCursorRestArea();
+                                    commandModeInput(commandBuffer);
+                                    if (commandBuffer == "y") {
+                                        if (deleteInventory()) {
+                                            Skill targetSkill = skillDB.getSkill(droppedSkill);
+                                            player.addSkillItem(droppedSkill);
+                                            messageList.addMessage(targetSkill.getSkillName() + " added!");
+                                        }
+                                    }
+                                }
+                                else {
+                                    Skill targetSkill = skillDB.getSkill(droppedSkill);
+                                    messageList.addMessage(targetSkill.getSkillName() + " added!");
+                                }
                             }
 
                             map.setTileEntity(targetEngimon->getPos(), NULL);
@@ -307,10 +324,21 @@ bool Engine::evaluteInput() {
                                 renderer.clearCursorRestArea();
                                 commandModeInput(commandBuffer);
                                 if (commandBuffer == "y") {
-                                    player.addEngimonItem(targetEngimon); // TODO : << Delete inventory
-                                    messageList.addMessage(targetEngimon->getEngimonName() + " catched!");
-                                    catchEngimon = true;
-                                    validCatchCommand = true;
+                                    // If success adding item / inventory is not full
+                                    if (player.addEngimonItem(targetEngimon)) {
+                                        messageList.addMessage(targetEngimon->getEngimonName() + " catched!");
+                                        catchEngimon = true;
+                                        validCatchCommand = true;
+                                    }
+                                    else {
+                                        // If failed to add and delete succeed
+                                        if (deleteInventory()) {
+                                            player.addEngimonItem(targetEngimon);
+                                            messageList.addMessage(targetEngimon->getEngimonName() + " catched!");
+                                            catchEngimon = true;
+                                            validCatchCommand = true;
+                                        }
+                                    }
                                     // Remove from map and add to inventory
                                 }
                                 else if (commandBuffer == "n") {
@@ -411,7 +439,7 @@ void Engine::commandMode() {
     messageList.addMessage("4. item        ");
     messageList.addMessage("5. breed       ");
     messageList.addMessage("6. delete      ");
-
+    // TODO : Help
 
     renderer.drawMessageBox(messageList);
 
