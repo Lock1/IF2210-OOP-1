@@ -9,6 +9,7 @@
 #include "header/skilldatabase.hpp"
 #include "header/speciesdatabase.hpp"
 #include "header/battle.hpp"
+#include "header/breeding.hpp"
 #include "header/entities/attributes/elementtype.hpp"
 #include "header/inventory"
 #include <iostream>

@@ -54,6 +54,8 @@ class Engimon : public Entity, public Species {
         int getXP();
         int getLearnedSkillCount();
 
+        void breedingLevelDown();
+
         bool isWildEngimon();
         std::string getInteractString();                               // Get description, only non-wild pokemon
 };

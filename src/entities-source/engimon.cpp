@@ -157,3 +157,6 @@ int Engimon::getLearnedSkillCount() {
     return (int) learnedSkill.size();
 }
 
+void Engimon::breedingLevelDown() {
+    level -= 30;
+}

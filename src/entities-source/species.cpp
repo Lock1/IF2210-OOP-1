@@ -75,3 +75,7 @@ int Species::getSpeciesID() {
 set<ElementType> Species::getElements() {
 	return elements;
 }
+
+bool Species::operator==(const Species& target) {
+	return speciesID == target.speciesID;
+}
