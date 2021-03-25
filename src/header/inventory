@@ -110,6 +110,7 @@ class Inventory<EngimonItem> {
                     itemList.erase(it);
                     return true;
                 }
+                ++it;
             }
 
             return false;

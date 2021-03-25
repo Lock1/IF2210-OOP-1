@@ -72,7 +72,7 @@ bool Engimon::deleteSkill(int targetSkillID) {
 }
 
 bool Engimon::isMaxCXP() {
-    if (cumulativeExperience > 100)
+    if (cumulativeExperience > 100*100) // Maximum level is 100
         return true;
     else
         return false;

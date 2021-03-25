@@ -61,6 +61,8 @@ class Engine {
         void showEngimonInventory();
         // Show player engimon inventory to message list box
 
+        void killCurrentEngimon();
+        // Kill current engimon, no engimon left will cause game over
 
         void loseScreen();
         // Draw lose screen

@@ -71,8 +71,6 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
 }
 
 Engine::~Engine() {
-    // TODO : Cleanup variable
-    // TODO : Destroy allocated engimonList
 }
 
 void Engine::clearConsoleInputBuffer() {
@@ -231,13 +229,11 @@ bool Engine::evaluteInput() {
                     cout << ">>> ";
                     getline(cin, commandBuffer);
                     if (commandBuffer == "yes" || commandBuffer == "y") {
-                        // TODO : Level up increase spawnLevelCap
                         bool isEnemyDied = false, isPlayerEngimonDied = false;
                         messageList.addMessage("");
                         switch (doBattle.getBattleWinner()) {
                             case 1:
                                 messageList.addMessage(targetEngimon->getEngimonName() + " defeated");
-                                // TODO : maybe remove
                                 isEnemyDied = true;
                                 break;
                             case 2:
@@ -250,19 +246,7 @@ bool Engine::evaluteInput() {
                         }
                         // Branch if player engimon died
                         if (isPlayerEngimonDied) {
-                            Engimon *currentEngimon = player.getCurrentEngimon();
-                            if (player.getEngimonInventoryCount() > 1) {
-                                // Doing force changing
-                                messageList.addMessage("Select another engimon");
-                                renderer.clearCursorRestArea();
-                                renderer.drawMessageBox(messageList);
-                                while (currentEngimon == player.getCurrentEngimon()) {
-
-                                }
-                                updateCurrentEngimonMessageStatus();
-                            }
-                            else
-                                loseScreen();
+                            killCurrentEngimon();
                         }
 
                         // Branch if enemy died
@@ -348,7 +332,8 @@ bool Engine::evaluteInput() {
 
                         // Maximum cummulative XP check
                         if (player.getCurrentEngimon()->isMaxCXP()) {
-                            // TODO : Kill
+                            messageList.addMessage("Over cummulative XP");
+                            killCurrentEngimon();
                         }
 
                         isPromptDone = true;
@@ -807,4 +792,21 @@ void Engine::changeCurrentEngimon() {
 void Engine::loseScreen() {
     renderer.drawLoseScreen();
     isEngineRunning = false;
+}
+
+void Engine::killCurrentEngimon() {
+    Engimon *currentEngimon = player.getCurrentEngimon();
+    if (player.getEngimonInventoryCount() > 1) {
+        // Doing force changing
+        player.delEngimonItem(currentEngimon);
+        messageList.addMessage("- Select another engimon -");
+        messageList.addMessage("");
+        renderer.clearCursorRestArea();
+        renderer.drawMessageBox(messageList);
+        changeCurrentEngimon();
+        updateCurrentEngimonMessageStatus();
+        delete currentEngimon;
+    }
+    else
+        loseScreen();
 }
