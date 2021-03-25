@@ -451,14 +451,15 @@ void Engine::commandMode() {
     // Clearing message list window
 
     if (commandBuffer == "dbg") { // DEBUG
-        player.addEngimonItem(new Engimon(speciesDB.getSpecies(5), false, Position(0, 0)));
+        player.addEngimonItem(new Engimon(speciesDB.getSpecies(5), false, Position(0, 0), 50));
+        player.addEngimonItem(new Engimon(speciesDB.getSpecies(6), false, Position(0, 0), 50));
         // player.addEngimonItem(new Engimon(speciesDB.getSpecies(2), false, Position(0, 0)));
         // player.addEngimonItem(new Engimon(speciesDB.getSpecies(rand()%10+1), false, Position(0, 0)));
-        player.addSkillItem(5);
-        player.addSkillItem(9);
-        player.addSkillItem(11);
-        player.addSkillItem(14);
-        player.addSkillItem(15);
+        // player.addSkillItem(5);
+        // player.addSkillItem(9);
+        // player.addSkillItem(11);
+        // player.addSkillItem(14);
+        // player.addSkillItem(15);
         // player.addSkillItem(rand()%10+1);
     }
     else if (commandBuffer == "legend") {
@@ -470,7 +471,13 @@ void Engine::commandMode() {
     else if (commandBuffer == "delete") {
         deleteInventory();
     }
-    // else if (commandBuffer == "breed")
+    else if (commandBuffer == "breed") {
+
+        // DEBUG ONLY
+        Breed dbgbreed = Breed(new Engimon(speciesDB.getSpecies(5), false, Position(0, 0), 50), new Engimon(speciesDB.getSpecies(6), false, Position(0, 0), 50));
+        player.addEngimonItem(dbgbreed.startBreeding(speciesDB));
+        // TODO : Renaming option
+    }
     else if (commandBuffer == "engimon") {
         // TODO : Print parent
         list<EngimonItem> engimonInv = player.getEngimonInventory();
