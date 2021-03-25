@@ -235,7 +235,8 @@ bool Engine::evaluteInput() {
                         bool isEnemyDied = false, isPlayerEngimonDied = false;
                         switch (doBattle.getBattleWinner()) {
                             case 1:
-                                messageList.addMessage("enemy dies"); // TODO : maybe remove
+                                messageList.addMessage(targetEngimon->getEngimonName() + " defeated");
+                                // TODO : maybe remove
                                 isEnemyDied = true;
                                 break;
                             case 2:
@@ -248,7 +249,6 @@ bool Engine::evaluteInput() {
                                 isEnemyDied = true;
                                 break;
                         }
-                        // TODO : Catch
                         // TODO : Kill player engimon
                         // Branch if player engimon died
                         // TODO : Add
@@ -258,15 +258,10 @@ bool Engine::evaluteInput() {
                         if (isEnemyDied && not isPlayerEngimonDied) {
                             // Level up checking
                             if (player.getCurrentEngimon()->xpGain(targetEngimon->getLevel()*5)) {
-                                // TODO : Catch, temporary just delete engimon from existence
                                 spawnLevelCap++;
                             }
 
-                            if (player.getCurrentEngimon()->isMaxCXP()) {
-                                // TODO : Kill
-                            }
-
-                            // Random skill dropw
+                            // Random skill drop
                             int dropRoll = rand() % 100;
                             if ((unsigned) dropRoll < wildEngimonDropProbability) {
                                 SkillItem droppedSkill = 1; // Placeholder
@@ -297,20 +292,41 @@ bool Engine::evaluteInput() {
 
                                 }
 
-                                player.addSkillItem(droppedSkill);
+                                player.addSkillItem(droppedSkill); // TODO : << Catch bool return, delete if full
                                 messageList.addMessage(droppedSkillName + " dropped");
 
                             }
 
                             map.setTileEntity(targetEngimon->getPos(), NULL);
                             targetEngimon->tameEngimon();
-                            // TODO : Add catch
-                            delete targetEngimon;
+                            // Catching prompt
+                            bool validCatchCommand = false, catchEngimon = false;
+                            while (not validCatchCommand) {
+                                messageList.addMessage("Catch engimon? (y/n)");
+                                renderer.clearCursorRestArea();
+                                renderer.drawMessageBox(messageList);
+                                getline(cin, commandBuffer);
+                                if (commandBuffer == "y") {
+                                    player.addEngimonItem(targetEngimon); // TODO : << Delete inventory
+                                    messageList.addMessage(targetEngimon->getEngimonName() + " catched!");
+                                    catchEngimon = true;
+                                    validCatchCommand = true;
+                                    // Remove from map and add to inventory
+                                }
+                                else if (commandBuffer == "n") {
+                                    validCatchCommand = true;
+                                }
+                            }
+
+                            if (not catchEngimon)
+                                delete targetEngimon;
                             updateCurrentEngimonMessageStatus();
-                            // Remove from map and add to inventory
                         }
 
-
+                        // Maximum cummulative XP check
+                        if (player.getCurrentEngimon()->isMaxCXP()) {
+                            // TODO : Kill
+                        }
 
                         isPromptDone = true;
                     }
@@ -719,3 +735,7 @@ void Engine::showEngimonInventory() {
         }
     }
 }
+
+// void Engine::deleteInventory() {
+//  // TODO : Add
+// }
