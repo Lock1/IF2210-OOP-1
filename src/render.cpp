@@ -497,8 +497,8 @@ void Render::drawMessageTitle() {
 }
 
 int Render::floorEuclidean(Position pos1, Position pos2) {
-    double xDiff = pos1.getX()-pos2.getX();
-    double yDiff = pos1.getY()-pos2.getY();
+    double yDiff = (double) (pos1.getY() - pos2.getY());
+    double xDiff = (double) (pos1.getX() - pos2.getX());
     return (int) sqrt((xDiff*xDiff) + (yDiff*yDiff));
 }
 
@@ -522,24 +522,23 @@ void Render::clearMessageBox(Message& target) {
 }
 
 bool Render::isRayBlocked(Position fromPos, Position toPos) {
-    float xit = (float) fromPos.getX();
-    float yit = (float) fromPos.getY();
+    double xit = (double) fromPos.getX();
+    double yit = (double) fromPos.getY();
 
-    float xtarget = (float) toPos.getX();
-    float ytarget = (float) toPos.getY();
+    double xtarget = (double) toPos.getX();
+    double ytarget = (double) toPos.getY();
 
-    float delY = (ytarget-yit)/128;
-    float delX = (xtarget-xit)/128;
+    double delY = (ytarget-yit)/1024;
+    double delX = (xtarget-xit)/1024;
 
     // No bound checking
     bool isRayHitOpaqueTile = false;
     while (xit < xtarget && yit < ytarget && not isRayHitOpaqueTile) {
         if (mapFrameBuffer[(int) yit][(int) xit] == '\xDB')
             isRayHitOpaqueTile = true;
-        if (yit < ytarget)
-            yit += delY;
-        if (xit < xtarget)
-            xit += delX;
+
+        yit += delY;
+        xit += delX;
     }
 
     return isRayHitOpaqueTile;
@@ -548,11 +547,11 @@ bool Render::isRayBlocked(Position fromPos, Position toPos) {
 vector<Position> Render::getRenderedArea(Position pos) {
     vector<Position> renderedTile;
     for (int i = -8; i < 8; i++) {
-        for (int j = -4; j < 4; j++) {
+        for (int j = -8; j < 8; j++) {
             Position tileToCheck = Position(pos.getX()+i , pos.getY()+j);
-            if (0 <= tileToCheck.getX() && tileToCheck.getX() < mapSizeX) {
-                if (0 <= tileToCheck.getY() && tileToCheck.getY() < mapSizeY) {
-                    if (floorEuclidean(pos, tileToCheck) < 6) {
+            if (0 <= tileToCheck.getX() && tileToCheck.getX() < (int) mapSizeX) {
+                if (0 <= tileToCheck.getY() && tileToCheck.getY() < (int) mapSizeY) {
+                    if (floorEuclidean(pos, tileToCheck) < 5) {
                         if (not isRayBlocked(pos, tileToCheck))
                             renderedTile.push_back(tileToCheck);
                     }
