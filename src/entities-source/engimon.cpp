@@ -39,7 +39,16 @@ Engimon::Engimon(Species species, bool wild, Position pos, int startLevel) : Spe
 }
 
 bool Engimon::addSkill(Skill newSkill) {
-    if (learnedSkill.size() < 4) {
+    bool skillCompatible = false;
+    set<ElementType> elements = getElements();
+    if (newSkill.isElementCompatible(*elements.begin()))
+        skillCompatible = true;
+    else if (++elements.begin() != elements.end()) {
+        if (newSkill.isElementCompatible(*(++elements.begin())))
+            skillCompatible = true;
+    }
+
+    if (learnedSkill.size() < 4 && skillCompatible) {
         auto it = learnedSkill.begin();
         bool isFound = false;
         while (it != learnedSkill.end() && not isFound) {

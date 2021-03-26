@@ -16,51 +16,61 @@ Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
     }else{
         Skill skillTemp = Skill(0, 0, "", NoElement);
 
-        bool fromP1 = false, fromP2 = false;
         vector<Skill> skillList_parent1 = parent1->getSkillList();
         vector<Skill> skillList_parent2 = parent2->getSkillList();
         vector<Skill> skillList_child;
 
-        while((!skillList_parent1.empty() && !skillList_parent2.empty()) && skillList_child.size() < 4){
-            if(!skillList_parent1.empty()){
-                skillTemp = skillList_parent1[0];
-                fromP1 = true;
-            }else{
-                skillTemp = skillList_parent2[0];
-                fromP2 = true;
-            }
+        bool fromP1 = false, fromP2 = false;
+        while((!skillList_parent1.empty() || !skillList_parent2.empty()) && skillList_child.size() < 4) {
+            fromP1 = false;
+            fromP2 = false;
+            // if(!skillList_parent1.empty()){
+            //     skillTemp = skillList_parent1[0];
+            //     fromP1 = true;
+            // }else if (!skillList_parent2.empty()) {
+            //     skillTemp = skillList_parent2[0];
+            //     fromP2 = true;
+            // }
 
             for(unsigned i=0; i<skillList_parent1.size();i++){
                 if(skillTemp.getMasteryLevel()<skillList_parent1[i].getMasteryLevel()){
                     skillTemp = skillList_parent1[i];
+                    fromP1 = true;
                 }
             }
 
+
             for(unsigned i=0; i<skillList_parent2.size();i++){
-                if(skillTemp.getMasteryLevel() < skillList_parent2[i].getMasteryLevel()){
-                    skillTemp = skillList_parent2[i];
-                    fromP2 = true;
-                    fromP1 = false;
-                }else if(fromP1 && skillTemp == skillList_parent2[i]){
+                if(fromP1 && !fromP2 && skillTemp == skillList_parent2[i]){
                     // If skill matches, check mastery level both parent skill
                     if (skillTemp.getMasteryLevel() == skillList_parent2[i].getMasteryLevel()) {
                         skillTemp.levelUpMastery();
                         fromP2 = true;
                     }
-                    else if (skillTemp.getMasteryLevel() < skillList_parent2[i].getMasteryLevel()) {
-                        skillTemp = skillList_parent2[i];
-                        fromP2 = true;
-                    }
-
+                    // else if (skillTemp.getMasteryLevel() < skillList_parent2[i].getMasteryLevel()) {
+                    //     skillTemp = skillList_parent2[i];
+                    //     fromP2 = true;
+                    // }
+                }
+                else if(skillTemp.getMasteryLevel() < skillList_parent2[i].getMasteryLevel()){
+                    skillTemp = skillList_parent2[i];
+                    fromP2 = true;
+                    fromP1 = false;
                 }
             }
 
-            if(fromP1 || (std::find(skillList_parent1.begin(), skillList_parent1.end(), skillTemp) != skillList_parent1.end())){
-                skillList_parent1.erase(std::find(skillList_parent1.begin(), skillList_parent1.end(), skillTemp));
+            if (not skillList_parent1.empty()) {
+                if (fromP1 || (std::find(skillList_parent1.begin(), skillList_parent1.end(), skillTemp) != skillList_parent1.end())) {
+                    skillList_parent1.erase(std::find(skillList_parent1.begin(), skillList_parent1.end(), skillTemp));
+                }
             }
-            if(fromP2 || (std::find(skillList_parent2.begin(), skillList_parent2.end(), skillTemp) != skillList_parent2.end())){
-                skillList_parent2.erase(std::find(skillList_parent2.begin(), skillList_parent2.end(), skillTemp));
+
+            if (not skillList_parent2.empty()) {
+                if(fromP2 || (std::find(skillList_parent2.begin(), skillList_parent2.end(), skillTemp) != skillList_parent2.end())) {
+                    skillList_parent2.erase(std::find(skillList_parent2.begin(), skillList_parent2.end(), skillTemp));
+                }
             }
+
             skillList_child.push_back(skillTemp);
         }
 
@@ -128,8 +138,12 @@ Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
 
         Engimon *child = new Engimon(childSpecies, false, Position(0, 0), 1);
 
+        vector<Skill>& childBaseSkill = child->getSkillListRef();
         for(unsigned i=0 ; i < skillList_child.size() ; i++){
-            child->addSkill(skillList_child[i]);
+            if (not child->addSkill(skillList_child[i])) {
+                while (childBaseSkill[0].getMasteryLevel() < skillList_child[i].getMasteryLevel())
+                    childBaseSkill[0].levelUpMastery();
+            }
         }
 
         parent1->breedingLevelDown();
@@ -224,7 +238,7 @@ float Breed::getElementAdvantage(ElementType elem1, ElementType elem2){
             return 0;
         }
     }
-    else if (elem1 == Water)
+    else if (elem1 == Ice)
     {
         if (elem2 == Fire){
             return 0;
