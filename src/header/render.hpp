@@ -61,6 +61,7 @@ class Render {
         char msgBorderLineHorizontal;
 
         std::vector<std::vector<char>> mapFrameBuffer;
+        std::vector<std::vector<bool>> shadowMapFrameBuffer;
         // Map Frame buffer
         std::vector<Position> lastRenderPos;
         // Last drawn position, used for line of sight highlight

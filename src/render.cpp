@@ -47,8 +47,12 @@ Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), m
     // Map frame buffer initialization
     for (unsigned int i = 0; i < mapSizeY; i++) {
         std::vector<char> mapRow;
-        for (unsigned int j = 0; j < mapSizeX; j++)
+        std::vector<bool> shadowBufferRow;
+        for (unsigned int j = 0; j < mapSizeX; j++) {
             mapRow.push_back('\0');
+            shadowBufferRow.push_back(false);
+        }
+        shadowMapFrameBuffer.push_back(shadowBufferRow);
         mapFrameBuffer.push_back(mapRow);
     }
 }
@@ -374,6 +378,7 @@ void Render::drawMap(Map& target, Position posRendered) {
             if (find(renderPos.begin(), renderPos.end(), lastRenderPos[i]) == renderPos.end()) {
                 int lastCoorX = lastRenderPos[i].getX();
                 int lastCoorY = lastRenderPos[i].getY();
+                shadowMapFrameBuffer[lastCoorY][lastCoorX] = true;
                 setCursorPosition(lastCoorX + mapOffsetX, lastCoorY + mapOffsetY);
                 SetConsoleTextAttribute(hstdout, C_SHADOW);
                 cout << mapFrameBuffer[lastCoorY][lastCoorX];
@@ -435,15 +440,14 @@ void Render::drawMap(Map& target, Position posRendered) {
                     SetConsoleTextAttribute(hstdout, C_MIDTONE);
                 }
             }
-            // else if (target.getTileTypeAt(coorX, coorY) != mapFrameBuffer[coorY][coorX]) {
-            else {
+            else if (target.getTileTypeAt(coorX, coorY) != mapFrameBuffer[coorY][coorX] || shadowMapFrameBuffer[coorY][coorX]) {
+                shadowMapFrameBuffer[coorY][coorX] = false;
                 mapFrameBuffer[coorY][coorX] = target.getTileTypeAt(coorX, coorY);
                 setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
                 SetConsoleTextAttribute(hstdout, C_HIGHLIGHT);
                 cout << mapFrameBuffer[coorY][coorX];
                 SetConsoleTextAttribute(hstdout, C_MIDTONE);
             }
-            // }
 
             lastRenderPos = renderPos;
         }
@@ -586,71 +590,76 @@ bool Render::isRayBlocked(Position fromPos, Position toPos) {
     if (xtarget > xit && ytarget > yit) {
         while (xit <= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
-            isRayHitOpaqueTile = true;
-
-            yit += delY;
-            xit += delX;
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
         }
     }
     else if (xtarget < xit && ytarget > yit) {
         while (xit >= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
-            isRayHitOpaqueTile = true;
-
-            yit += delY;
-            xit += delX;
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
         }
     }
     else if (xtarget > xit && ytarget < yit) {
         while (xit <= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
-            isRayHitOpaqueTile = true;
-
-            yit += delY;
-            xit += delX;
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
         }
     }
     else if (xtarget < xit && ytarget < yit) {
         while (xit >= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
-            isRayHitOpaqueTile = true;
-
-            yit += delY;
-            xit += delX;
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
         }
     }
     else if (xtarget == xit && ytarget > yit) {
         while (yit <= ytarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
                 isRayHitOpaqueTile = true;
-
-            yit += delY;
+            else
+                yit += delY;
         }
     }
     else if (xtarget == xit && ytarget < yit) {
         while (yit >= ytarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
                 isRayHitOpaqueTile = true;
-
-            yit += delY;
+            else
+                yit += delY;
         }
     }
     else if (xtarget > xit && ytarget == yit) {
         while (xit <= xtarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
                 isRayHitOpaqueTile = true;
-
-            xit += delX;
+            else
+                xit += delX;
         }
     }
     else if (xtarget < xit && ytarget == yit) {
         while (xit >= xtarget && not isRayHitOpaqueTile) {
             if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
                 isRayHitOpaqueTile = true;
-
-            xit += delX;
+            else
+                xit += delX;
         }
     }
+
 
 
     return isRayHitOpaqueTile;

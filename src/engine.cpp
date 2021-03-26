@@ -123,7 +123,7 @@ void Engine::startGame() {
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
         battleRenderer.drawMessageBox(battleMessage);
-        std::this_thread::sleep_for(std::chrono::milliseconds(40));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
             startClock = std::chrono::system_clock::now();
