@@ -82,10 +82,16 @@ void Engine::clearConsoleInputBuffer() {
     delete[] ClearingVar1;
 }
 
+double Engine::getCurrentTimeDelta() {
+    endClock = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = endClock - startClock;
+    return elapsed_seconds.count();
+}
 
 void Engine::startGame() {
     system(CLEAR_SCREEN_CMD);
 
+    startClock = std::chrono::system_clock::now();
     map.setTileEntity(player.getPos(), &player);
     // Starting item
     Engimon *starterEngimon = new Engimon(speciesDB.getSpecies((rand() % 10) + 1), false, Position(0, 0), (rand() % 10) + 1);
@@ -108,11 +114,20 @@ void Engine::startGame() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         if (evaluteInput() && not isCommandMode) {
             evaluteTick();
+            startClock = std::chrono::system_clock::now();
         }
         else if (isCommandMode) {
+            startClock = std::chrono::system_clock::now();
             commandMode();
             // Call command mode
         }
+        // Release turn based tick lock
+        #ifdef RELEASE_TICK_LOCK
+        if (getCurrentTimeDelta() > 1) {
+            evaluteTick();
+            startClock = std::chrono::system_clock::now();
+        }
+        #endif
 
     }
     userInput.stopReadInput();

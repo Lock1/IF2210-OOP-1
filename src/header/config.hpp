@@ -16,6 +16,7 @@
 #define XP_MULTIPLIER 100
 // #define FOG_OF_WAR // Define FOG_OF_WAR for activating FoW // TODO : Move from render
 #define LINE_OF_SIGHT // For activating line of sight limit // TODO : Add
+#define RELEASE_TICK_LOCK // Deactivating full turn-based tick evaluation
 
 // Map
 #define SEA_STARTING_X 35

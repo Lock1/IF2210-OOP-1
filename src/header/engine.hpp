@@ -15,6 +15,7 @@
 #include "entities/position.hpp"
 #include "entities/direction.hpp"
 #include <vector>
+#include <chrono>
 
 class Engine {
     private:
@@ -32,6 +33,8 @@ class Engine {
         bool isEngineRunning;
         bool isCommandMode;
         std::vector<Engimon*> engimonList;
+        std::chrono::time_point<std::chrono::system_clock> startClock, endClock;
+        // Internal engine clock
         int spawnLevelCap;
         // Increment for every engimon level up
         const int maxSkillID;
@@ -79,6 +82,9 @@ class Engine {
         // Change engimon name
         bool engimonForgetSkill(Engimon *targetEngimon);
         // Forgetting skill in engimon, return true if success
+
+        double getCurrentTimeDelta();
+        // Get time delta from last movement
     public:
         Engine();
         // Constructor
