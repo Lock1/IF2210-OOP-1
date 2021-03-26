@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\battle.cpp" />
     <ClCompile Include="src\breeding.cpp" />
+    <ClCompile Include="src\engimoninteraction.cpp" />
     <ClCompile Include="src\engine.cpp" />
     <ClCompile Include="src\entities-source\attributes\skill.cpp" />
     <ClCompile Include="src\entities-source\engimon.cpp" />
@@ -39,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\header\config.hpp" />
+    <ClInclude Include="src\header\engimoninteraction.hpp" />
     <ClInclude Include="src\header\engine.hpp" />
     <ClInclude Include="src\header\entities\attributes\elementtype.hpp" />
     <ClInclude Include="src\header\entities\attributes\skill.hpp" />

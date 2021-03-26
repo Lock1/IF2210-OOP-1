@@ -12,7 +12,7 @@
 
 using namespace std;
 
-Battle::Battle(Engimon *e1, Engimon *e2){
+Battle::Battle(Engimon *e1, Engimon *e2) : EngimonInteraction(e1, e2) {
     float sum_e1 = 0;
     float sum_e2 = 0;
     vector<Skill> skillList_e1 = e1->getSkillList();
@@ -21,7 +21,6 @@ Battle::Battle(Engimon *e1, Engimon *e2){
     set<ElementType> elements_e2 = e2->getElement();
     for (unsigned i = 0; i < skillList_e1.size(); i++){
         sum_e1 += skillList_e1[i].getBasePower()*skillList_e1[i].getMasteryLevel();
-
     }
     for (unsigned j = 0; j < skillList_e2.size(); j++){
         sum_e2 += skillList_e2[j].getBasePower()*skillList_e2[j].getMasteryLevel();

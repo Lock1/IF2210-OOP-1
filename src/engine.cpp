@@ -500,14 +500,16 @@ void Engine::commandMode() {
             string engimonStr1, engimonStr2;
             renderer.drawMessageBox(messageList);
             commandModeInput(engimonStr1);
+            if (engimonStr1 == "exit")
+                break;
             messageList.addMessage("Parent 1 is " + engimonStr1);
             renderer.drawMessageBox(messageList);
             commandModeInput(engimonStr2);
+            if (engimonStr2 == "exit")
+                break;
             messageList.addMessage("Parent 2 is " + engimonStr2);
             renderer.drawMessageBox(messageList);
 
-            if (commandBuffer == "exit")
-                break;
 
             // Trying to parsing to int
             int targetNumber1, targetNumber2;
@@ -575,7 +577,6 @@ void Engine::commandMode() {
                 messageList.addMessage("Number is out of range");
             }
         }
-        // TODO : Renaming option
     }
     else if (commandBuffer == "engimon") {
         list<EngimonItem> engimonInv = player.getEngimonInventory();
