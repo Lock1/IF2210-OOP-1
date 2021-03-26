@@ -76,7 +76,7 @@ class Render {
         void drawMsgBorder();
         // Drawing border
 
-        int floorEuclidean(Position pos1, Position pos2); // TODO : Search fast truncated ver
+        int floorSqueezedEuclideanMetric(Position pos1, Position pos2); // TODO : Search fast truncated ver
         // Calculating floored euclidean distance
 
         void drawMessageTitle();
@@ -87,6 +87,9 @@ class Render {
 
         std::vector<Position> getRenderedArea(Position pos);
         // Get coordinate area for rendering
+
+        int nearestInteger(double x);
+        // Rounding to nearest integer
 
     public:
         Render(Map& target, Message& msgTarget);

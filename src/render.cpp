@@ -496,10 +496,10 @@ void Render::drawMessageTitle() {
     SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
-int Render::floorEuclidean(Position pos1, Position pos2) {
+int Render::floorSqueezedEuclideanMetric(Position pos1, Position pos2) {
     double yDiff = (double) (pos1.getY() - pos2.getY());
     double xDiff = (double) (pos1.getX() - pos2.getX());
-    return (int) sqrt((xDiff*xDiff) + (yDiff*yDiff));
+    return (int) sqrt((xDiff*xDiff) + (yDiff*yDiff)*4);
 }
 
 void Render::drawLoseScreen() {
@@ -521,6 +521,18 @@ void Render::clearMessageBox(Message& target) {
     clearCursorRestArea();
 }
 
+int Render::nearestInteger(double x) {
+    double decimalPoint = x - ((int) x);
+    // Absolute value
+    if (decimalPoint < 0)
+        decimalPoint *= (-1);
+
+    if (decimalPoint > 0.5)
+        return ((int) x) + 1;
+    else
+        return ((int) x);
+}
+
 bool Render::isRayBlocked(Position fromPos, Position toPos) {
     double xit = (double) fromPos.getX();
     double yit = (double) fromPos.getY();
@@ -528,18 +540,81 @@ bool Render::isRayBlocked(Position fromPos, Position toPos) {
     double xtarget = (double) toPos.getX();
     double ytarget = (double) toPos.getY();
 
-    double delY = (ytarget-yit)/1024;
-    double delX = (xtarget-xit)/1024;
+    double delY = (ytarget-yit)/512;
+    double delX = (xtarget-xit)/512;
+
 
     // No bound checking
     bool isRayHitOpaqueTile = false;
-    while (xit < xtarget && yit < ytarget && not isRayHitOpaqueTile) {
-        if (mapFrameBuffer[(int) yit][(int) xit] == '\xDB')
+    if (xtarget > xit && ytarget > yit) {
+        while (xit <= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
             isRayHitOpaqueTile = true;
 
-        yit += delY;
-        xit += delX;
+            yit += delY;
+            xit += delX;
+        }
     }
+    else if (xtarget < xit && ytarget > yit) {
+        while (xit >= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+            isRayHitOpaqueTile = true;
+
+            yit += delY;
+            xit += delX;
+        }
+    }
+    else if (xtarget > xit && ytarget < yit) {
+        while (xit <= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+            isRayHitOpaqueTile = true;
+
+            yit += delY;
+            xit += delX;
+        }
+    }
+    else if (xtarget < xit && ytarget < yit) {
+        while (xit >= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+            isRayHitOpaqueTile = true;
+
+            yit += delY;
+            xit += delX;
+        }
+    }
+    else if (xtarget == xit && ytarget > yit) {
+        while (yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+
+            yit += delY;
+        }
+    }
+    else if (xtarget == xit && ytarget < yit) {
+        while (yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+
+            yit += delY;
+        }
+    }
+    else if (xtarget > xit && ytarget == yit) {
+        while (xit <= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+
+            xit += delX;
+        }
+    }
+    else if (xtarget < xit && ytarget == yit) {
+        while (xit >= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+
+            xit += delX;
+        }
+    }
+
 
     return isRayHitOpaqueTile;
 }
@@ -551,7 +626,7 @@ vector<Position> Render::getRenderedArea(Position pos) {
             Position tileToCheck = Position(pos.getX()+i , pos.getY()+j);
             if (0 <= tileToCheck.getX() && tileToCheck.getX() < (int) mapSizeX) {
                 if (0 <= tileToCheck.getY() && tileToCheck.getY() < (int) mapSizeY) {
-                    if (floorEuclidean(pos, tileToCheck) < 5) {
+                    if (floorSqueezedEuclideanMetric(pos, tileToCheck) < 7) {
                         if (not isRayBlocked(pos, tileToCheck))
                             renderedTile.push_back(tileToCheck);
                     }
