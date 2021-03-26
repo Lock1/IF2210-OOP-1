@@ -14,7 +14,7 @@ Player::Player(unsigned maxInv, unsigned maxSkillID) : Entity(1, 0, EntityPlayer
 }
 
 Player::~Player() {
-    
+
 }
 
 void Player::changeEngimon(Engimon *targetEngimon) {
@@ -28,7 +28,7 @@ Engimon* Player::getCurrentEngimon() {
 }
 
 bool Player::isMoveLocationValid(Tile& target) {
-    if (target.getEntity() == NULL)
+    if (target.getEntity() == NULL && (target.getTileType() == Grass || target.getTileType() == Sea))
         return true;
     else
         return false;

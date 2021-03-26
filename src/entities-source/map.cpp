@@ -44,8 +44,10 @@ Map::Map(string filename) : randomEngimonMoveProbability(20) {
             for (unsigned int j = 0; j < mapRow.length(); j++) {
                 if (mapRow[j] == 'o')
                     column.push_back(Tile(i, j, Sea));
-                else
+                else if (mapRow[j] == '-')
                     column.push_back(Tile(i, j, Grass));
+                else
+                    column.push_back(Tile(i, j, Wall));
             }
             i++;
             flippedMap.push_back(column);
