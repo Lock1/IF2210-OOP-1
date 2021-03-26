@@ -472,14 +472,97 @@ void Engine::commandMode() {
         deleteInventory();
     }
     else if (commandBuffer == "breed") {
+        messageList.addMessage("Select Engimon Number");
+        list<EngimonItem> engimonInv = player.getEngimonInventory();
+        bool doneSelecting = false;
+        while (not doneSelecting) {
+            showEngimonInventory();
+            messageList.addMessage("End of inventory list");
+            messageList.addMessage("");
+            messageList.addMessage("Input two engimon number ");
+            messageList.addMessage("or exit ");
 
-        // DEBUG ONLY
-        Breed dbgbreed = Breed(new Engimon(speciesDB.getSpecies(14), false, Position(0, 0), 50), new Engimon(speciesDB.getSpecies(15), false, Position(0, 0), 50));
-        player.addEngimonItem(dbgbreed.startBreeding(speciesDB));
+            string engimonStr1, engimonStr2;
+            renderer.drawMessageBox(messageList);
+            commandModeInput(engimonStr1);
+            messageList.addMessage("Parent 1 is " + engimonStr1);
+            renderer.drawMessageBox(messageList);
+            commandModeInput(engimonStr2);
+            messageList.addMessage("Parent 2 is " + engimonStr2);
+            renderer.drawMessageBox(messageList);
+
+            if (commandBuffer == "exit")
+                break;
+
+            // Trying to parsing to int
+            int targetNumber1, targetNumber2;
+            bool successParsing = false;
+            try {
+                targetNumber1 = stoi(engimonStr1);
+                targetNumber2 = stoi(engimonStr2);
+                successParsing = true;
+            }
+            catch (invalid_argument e) {
+                messageList.addMessage("Invalid input");
+            }
+
+            // If number are in valid range, then change
+            if (successParsing && 0 < targetNumber1 && targetNumber1 <= (int) engimonInv.size() &&
+                    0 < targetNumber2 && targetNumber2 <= (int) engimonInv.size() && targetNumber1 != targetNumber2) {
+                auto it = engimonInv.begin();
+                int i = 0;
+                while (i < targetNumber1-1) {
+                    i++;
+                    ++it;
+                }
+                Engimon *targetEngimon1 = *it;
+
+                it = engimonInv.begin();
+                i = 0;
+                while (i < targetNumber2-1) {
+                    i++;
+                    ++it;
+                }
+                Engimon *targetEngimon2 = *it;
+
+                Engimon *newEngimon = NULL;
+                bool breedSuccess = false;
+                try {
+                    Breed newBreed = Breed(targetEngimon1, targetEngimon2);
+                    newEngimon = newBreed.startBreeding(speciesDB);
+                    breedSuccess = true;
+                }
+                catch (int) {
+
+                }
+
+                if (breedSuccess) {
+                    player.addEngimonItem(newEngimon);
+
+                    string breedingString = "Breed success ";
+                    breedingString = breedingString + newEngimon->getEngimonName();
+                    messageList.addMessage("");
+                    messageList.addMessage(breedingString);
+                    messageList.addMessage("Use rename command");
+                    messageList.addMessage("to change engimon name");
+                    statRenderer.clearMessageBox(statMessage);
+                    updateCurrentEngimonMessageStatus();
+                    doneSelecting = true;
+                }
+                else {
+                    renderer.clearMessageBox(messageList);
+                    messageList.addMessage("Parent level is too low");
+                    messageList.addMessage("");
+                    renderer.drawMessageBox(messageList);
+                }
+            }
+            else if (successParsing) {
+                messageList.addMessage("Number is out of range");
+            }
+        }
         // TODO : Renaming option
     }
     else if (commandBuffer == "engimon") {
-        // TODO : Print parent
         list<EngimonItem> engimonInv = player.getEngimonInventory();
         int number = 1;
         for (auto it = engimonInv.begin(); it != engimonInv.end(); ++it) {
@@ -522,6 +605,24 @@ void Engine::commandMode() {
                 skillRow = skillRow + " Pow-" + to_string(skillList[i].getBasePower());
                 messageList.addMessage(skillRow);
             }
+
+            vector<Species> speciesList = targetEngimon->getParentSpecies();
+            vector<string> parentName = targetEngimon->getParentNames();
+            if (parentName.size() > 0) {
+                messageList.addMessage(" \xCD\xCD\xCD\xCD     Parent     \xCD\xCD\xCD\xCD ");
+                for (int i = 0; (unsigned) i < speciesList.size(); i++) {
+                    string speciesRow = "Species ";
+                    speciesRow = speciesRow + speciesList[i].getName();
+                    messageList.addMessage(speciesRow);
+                    speciesRow = "Name ";
+                    speciesRow = speciesRow + parentName[i];
+                    messageList.addMessage(speciesRow);
+                    if (i == 0)
+                        messageList.addMessage(" ");
+                }
+            }
+
+
             messageList.addMessage(" \xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD\xCD ");
             messageList.addMessage("");
             number++;

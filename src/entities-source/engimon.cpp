@@ -169,3 +169,11 @@ int Engimon::getLearnedSkillCount() {
 void Engimon::breedingLevelDown() {
     level -= 30;
 }
+
+void Engimon::addParentSpecies(Species parent) {
+    parentSpecies.push_back(parent);
+}
+
+void Engimon::addParentName(string parent) {
+    parentNames.push_back(parent);
+}

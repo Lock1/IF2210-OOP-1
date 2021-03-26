@@ -146,6 +146,12 @@ Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
             }
         }
 
+        child->addParentName(parent1->getEngimonName());
+        child->addParentName(parent2->getEngimonName());
+
+        child->addParentSpecies(*parent1);
+        child->addParentSpecies(*parent2);
+
         parent1->breedingLevelDown();
         parent2->breedingLevelDown();
 
