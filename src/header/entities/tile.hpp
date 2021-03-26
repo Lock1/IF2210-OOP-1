@@ -9,7 +9,8 @@
 
 enum TileType : char {
     Grass = '\xB1',
-    Sea = '\xB0'
+    Sea = '\xB0',
+    Wall = '\xDB'
 };
 
 class Tile : public Position {
