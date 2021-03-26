@@ -1,4 +1,4 @@
-// 13519214
+﻿// 13519214
 // TODO : A E S T H E T I C -> Message border shadow
 #include "header/config.hpp"
 #include "header/entities/tile.hpp"
@@ -92,6 +92,8 @@ void Render::setCursorPosition(int x, int y) {
 
 void Render::drawBox(Box& target) {
     // Left right border
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hstdout, 0x0E);
     for (unsigned int i = target.offsetY; i < target.offsetY + target.sizeY + 1; i++) {
         setCursorPosition(target.offsetX-1, i);
         cout << target.lineVertical;
@@ -114,6 +116,7 @@ void Render::drawBox(Box& target) {
     cout << target.cornerTopRight;   // Upper right corner
     setCursorPosition(target.offsetX+target.sizeX, target.offsetY+target.sizeY);
     cout << target.cornerBottomRight;   // Bottom right corner
+    SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
 void Render::drawMapBorder() {
@@ -205,19 +208,55 @@ void Render::drawMessageBox(Message& target) {
         isMessageBorderDrawn = true;
     }
 
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    int color = 0x0F;
+    
     queue<string> buffer = target.showMessage();
     int size = buffer.size();
     for (int i = 0; i < size; i++) {
         setCursorPosition(msgOffsetX, msgOffsetY+i);
         // String padding
         string message = buffer.front();
+        if (message == " \xCD\xCD\xCD\xCD Learned skill \xCD\xCD\xCD\xCD ") {
+            color = 0x0E;
+        }
+        else if (message == "        \xCD\xCD Legend \xCD\xCD ") {
+            color = 0x0E;
+        }
+        else if (message == "   W \xAF Water type") {
+            color = 0x09;
+        }
+        else if (message == "   F \xAF Fire type") {
+            color = 0x0C;
+        }
+        else if (message == "   G \xAF Ground type") {
+            color = 0x04;
+        }
+        else if (message == "   E \xAF Electric type") {
+            color = 0x06;
+        }
+        else if (message == "   I \xAF Ice type") {
+            color = 0x0B;
+        }
+        else if (message == "   L \xAF Fire & Electric type") {
+            color = 0x08;
+        }
+        else if (message == "   S \xAF Water & Ice type") {
+            color = 0x0D;
+        }
+        else if (message == "   N \xAF Water & Ground type") {
+            color = 0x0A;
+        }
+        SetConsoleTextAttribute(hstdout, color);
         for (int j = message.length(); j < target.getMaxStringLength(); j++)
             message += " ";
         cout << message;
+        color = 0x0F;
         buffer.pop();
     }
 
     setCursorPosition(cursorRestX, cursorRestY);
+    SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
 void Render::setMessageTitle(string title) {
@@ -236,8 +275,11 @@ void Render::clearCursorRestArea() {
 }
 
 void Render::drawMessageTitle() {
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hstdout, 0x0E);
     setCursorPosition(msgOffsetX, msgOffsetY-1);
     cout << msgBoxTitle;
+    SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
 int Render::floorEuclidean(Position pos1, Position pos2) {
