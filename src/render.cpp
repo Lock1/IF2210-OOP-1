@@ -1,4 +1,4 @@
-// 13519214
+﻿// 13519214
 // TODO : A E S T H E T I C -> Message border shadow
 #include "header/config.hpp"
 #include "header/entities/tile.hpp"
@@ -209,7 +209,7 @@ void Render::drawMessageBox(Message& target) {
     }
 
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    int color = 0x09;
+    int color = 0x0F;
     
     queue<string> buffer = target.showMessage();
     int size = buffer.size();
@@ -217,12 +217,42 @@ void Render::drawMessageBox(Message& target) {
         setCursorPosition(msgOffsetX, msgOffsetY+i);
         // String padding
         string message = buffer.front();
+        if (message == " \xCD\xCD\xCD\xCD Learned skill \xCD\xCD\xCD\xCD ") {
+            color = 0x0E;
+        }
+        else if (message == "        \xCD\xCD Legend \xCD\xCD ") {
+            color = 0x0E;
+        }
+        else if (message == "   W \xAF Water type") {
+            color = 0x09;
+        }
+        else if (message == "   F \xAF Fire type") {
+            color = 0x0C;
+        }
+        else if (message == "   G \xAF Ground type") {
+            color = 0x04;
+        }
+        else if (message == "   E \xAF Electric type") {
+            color = 0x06;
+        }
+        else if (message == "   I \xAF Ice type") {
+            color = 0x0B;
+        }
+        else if (message == "   L \xAF Fire & Electric type") {
+            color = 0x08;
+        }
+        else if (message == "   S \xAF Water & Ice type") {
+            color = 0x0D;
+        }
+        else if (message == "   N \xAF Water & Ground type") {
+            color = 0x0A;
+        }
         SetConsoleTextAttribute(hstdout, color);
         for (int j = message.length(); j < target.getMaxStringLength(); j++)
             message += " ";
         cout << message;
+        color = 0x0F;
         buffer.pop();
-        color++;
     }
 
     setCursorPosition(cursorRestX, cursorRestY);
