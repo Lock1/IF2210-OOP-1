@@ -16,3 +16,7 @@ TileType Tile::getTileType() {
 Entity* Tile::getEntity() {
     return entityPtr;
 }
+
+bool Tile::operator==(TileType target) {
+    return this->tileType == target;
+}
