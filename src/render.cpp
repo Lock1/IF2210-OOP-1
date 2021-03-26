@@ -155,6 +155,7 @@ void Render::drawMsgBorder() {
 }
 
 void Render::drawMap(Map& target) {
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     if (isEmptyMapBuffer) {
         for (unsigned int i = 0; i < mapSizeY; i++) {
             for (unsigned int j = 0; j < mapSizeX; j++) {
@@ -163,7 +164,47 @@ void Render::drawMap(Map& target) {
                     if (mapFrameBuffer[i][j] != tempEntityPointer->getEntityChar()) {
                         mapFrameBuffer[i][j] = tempEntityPointer->getEntityChar();
                         setCursorPosition(j + mapOffsetX, i + mapOffsetY);
+
+                        // Coloring
+                        switch (mapFrameBuffer[i][j]) {
+                                case 'n': // Water Ground
+                                case 'N':
+                                    SetConsoleTextAttribute(hstdout, 0x0A);
+                                    break;
+                                case 's': // Water Ice
+                                case 'S':
+                                    SetConsoleTextAttribute(hstdout, 0x0D);
+                                    break;
+                                case 'w':
+                                case 'W':
+                                    SetConsoleTextAttribute(hstdout, 0x09);
+                                    break;
+                                case 'l': // Fire Electric
+                                case 'L':
+                                    SetConsoleTextAttribute(hstdout, 0x08);
+                                    break;
+                                case 'f': // Fire
+                                case 'F':
+                                    SetConsoleTextAttribute(hstdout, 0x0C);
+                                    break;
+                                case 'e': // Electric
+                                case 'E':
+                                    SetConsoleTextAttribute(hstdout, 0x06);
+                                    break;
+                                case 'g': // Ground
+                                case 'G':
+                                    SetConsoleTextAttribute(hstdout, 0x04);
+                                    break;
+                                case 'i':
+                                case 'I':
+                                    SetConsoleTextAttribute(hstdout, 0x0B);
+                                    break;
+                                default:
+                                    SetConsoleTextAttribute(hstdout, 0x0F);
+                                    break;
+                        }
                         cout << mapFrameBuffer[i][j];
+                        SetConsoleTextAttribute(hstdout, 0x0F);
                     }
                 }
                 else {
@@ -186,7 +227,47 @@ void Render::drawMap(Map& target) {
                     if (mapFrameBuffer[i][j] != tempEntityPointer->getEntityChar()) {
                         mapFrameBuffer[i][j] = tempEntityPointer->getEntityChar();
                         setCursorPosition(j + mapOffsetX, i + mapOffsetY);
+                        
+                        // Coloring
+                        switch (mapFrameBuffer[i][j]) {
+                                case 'n': // Water Ground
+                                case 'N':
+                                    SetConsoleTextAttribute(hstdout, 0x0A);
+                                    break;
+                                case 's': // Water Ice
+                                case 'S':
+                                    SetConsoleTextAttribute(hstdout, 0x0D);
+                                    break;
+                                case 'w':
+                                case 'W':
+                                    SetConsoleTextAttribute(hstdout, 0x09);
+                                    break;
+                                case 'l': // Fire Electric
+                                case 'L':
+                                    SetConsoleTextAttribute(hstdout, 0x08);
+                                    break;
+                                case 'f': // Fire
+                                case 'F':
+                                    SetConsoleTextAttribute(hstdout, 0x0C);
+                                    break;
+                                case 'e': // Electric
+                                case 'E':
+                                    SetConsoleTextAttribute(hstdout, 0x06);
+                                    break;
+                                case 'g': // Ground
+                                case 'G':
+                                    SetConsoleTextAttribute(hstdout, 0x04);
+                                    break;
+                                case 'i':
+                                case 'I':
+                                    SetConsoleTextAttribute(hstdout, 0x0B);
+                                    break;
+                                default:
+                                    SetConsoleTextAttribute(hstdout, 0x0F);
+                                    break;
+                        }
                         cout << mapFrameBuffer[i][j];
+                        SetConsoleTextAttribute(hstdout, 0x0F);
                     }
                 }
                 else if (target.getTileTypeAt(j, i) != mapFrameBuffer[i][j]) {
@@ -210,7 +291,7 @@ void Render::drawMessageBox(Message& target) {
 
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     int color = 0x0F;
-    
+
     queue<string> buffer = target.showMessage();
     int size = buffer.size();
     for (int i = 0; i < size; i++) {
@@ -289,13 +370,15 @@ int Render::floorEuclidean(Position pos1, Position pos2) {
 }
 
 void Render::drawLoseScreen() {
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     system(CLEAR_SCREEN_CMD);
-    // TODO : Steal prolog red lose screen, no unicode :<
+    SetConsoleTextAttribute(hstdout, 0x0C);
     cout << "\xdb\xdb\x20\xb0\xb0\xb0\xdb\xdb\x20\xb0\xdb\xdb\xdb\xdb\xdb\x20\xb0\xdb\xdb\x20\xb0\xb0\xb0\xdb\xdb\x20\x20\x20\xdb\xdb\xdb\xdb\xdb\xdb\x20\xb0\xdb\xdb\x20\xdb\xdb\xdb\xdb\xdb\xdb\xdb\x20\xdb\xdb\xdb\xdb\xdb\xdb\x20\xb0\xb0\xb0\xb0\x20\n";
     cout << "\x20\xdb\xdb\x20\xb0\xdb\xdb\x20\x20\xdb\xdb\x20\x20\x20\xdb\xdb\x20\xdb\xdb\x20\xb0\xb0\xb0\xdb\xdb\x20\x20\x20\xdb\xdb\x20\x20\x20\xdb\xdb\x20\xdb\xdb\x20\xdb\xdb\x20\x20\x20\x20\x20\x20\xdb\xdb\x20\x20\x20\xdb\xdb\x20\xb0\xb0\xb0\x20\n";
     cout << "\xb0\x20\xdb\xdb\xdb\xdb\x20\x20\xb0\xdb\xdb\x20\xb0\xb0\xdb\xdb\x20\xdb\xdb\x20\xb0\xb0\xb0\xdb\xdb\x20\x20\x20\xdb\xdb\x20\xb0\xb0\xdb\xdb\x20\xdb\xdb\x20\xdb\xdb\xdb\xdb\xdb\x20\xb0\xb0\xdb\xdb\x20\xb0\xb0\xdb\xdb\x20\xb0\xb0\xb0\x20\n";
     cout << "\xb0\xb0\x20\xdb\xdb\x20\x20\xb0\xb0\xdb\xdb\x20\xb0\xb0\xdb\xdb\x20\xdb\xdb\x20\xb0\xb0\xb0\xdb\xdb\x20\x20\x20\xdb\xdb\x20\xb0\xb0\xdb\xdb\x20\xdb\xdb\x20\xdb\xdb\x20\x20\x20\x20\xb0\xb0\xdb\xdb\x20\xb0\xb0\xdb\xdb\x20\xb0\xb0\xb0\x20\n";
     cout << "\xb0\xb0\xb0\xdb\xdb\x20\xb0\xb0\xb0\x20\xdb\xdb\xdb\xdb\xdb\x20\x20\x20\xdb\xdb\xdb\xdb\xdb\xdb\x20\x20\x20\x20\xdb\xdb\xdb\xdb\xdb\xdb\x20\x20\xdb\xdb\x20\xdb\xdb\xdb\xdb\xdb\xdb\xdb\x20\xdb\xdb\xdb\xdb\xdb\xdb\x20\x20\xdb\xdb\x20\x20\n";
+    SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
 void Render::clearMessageBox(Message& target) {
