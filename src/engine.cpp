@@ -575,7 +575,6 @@ void Engine::commandMode() {
                 messageList.addMessage("Number is out of range");
             }
         }
-        // TODO : Renaming option
     }
     else if (commandBuffer == "engimon") {
         list<EngimonItem> engimonInv = player.getEngimonInventory();

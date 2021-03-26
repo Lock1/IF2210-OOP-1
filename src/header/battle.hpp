@@ -4,6 +4,8 @@
 
 #include "entities/engimon.hpp"
 #include "entities/attributes/elementtype.hpp"
+#include "engimoninteraction.hpp"
+
 
 class Battle {
     private:

@@ -2,6 +2,7 @@
 #include "header/skilldatabase.hpp"
 #include "header/speciesdatabase.hpp"
 #include "header/entities/species.hpp"
+#include "engimoninteraction.hpp"
 #include <string>
 #include <set>
 
