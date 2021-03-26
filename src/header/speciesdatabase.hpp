@@ -27,6 +27,8 @@ class SpeciesDatabase {
         // Add species to database
         Species getSpecies(int speciesID);
         // Return species with same species ID, will throw speciesID if not found
+        Species getSpecies(ElementType type1, ElementType type2);
+        // Return species with element type matches, will throw type1 if not found
         unsigned int getSpeciesCount();
         // Get current species count
 };

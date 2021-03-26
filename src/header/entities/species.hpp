@@ -30,6 +30,8 @@ class Species {
         std::set<ElementType> getElements();
 
         bool isTileCompatible(TileType type);
+
+        bool operator==(const Species& target); // Return true if ID matches
 };
 
 #endif

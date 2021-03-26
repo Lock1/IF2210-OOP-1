@@ -31,7 +31,6 @@ class Engimon : public Entity, public Species {
         Engimon(Species species, bool wild, Position pos);
         Engimon(Species species, bool wild, Position pos, int startLevel);
         // Engimon constructor
-        // TODO : Breeding engimon constructor
 
         bool isMoveLocationValid(Tile& target) override;
         int xpGain(int gainedXP); // Returning level up count
@@ -47,12 +46,17 @@ class Engimon : public Entity, public Species {
         std::vector<Species> getParentSpecies();
         std::vector<std::string> getParentNames();
 
+        void addParentSpecies(Species parent);
+        void addParentName(std::string parent);
+
         std::set<ElementType> getElement();
         std::string getEngimonName();
         void setEngimonName(std::string target);
         int getLevel();
         int getXP();
         int getLearnedSkillCount();
+
+        void breedingLevelDown();
 
         bool isWildEngimon();
         std::string getInteractString();                               // Get description, only non-wild pokemon

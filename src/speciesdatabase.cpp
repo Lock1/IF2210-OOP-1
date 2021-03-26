@@ -73,3 +73,12 @@ Species SpeciesDatabase::getSpecies(int speciesID) {
             return speciesDatabase[i];
     throw speciesID;
 }
+
+Species SpeciesDatabase::getSpecies(ElementType type1, ElementType type2) {
+    for (unsigned int i = 0; i < speciesDatabase.size(); i++) {
+        set<ElementType> types = speciesDatabase[i].getElements();
+        if (types.find(type1) != types.end() && types.find(type2) != types.end())
+            return speciesDatabase[i];
+    }
+    throw type1;
+}
