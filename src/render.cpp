@@ -227,7 +227,7 @@ void Render::drawMap(Map& target) {
                     if (mapFrameBuffer[i][j] != tempEntityPointer->getEntityChar()) {
                         mapFrameBuffer[i][j] = tempEntityPointer->getEntityChar();
                         setCursorPosition(j + mapOffsetX, i + mapOffsetY);
-                        
+
                         // Coloring
                         switch (mapFrameBuffer[i][j]) {
                                 case 'n': // Water Ground
@@ -275,6 +275,139 @@ void Render::drawMap(Map& target) {
                     setCursorPosition(j + mapOffsetX, i + mapOffsetY);
                     cout << mapFrameBuffer[i][j];
                 }
+            }
+        }
+    }
+
+    setCursorPosition(cursorRestX, cursorRestY);
+}
+
+void Render::drawMap(Map& target, Position posRendered) {
+    HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    vector<Position> renderPos = getRenderedArea(posRendered);
+    if (isEmptyMapBuffer) {
+        for (unsigned int i = 0; i < renderPos.size(); i++) {
+            int coorX = renderPos[i].getX();
+            int coorY = renderPos[i].getY();
+            Entity* tempEntityPointer = target.getEntityAt(coorX, coorY);
+            if (tempEntityPointer != NULL) {
+                if (mapFrameBuffer[coorY][coorX] != tempEntityPointer->getEntityChar()) {
+                    mapFrameBuffer[coorY][coorX] = tempEntityPointer->getEntityChar();
+                    setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+
+                    // Coloring
+                    switch (mapFrameBuffer[coorY][coorX]) {
+                            case 'n': // Water Ground
+                            case 'N':
+                                SetConsoleTextAttribute(hstdout, 0x0A);
+                                break;
+                            case 's': // Water Ice
+                            case 'S':
+                                SetConsoleTextAttribute(hstdout, 0x0D);
+                                break;
+                            case 'w':
+                            case 'W':
+                                SetConsoleTextAttribute(hstdout, 0x09);
+                                break;
+                            case 'l': // Fire Electric
+                            case 'L':
+                                SetConsoleTextAttribute(hstdout, 0x08);
+                                break;
+                            case 'f': // Fire
+                            case 'F':
+                                SetConsoleTextAttribute(hstdout, 0x0C);
+                                break;
+                            case 'e': // Electric
+                            case 'E':
+                                SetConsoleTextAttribute(hstdout, 0x06);
+                                break;
+                            case 'g': // Ground
+                            case 'G':
+                                SetConsoleTextAttribute(hstdout, 0x04);
+                                break;
+                            case 'i':
+                            case 'I':
+                                SetConsoleTextAttribute(hstdout, 0x0B);
+                                break;
+                            default:
+                                SetConsoleTextAttribute(hstdout, 0x0F);
+                                break;
+                    }
+                    cout << mapFrameBuffer[coorY][coorX];
+                    SetConsoleTextAttribute(hstdout, 0x0F);
+                }
+            }
+            else {
+                mapFrameBuffer[coorY][coorX] = target.getTileTypeAt(coorX, coorY);
+                setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+
+                #ifdef LINE_OF_SIGHT
+                cout << mapFrameBuffer[coorY][coorX];
+                #endif
+
+                #ifndef FOG_OF_WAR
+                cout << mapFrameBuffer[coorY][coorX];
+                #endif
+            }
+        }
+        drawMapBorder();
+    }
+    else {
+        for (unsigned int i = 0; i < renderPos.size(); i++) {
+            int coorX = renderPos[i].getX();
+            int coorY = renderPos[i].getY();
+            Entity* tempEntityPointer = target.getEntityAt(coorX, coorY);
+            if (tempEntityPointer != NULL) {
+                if (mapFrameBuffer[coorY][coorX] != tempEntityPointer->getEntityChar()) {
+                    mapFrameBuffer[coorY][coorX] = tempEntityPointer->getEntityChar();
+                    setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+
+                    // Coloring
+                    switch (mapFrameBuffer[coorY][coorX]) {
+                            case 'n': // Water Ground
+                            case 'N':
+                                SetConsoleTextAttribute(hstdout, 0x0A);
+                                break;
+                            case 's': // Water Ice
+                            case 'S':
+                                SetConsoleTextAttribute(hstdout, 0x0D);
+                                break;
+                            case 'w':
+                            case 'W':
+                                SetConsoleTextAttribute(hstdout, 0x09);
+                                break;
+                            case 'l': // Fire Electric
+                            case 'L':
+                                SetConsoleTextAttribute(hstdout, 0x08);
+                                break;
+                            case 'f': // Fire
+                            case 'F':
+                                SetConsoleTextAttribute(hstdout, 0x0C);
+                                break;
+                            case 'e': // Electric
+                            case 'E':
+                                SetConsoleTextAttribute(hstdout, 0x06);
+                                break;
+                            case 'g': // Ground
+                            case 'G':
+                                SetConsoleTextAttribute(hstdout, 0x04);
+                                break;
+                            case 'i':
+                            case 'I':
+                                SetConsoleTextAttribute(hstdout, 0x0B);
+                                break;
+                            default:
+                                SetConsoleTextAttribute(hstdout, 0x0F);
+                                break;
+                    }
+                    cout << mapFrameBuffer[coorY][coorX];
+                    SetConsoleTextAttribute(hstdout, 0x0F);
+                }
+            }
+            else if (target.getTileTypeAt(coorX, coorY) != mapFrameBuffer[coorY][coorX]) {
+                mapFrameBuffer[coorY][coorX] = target.getTileTypeAt(coorX, coorY);
+                setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+                cout << mapFrameBuffer[coorY][coorX];
             }
         }
     }
@@ -386,4 +519,46 @@ void Render::clearMessageBox(Message& target) {
     drawMessageBox(target);
     target.clearMessage();
     clearCursorRestArea();
+}
+
+bool Render::isRayBlocked(Position fromPos, Position toPos) {
+    float xit = (float) fromPos.getX();
+    float yit = (float) fromPos.getY();
+
+    float xtarget = (float) toPos.getX();
+    float ytarget = (float) toPos.getY();
+
+    float delY = (ytarget-yit)/128;
+    float delX = (xtarget-xit)/128;
+
+    // No bound checking
+    bool isRayHitOpaqueTile = false;
+    while (xit < xtarget && yit < ytarget && not isRayHitOpaqueTile) {
+        if (mapFrameBuffer[(int) yit][(int) xit] == '\xDB')
+            isRayHitOpaqueTile = true;
+        if (yit < ytarget)
+            yit += delY;
+        if (xit < xtarget)
+            xit += delX;
+    }
+
+    return isRayHitOpaqueTile;
+}
+
+vector<Position> Render::getRenderedArea(Position pos) {
+    vector<Position> renderedTile;
+    for (int i = -8; i < 8; i++) {
+        for (int j = -4; j < 4; j++) {
+            Position tileToCheck = Position(pos.getX()+i , pos.getY()+j);
+            if (0 <= tileToCheck.getX() && tileToCheck.getX() < mapSizeX) {
+                if (0 <= tileToCheck.getY() && tileToCheck.getY() < mapSizeY) {
+                    if (floorEuclidean(pos, tileToCheck) < 6) {
+                        if (not isRayBlocked(pos, tileToCheck))
+                            renderedTile.push_back(tileToCheck);
+                    }
+                }
+            }
+        }
+    }
+    return renderedTile;
 }

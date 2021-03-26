@@ -82,6 +82,12 @@ class Render {
         void drawMessageTitle();
         // Drawing message box title at top left corner
 
+        bool isRayBlocked(Position fromPos, Position toPos);
+        // Raycasting checking
+
+        std::vector<Position> getRenderedArea(Position pos);
+        // Get coordinate area for rendering
+
     public:
         Render(Map& target, Message& msgTarget);
         // User Constructor
@@ -99,6 +105,7 @@ class Render {
         // Using double buffering
         // TODO : Extra, Const
         void drawMap(Map& target);
+        void drawMap(Map& target, Position renderPos);
         // Drawing map at offset location
 
         void drawMessageBox(Message& target);

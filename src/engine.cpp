@@ -107,7 +107,13 @@ void Engine::startGame() {
 
     while (isEngineRunning) {
         // Drawing map and message box
+        #ifdef LINE_OF_SIGHT
+        renderer.drawMap(map, player.getPos());
+        #endif
+
+        #ifndef LINE_OF_SIGHT
         renderer.drawMap(map);
+        #endif
         renderer.drawMessageBox(messageList);
         statRenderer.drawMessageBox(statMessage);
         battleRenderer.drawMessageBox(battleMessage);
@@ -1078,7 +1084,6 @@ void Engine::killCurrentEngimon() {
     else
         loseScreen();
 }
-
 
 void Engine::commandModeInput(string& target) {
     renderer.clearCursorRestArea();
