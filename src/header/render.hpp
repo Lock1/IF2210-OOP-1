@@ -62,6 +62,8 @@ class Render {
 
         std::vector<std::vector<char>> mapFrameBuffer;
         // Map Frame buffer
+        std::vector<Position> lastRenderPos;
+        // Last drawn position, used for line of sight highlight
         bool isEmptyMapBuffer;
         // Flag whether buffer is already filled or not
         bool isMessageBorderDrawn;

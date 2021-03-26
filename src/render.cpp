@@ -9,7 +9,12 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <math.h>
+
+#define C_HIGHLIGHT 0xF
+#define C_MIDTONE 0x7
+#define C_SHADOW 0x8
 
 using namespace std;
 
@@ -155,6 +160,7 @@ void Render::drawMsgBorder() {
 }
 
 void Render::drawMap(Map& target) {
+    // Full map drawing w/o raycast
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     if (isEmptyMapBuffer) {
         for (unsigned int i = 0; i < mapSizeY; i++) {
@@ -283,6 +289,7 @@ void Render::drawMap(Map& target) {
 }
 
 void Render::drawMap(Map& target, Position posRendered) {
+    // Map drawing with raycasting from position
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     vector<Position> renderPos = getRenderedArea(posRendered);
     if (isEmptyMapBuffer) {
@@ -334,12 +341,15 @@ void Render::drawMap(Map& target, Position posRendered) {
                                 break;
                     }
                     cout << mapFrameBuffer[coorY][coorX];
-                    SetConsoleTextAttribute(hstdout, 0x0F);
+                    SetConsoleTextAttribute(hstdout, C_MIDTONE);
                 }
             }
             else {
                 mapFrameBuffer[coorY][coorX] = target.getTileTypeAt(coorX, coorY);
                 setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+
+                SetConsoleTextAttribute(hstdout, C_HIGHLIGHT);
+                // Use hightlight
 
                 #ifdef LINE_OF_SIGHT
                 cout << mapFrameBuffer[coorY][coorX];
@@ -348,15 +358,36 @@ void Render::drawMap(Map& target, Position posRendered) {
                 #ifndef FOG_OF_WAR
                 cout << mapFrameBuffer[coorY][coorX];
                 #endif
+                SetConsoleTextAttribute(hstdout, C_MIDTONE);
             }
         }
+
+        lastRenderPos = renderPos;
         drawMapBorder();
     }
     else {
+
+        // Make shadow, TODO : Find way to calculate non-drawed
+
+        for (unsigned i = 0; i < lastRenderPos.size(); i++) {
+            // if (lastCoorX != coorX && lastCoorY != coorY) {
+            if (find(renderPos.begin(), renderPos.end(), lastRenderPos[i]) == renderPos.end()) {
+                int lastCoorX = lastRenderPos[i].getX();
+                int lastCoorY = lastRenderPos[i].getY();
+                setCursorPosition(lastCoorX + mapOffsetX, lastCoorY + mapOffsetY);
+                SetConsoleTextAttribute(hstdout, C_SHADOW);
+                cout << mapFrameBuffer[lastCoorY][lastCoorX];
+            }
+        }
+        SetConsoleTextAttribute(hstdout, C_MIDTONE);
+
+
         for (unsigned int i = 0; i < renderPos.size(); i++) {
             int coorX = renderPos[i].getX();
             int coorY = renderPos[i].getY();
             Entity* tempEntityPointer = target.getEntityAt(coorX, coorY);
+
+            // Redrawing
             if (tempEntityPointer != NULL) {
                 if (mapFrameBuffer[coorY][coorX] != tempEntityPointer->getEntityChar()) {
                     mapFrameBuffer[coorY][coorX] = tempEntityPointer->getEntityChar();
@@ -401,14 +432,20 @@ void Render::drawMap(Map& target, Position posRendered) {
                                 break;
                     }
                     cout << mapFrameBuffer[coorY][coorX];
-                    SetConsoleTextAttribute(hstdout, 0x0F);
+                    SetConsoleTextAttribute(hstdout, C_MIDTONE);
                 }
             }
-            else if (target.getTileTypeAt(coorX, coorY) != mapFrameBuffer[coorY][coorX]) {
+            // else if (target.getTileTypeAt(coorX, coorY) != mapFrameBuffer[coorY][coorX]) {
+            else {
                 mapFrameBuffer[coorY][coorX] = target.getTileTypeAt(coorX, coorY);
                 setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+                SetConsoleTextAttribute(hstdout, C_HIGHLIGHT);
                 cout << mapFrameBuffer[coorY][coorX];
+                SetConsoleTextAttribute(hstdout, C_MIDTONE);
             }
+            // }
+
+            lastRenderPos = renderPos;
         }
     }
 
