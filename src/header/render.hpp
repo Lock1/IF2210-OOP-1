@@ -88,6 +88,9 @@ class Render {
         bool isRayBlocked(Position fromPos, Position toPos);
         // Raycasting checking
 
+        Position rayEndLocation(Position fromPos, Position toPos);
+        // Raycasting checking, but returning ray end location
+
         std::vector<Position> getRenderedArea(Position pos);
         // Get coordinate area for rendering
 

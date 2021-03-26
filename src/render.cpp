@@ -665,6 +665,95 @@ bool Render::isRayBlocked(Position fromPos, Position toPos) {
     return isRayHitOpaqueTile;
 }
 
+Position Render::rayEndLocation(Position fromPos, Position toPos) {
+    double xit = (double) fromPos.getX();
+    double yit = (double) fromPos.getY();
+
+    double xtarget = (double) toPos.getX();
+    double ytarget = (double) toPos.getY();
+
+    double delY = (ytarget-yit)/512;
+    double delX = (xtarget-xit)/512;
+
+
+    // No bound checking
+    bool isRayHitOpaqueTile = false;
+    if (xtarget > xit && ytarget > yit) {
+        while (xit <= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget < xit && ytarget > yit) {
+        while (xit >= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget > xit && ytarget < yit) {
+        while (xit <= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget < xit && ytarget < yit) {
+        while (xit >= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget == xit && ytarget > yit) {
+        while (yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                yit += delY;
+        }
+    }
+    else if (xtarget == xit && ytarget < yit) {
+        while (yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                yit += delY;
+        }
+    }
+    else if (xtarget > xit && ytarget == yit) {
+        while (xit <= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                xit += delX;
+        }
+    }
+    else if (xtarget < xit && ytarget == yit) {
+        while (xit >= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                xit += delX;
+        }
+    }
+
+    return Position(nearestInteger(xit), nearestInteger(yit));
+}
+
 vector<Position> Render::getRenderedArea(Position pos) {
     vector<Position> renderedTile;
     for (int i = -8; i < 8; i++) {
@@ -673,7 +762,9 @@ vector<Position> Render::getRenderedArea(Position pos) {
             if (0 <= tileToCheck.getX() && tileToCheck.getX() < (int) mapSizeX) {
                 if (0 <= tileToCheck.getY() && tileToCheck.getY() < (int) mapSizeY) {
                     if (floorSqueezedEuclideanMetric(pos, tileToCheck) < 7) {
-                        if (not isRayBlocked(pos, tileToCheck))
+                        // if (not isRayBlocked(pos, tileToCheck))
+                        //     renderedTile.push_back(tileToCheck);
+                        if (tileToCheck == rayEndLocation(pos, tileToCheck))
                             renderedTile.push_back(tileToCheck);
                     }
                 }
