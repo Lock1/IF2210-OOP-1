@@ -56,19 +56,25 @@ Engine::Engine() : messageList(MAX_MESSAGE, MSG_MAX_X), statMessage(MAX_MESSAGE-
 
     // TODO : Add prompt (?)
     // TODO : Add splash screen (?)
+    // try {
+    //     skillDB.loadSkillDatabase("../other/skilldb.txt");
+    // }
+    // catch (string e) {
+    // }
     try {
-        skillDB.loadSkillDatabase("../other/skilldb.txt");
+        skillDB.loadSkillDatabase("./skilldb.txt");
     }
-    catch (string e) {
-        cout << "Skill database not found\n";
-    }
+    catch (string) {}
 
+    // try {
+    //     speciesDB.loadSpeciesDatabase("../other/speciesdb.txt", skillDB);
+    // }
+    // catch (string e) {
+    // }
     try {
-        speciesDB.loadSpeciesDatabase("../other/speciesdb.txt", skillDB);
+        speciesDB.loadSpeciesDatabase("./speciesdb.txt", skillDB);
     }
-    catch (string e) {
-        cout << "Species database not found\n";
-    }
+    catch (string) {}
 }
 
 Engine::~Engine() {
