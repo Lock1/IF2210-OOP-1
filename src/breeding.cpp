@@ -3,21 +3,19 @@
 
 using namespace std;
 
-Breed::Breed(Engimon *e1, Engimon *e2){
-    parent1 = e1;
-    parent2 = e2;
+Breed::Breed(Engimon *e1, Engimon *e2) : EngimonInteraction(e1, e2) {
+
 }
 
 Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
-    // TODO : Multi element throw
     int errorCode = 1;
-    if((parent1->getLevel() < 30) || (parent2->getLevel() < 30)){
+    if((e1->getLevel() < 30) || (e2->getLevel() < 30)){
         throw errorCode;
     }else{
         Skill skillTemp = Skill(0, 0, "", NoElement);
 
-        vector<Skill> skillList_parent1 = parent1->getSkillList();
-        vector<Skill> skillList_parent2 = parent2->getSkillList();
+        vector<Skill> skillList_parent1 = e1->getSkillList();
+        vector<Skill> skillList_parent2 = e2->getSkillList();
         vector<Skill> skillList_child;
 
         bool fromP1 = false, fromP2 = false;
@@ -76,8 +74,8 @@ Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
 
 
 
-        set<ElementType> parent1_element = parent1->getElements();
-        set<ElementType> parent2_element = parent2->getElements();
+        set<ElementType> parent1_element = e1->getElements();
+        set<ElementType> parent2_element = e2->getElements();
         ElementType child_element1 = NoElement;
         ElementType child_element2 = NoElement;
 
@@ -113,9 +111,9 @@ Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
         //     // anak ga boleh punya species sama kayak parent(?)
         // }else{
         //     if(fromP1){
-        //         childSpecies = Species(parent1->getSpeciesID(), namaAnak, skillList_child[0], parent1->getDescription(), child_element1, NoElement);
+        //         childSpecies = Species(e1->getSpeciesID(), namaAnak, skillList_child[0], e1->getDescription(), child_element1, NoElement);
         //     }else{
-        //         childSpecies = Species(parent2->getSpeciesID(), namaAnak, skillList_child[0], parent2->getDescription(), child_element2, NoElement);
+        //         childSpecies = Species(e2->getSpeciesID(), namaAnak, skillList_child[0], e2->getDescription(), child_element2, NoElement);
         //     }
         // }
 
@@ -123,17 +121,17 @@ Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
         Species childSpecies;
         if (advantageBranch) {
             if (fromP1) {
-                childSpecies = speciesDB.getSpecies(parent1->getSpeciesID());
+                childSpecies = speciesDB.getSpecies(e1->getSpeciesID());
             }
             else if (fromP2) {
-                childSpecies = speciesDB.getSpecies(parent2->getSpeciesID());
+                childSpecies = speciesDB.getSpecies(e2->getSpeciesID());
             }
             else
                 childSpecies = speciesDB.getSpecies(child_element1, child_element2);
         }
         else if (fromP1) {
             // If both parent equal element
-            childSpecies = speciesDB.getSpecies(parent1->getSpeciesID());
+            childSpecies = speciesDB.getSpecies(e1->getSpeciesID());
         }
 
         Engimon *child = new Engimon(childSpecies, false, Position(0, 0), 1);
@@ -146,14 +144,14 @@ Engimon* Breed::startBreeding(SpeciesDatabase& speciesDB) {
             }
         }
 
-        child->addParentName(parent1->getEngimonName());
-        child->addParentName(parent2->getEngimonName());
+        child->addParentName(e1->getEngimonName());
+        child->addParentName(e2->getEngimonName());
 
-        child->addParentSpecies(*parent1);
-        child->addParentSpecies(*parent2);
+        child->addParentSpecies(*e1);
+        child->addParentSpecies(*e2);
 
-        parent1->breedingLevelDown();
-        parent2->breedingLevelDown();
+        e1->breedingLevelDown();
+        e2->breedingLevelDown();
 
         return child;
     }

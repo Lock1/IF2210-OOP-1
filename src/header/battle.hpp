@@ -7,10 +7,8 @@
 #include "engimoninteraction.hpp"
 
 
-class Battle {
+class Battle : public EngimonInteraction {
     private:
-        Engimon *e1;
-        Engimon *e2;
         int winnerNumber;
         float advantage1;
         float advantage2;
