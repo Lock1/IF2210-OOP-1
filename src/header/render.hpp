@@ -61,7 +61,10 @@ class Render {
         char msgBorderLineHorizontal;
 
         std::vector<std::vector<char>> mapFrameBuffer;
+        std::vector<std::vector<bool>> shadowMapFrameBuffer;
         // Map Frame buffer
+        std::vector<Position> lastRenderPos;
+        // Last drawn position, used for line of sight highlight
         bool isEmptyMapBuffer;
         // Flag whether buffer is already filled or not
         bool isMessageBorderDrawn;
@@ -76,7 +79,7 @@ class Render {
         void drawMsgBorder();
         // Drawing border
 
-        int floorEuclidean(Position pos1, Position pos2); // TODO : Search fast truncated ver
+        int floorSqueezedEuclideanMetric(Position pos1, Position pos2); // TODO : Search fast truncated ver
         // Calculating floored euclidean distance
 
         void drawMessageTitle();
@@ -85,8 +88,14 @@ class Render {
         bool isRayBlocked(Position fromPos, Position toPos);
         // Raycasting checking
 
+        Position rayEndLocation(Position fromPos, Position toPos);
+        // Raycasting checking, but returning ray end location
+
         std::vector<Position> getRenderedArea(Position pos);
         // Get coordinate area for rendering
+
+        int nearestInteger(double x);
+        // Rounding to nearest integer
 
     public:
         Render(Map& target, Message& msgTarget);

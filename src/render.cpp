@@ -9,7 +9,12 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <math.h>
+
+#define C_HIGHLIGHT 0xF
+#define C_MIDTONE 0x7
+#define C_SHADOW 0x8
 
 using namespace std;
 
@@ -42,8 +47,12 @@ Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), m
     // Map frame buffer initialization
     for (unsigned int i = 0; i < mapSizeY; i++) {
         std::vector<char> mapRow;
-        for (unsigned int j = 0; j < mapSizeX; j++)
+        std::vector<bool> shadowBufferRow;
+        for (unsigned int j = 0; j < mapSizeX; j++) {
             mapRow.push_back('\0');
+            shadowBufferRow.push_back(false);
+        }
+        shadowMapFrameBuffer.push_back(shadowBufferRow);
         mapFrameBuffer.push_back(mapRow);
     }
 }
@@ -155,6 +164,7 @@ void Render::drawMsgBorder() {
 }
 
 void Render::drawMap(Map& target) {
+    // Full map drawing w/o raycast
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     if (isEmptyMapBuffer) {
         for (unsigned int i = 0; i < mapSizeY; i++) {
@@ -283,6 +293,7 @@ void Render::drawMap(Map& target) {
 }
 
 void Render::drawMap(Map& target, Position posRendered) {
+    // Map drawing with raycasting from position
     HANDLE hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     vector<Position> renderPos = getRenderedArea(posRendered);
     if (isEmptyMapBuffer) {
@@ -334,12 +345,15 @@ void Render::drawMap(Map& target, Position posRendered) {
                                 break;
                     }
                     cout << mapFrameBuffer[coorY][coorX];
-                    SetConsoleTextAttribute(hstdout, 0x0F);
+                    SetConsoleTextAttribute(hstdout, C_MIDTONE);
                 }
             }
             else {
                 mapFrameBuffer[coorY][coorX] = target.getTileTypeAt(coorX, coorY);
                 setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+
+                SetConsoleTextAttribute(hstdout, C_HIGHLIGHT);
+                // Use hightlight
 
                 #ifdef LINE_OF_SIGHT
                 cout << mapFrameBuffer[coorY][coorX];
@@ -348,15 +362,37 @@ void Render::drawMap(Map& target, Position posRendered) {
                 #ifndef FOG_OF_WAR
                 cout << mapFrameBuffer[coorY][coorX];
                 #endif
+                SetConsoleTextAttribute(hstdout, C_MIDTONE);
             }
         }
+
+        lastRenderPos = renderPos;
         drawMapBorder();
     }
     else {
+
+        // Make shadow, TODO : Find way to calculate non-drawed
+
+        for (unsigned i = 0; i < lastRenderPos.size(); i++) {
+            // if (lastCoorX != coorX && lastCoorY != coorY) {
+            if (find(renderPos.begin(), renderPos.end(), lastRenderPos[i]) == renderPos.end()) {
+                int lastCoorX = lastRenderPos[i].getX();
+                int lastCoorY = lastRenderPos[i].getY();
+                shadowMapFrameBuffer[lastCoorY][lastCoorX] = true;
+                setCursorPosition(lastCoorX + mapOffsetX, lastCoorY + mapOffsetY);
+                SetConsoleTextAttribute(hstdout, C_SHADOW);
+                cout << mapFrameBuffer[lastCoorY][lastCoorX];
+            }
+        }
+        SetConsoleTextAttribute(hstdout, C_MIDTONE);
+
+
         for (unsigned int i = 0; i < renderPos.size(); i++) {
             int coorX = renderPos[i].getX();
             int coorY = renderPos[i].getY();
             Entity* tempEntityPointer = target.getEntityAt(coorX, coorY);
+
+            // Redrawing
             if (tempEntityPointer != NULL) {
                 if (mapFrameBuffer[coorY][coorX] != tempEntityPointer->getEntityChar()) {
                     mapFrameBuffer[coorY][coorX] = tempEntityPointer->getEntityChar();
@@ -401,14 +437,19 @@ void Render::drawMap(Map& target, Position posRendered) {
                                 break;
                     }
                     cout << mapFrameBuffer[coorY][coorX];
-                    SetConsoleTextAttribute(hstdout, 0x0F);
+                    SetConsoleTextAttribute(hstdout, C_MIDTONE);
                 }
             }
-            else if (target.getTileTypeAt(coorX, coorY) != mapFrameBuffer[coorY][coorX]) {
+            else if (target.getTileTypeAt(coorX, coorY) != mapFrameBuffer[coorY][coorX] || shadowMapFrameBuffer[coorY][coorX]) {
+                shadowMapFrameBuffer[coorY][coorX] = false;
                 mapFrameBuffer[coorY][coorX] = target.getTileTypeAt(coorX, coorY);
                 setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
+                SetConsoleTextAttribute(hstdout, C_HIGHLIGHT);
                 cout << mapFrameBuffer[coorY][coorX];
+                SetConsoleTextAttribute(hstdout, C_MIDTONE);
             }
+
+            lastRenderPos = renderPos;
         }
     }
 
@@ -496,10 +537,10 @@ void Render::drawMessageTitle() {
     SetConsoleTextAttribute(hstdout, 0x0F);
 }
 
-int Render::floorEuclidean(Position pos1, Position pos2) {
+int Render::floorSqueezedEuclideanMetric(Position pos1, Position pos2) {
     double yDiff = (double) (pos1.getY() - pos2.getY());
     double xDiff = (double) (pos1.getX() - pos2.getX());
-    return (int) sqrt((xDiff*xDiff) + (yDiff*yDiff));
+    return (int) sqrt((xDiff*xDiff) + (yDiff*yDiff)*4);
 }
 
 void Render::drawLoseScreen() {
@@ -521,6 +562,18 @@ void Render::clearMessageBox(Message& target) {
     clearCursorRestArea();
 }
 
+int Render::nearestInteger(double x) {
+    double decimalPoint = x - ((int) x);
+    // Absolute value
+    if (decimalPoint < 0)
+        decimalPoint *= (-1);
+
+    if (decimalPoint > 0.5)
+        return ((int) x) + 1;
+    else
+        return ((int) x);
+}
+
 bool Render::isRayBlocked(Position fromPos, Position toPos) {
     double xit = (double) fromPos.getX();
     double yit = (double) fromPos.getY();
@@ -528,20 +581,177 @@ bool Render::isRayBlocked(Position fromPos, Position toPos) {
     double xtarget = (double) toPos.getX();
     double ytarget = (double) toPos.getY();
 
-    double delY = (ytarget-yit)/1024;
-    double delX = (xtarget-xit)/1024;
+    double delY = (ytarget-yit)/512;
+    double delX = (xtarget-xit)/512;
+
 
     // No bound checking
     bool isRayHitOpaqueTile = false;
-    while (xit < xtarget && yit < ytarget && not isRayHitOpaqueTile) {
-        if (mapFrameBuffer[(int) yit][(int) xit] == '\xDB')
-            isRayHitOpaqueTile = true;
-
-        yit += delY;
-        xit += delX;
+    if (xtarget > xit && ytarget > yit) {
+        while (xit <= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget < xit && ytarget > yit) {
+        while (xit >= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget > xit && ytarget < yit) {
+        while (xit <= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget < xit && ytarget < yit) {
+        while (xit >= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget == xit && ytarget > yit) {
+        while (yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                yit += delY;
+        }
+    }
+    else if (xtarget == xit && ytarget < yit) {
+        while (yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                yit += delY;
+        }
+    }
+    else if (xtarget > xit && ytarget == yit) {
+        while (xit <= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                xit += delX;
+        }
+    }
+    else if (xtarget < xit && ytarget == yit) {
+        while (xit >= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                xit += delX;
+        }
     }
 
+
+
     return isRayHitOpaqueTile;
+}
+
+Position Render::rayEndLocation(Position fromPos, Position toPos) {
+    double xit = (double) fromPos.getX();
+    double yit = (double) fromPos.getY();
+
+    double xtarget = (double) toPos.getX();
+    double ytarget = (double) toPos.getY();
+
+    double delY = (ytarget-yit)/512;
+    double delX = (xtarget-xit)/512;
+
+
+    // No bound checking
+    bool isRayHitOpaqueTile = false;
+    if (xtarget > xit && ytarget > yit) {
+        while (xit <= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget < xit && ytarget > yit) {
+        while (xit >= xtarget && yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget > xit && ytarget < yit) {
+        while (xit <= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget < xit && ytarget < yit) {
+        while (xit >= xtarget && yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else {
+                yit += delY;
+                xit += delX;
+            }
+        }
+    }
+    else if (xtarget == xit && ytarget > yit) {
+        while (yit <= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                yit += delY;
+        }
+    }
+    else if (xtarget == xit && ytarget < yit) {
+        while (yit >= ytarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                yit += delY;
+        }
+    }
+    else if (xtarget > xit && ytarget == yit) {
+        while (xit <= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                xit += delX;
+        }
+    }
+    else if (xtarget < xit && ytarget == yit) {
+        while (xit >= xtarget && not isRayHitOpaqueTile) {
+            if (mapFrameBuffer[nearestInteger(yit)][nearestInteger(xit)] == '\xDB')
+                isRayHitOpaqueTile = true;
+            else
+                xit += delX;
+        }
+    }
+
+    return Position(nearestInteger(xit), nearestInteger(yit));
 }
 
 vector<Position> Render::getRenderedArea(Position pos) {
@@ -551,8 +761,10 @@ vector<Position> Render::getRenderedArea(Position pos) {
             Position tileToCheck = Position(pos.getX()+i , pos.getY()+j);
             if (0 <= tileToCheck.getX() && tileToCheck.getX() < (int) mapSizeX) {
                 if (0 <= tileToCheck.getY() && tileToCheck.getY() < (int) mapSizeY) {
-                    if (floorEuclidean(pos, tileToCheck) < 5) {
-                        if (not isRayBlocked(pos, tileToCheck))
+                    if (floorSqueezedEuclideanMetric(pos, tileToCheck) < 7) {
+                        // if (not isRayBlocked(pos, tileToCheck))
+                        //     renderedTile.push_back(tileToCheck);
+                        if (tileToCheck == rayEndLocation(pos, tileToCheck))
                             renderedTile.push_back(tileToCheck);
                     }
                 }
