@@ -267,3 +267,11 @@ float Breed::getElementAdvantage(ElementType elem1, ElementType elem2){
             return 0;
         }
 }
+
+Engimon* Breed::getEngimonOne() {
+    return this->e1;
+}
+
+Engimon* Breed::getEngimonTwo() {
+    return this->e2;
+}
