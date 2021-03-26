@@ -10,6 +10,8 @@ class EngimonInteraction {
 
     public:
         EngimonInteraction(Engimon* engimon1, Engimon* engimon2);
+        virtual Engimon* getEngimonOne() = 0;
+        virtual Engimon* getEngimonTwo() = 0;
 };
 
 #endif

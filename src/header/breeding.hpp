@@ -12,4 +12,6 @@ class Breed : public EngimonInteraction {
     public:
         Breed(Engimon* e1, Engimon* e2);
         Engimon* startBreeding(SpeciesDatabase& speciesDB);
+        virtual Engimon* getEngimonOne();
+        virtual Engimon* getEngimonTwo();
 };

@@ -20,6 +20,9 @@ class Battle : public EngimonInteraction {
         float getEngimon1Power();
         float getEngimon2Power();
         int getBattleWinner();
+
+        virtual Engimon* getEngimonOne();
+        virtual Engimon* getEngimonTwo();
 };
 
 #endif

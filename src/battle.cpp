@@ -245,3 +245,11 @@ float Battle::getMax(float a, float b) {
     else
         return b;
 }
+
+Engimon* Battle::getEngimonOne() {
+    return this->e1;
+}
+
+Engimon* Battle::getEngimonTwo() {
+    return this->e2;
+}
