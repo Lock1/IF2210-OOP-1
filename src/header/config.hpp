@@ -14,8 +14,8 @@
 #define MAX_INVENTORY 20
 #define MAX_SKILL_ID 1000
 #define XP_MULTIPLIER 100
-#define FOG_OF_WAR // Define FOG_OF_WAR for activating FoW // TODO : Move from render
-#define LINE_OF_SIGHT // For activating line of sight limit // TODO : Add
+// #define FOG_OF_WAR // Define FOG_OF_WAR for activating FoW // TODO : Move from render
+#define LINE_OF_SIGHT // For activating line of sight limit, Note : Activating LoS will activate FoW // TODO : Add
 #define RELEASE_TICK_LOCK // Deactivating full turn-based tick evaluation
 
 // Map

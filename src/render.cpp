@@ -16,6 +16,8 @@
 #define C_MIDTONE 0x7
 #define C_SHADOW 0x8
 
+#define X_RADIUS 15+1
+
 using namespace std;
 
 Render::Render(Map& target, Message& msgTarget) : mapSizeX(target.getSizeX()), mapSizeY(target.getSizeY()),
@@ -370,9 +372,6 @@ void Render::drawMap(Map& target, Position posRendered) {
         drawMapBorder();
     }
     else {
-
-        // Make shadow, TODO : Find way to calculate non-drawed
-
         for (unsigned i = 0; i < lastRenderPos.size(); i++) {
             // if (lastCoorX != coorX && lastCoorY != coorY) {
             if (find(renderPos.begin(), renderPos.end(), lastRenderPos[i]) == renderPos.end()) {
@@ -394,7 +393,8 @@ void Render::drawMap(Map& target, Position posRendered) {
 
             // Redrawing
             if (tempEntityPointer != NULL) {
-                if (mapFrameBuffer[coorY][coorX] != tempEntityPointer->getEntityChar()) {
+                if (mapFrameBuffer[coorY][coorX] != tempEntityPointer->getEntityChar() || shadowMapFrameBuffer[coorY][coorX]) {
+                    shadowMapFrameBuffer[coorY][coorX] = false;
                     mapFrameBuffer[coorY][coorX] = tempEntityPointer->getEntityChar();
                     setCursorPosition(coorX + mapOffsetX, coorY + mapOffsetY);
 
@@ -756,12 +756,12 @@ Position Render::rayEndLocation(Position fromPos, Position toPos) {
 
 vector<Position> Render::getRenderedArea(Position pos) {
     vector<Position> renderedTile;
-    for (int i = -8; i < 8; i++) {
-        for (int j = -8; j < 8; j++) {
+    for (int i = -X_RADIUS; i < X_RADIUS; i++) {
+        for (int j = -X_RADIUS/2; j < X_RADIUS/2; j++) {
             Position tileToCheck = Position(pos.getX()+i , pos.getY()+j);
             if (0 <= tileToCheck.getX() && tileToCheck.getX() < (int) mapSizeX) {
                 if (0 <= tileToCheck.getY() && tileToCheck.getY() < (int) mapSizeY) {
-                    if (floorSqueezedEuclideanMetric(pos, tileToCheck) < 7) {
+                    if (floorSqueezedEuclideanMetric(pos, tileToCheck) < X_RADIUS) {
                         // if (not isRayBlocked(pos, tileToCheck))
                         //     renderedTile.push_back(tileToCheck);
                         if (tileToCheck == rayEndLocation(pos, tileToCheck))
